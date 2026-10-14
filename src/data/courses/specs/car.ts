@@ -15,7 +15,7 @@ export const spec: TradeCourseSpec = {
   },
   atmp: {
     at: 'éclat de carreau dans l’œil, coupure à la meuleuse, glissade sur un sol mouillé.',
-    trajet: 'accident de scooter en venant au CFA ou en allant chez le client.',
+    trajet: 'accident de scooter en venant au CFA ou en allant directement de chez soi au chantier.',
     mp: 'hygroma du genou, eczéma au ciment, silicose due aux poussières de découpe.',
   },
   causes: {
@@ -31,14 +31,14 @@ export const spec: TradeCourseSpec = {
   categories: {
     mecanique: 'Meuleuse, scie à eau, éclat de carreau, chute d’une pile de carreaux, glissade sur un sol mouillé.',
     electrique: 'Scie à eau ou malaxeur sur une rallonge dans l’eau, câble abîmé, perçage près d’un câble encastré.',
-    thermique: 'Étincelles de la meuleuse près d’un bidon de solvant, primaires inflammables, chiffons imbibés.',
-    atmosphere: 'Poussière de silice à la découpe à sec, vapeurs de primaire ou de résine dans une pièce fermée.',
+    thermique: 'Étincelles de la meuleuse près d’un solvant, chiffons et primaires inflammables, décapeur thermique.',
+    atmosphere: 'Silice cristalline à la découpe à sec, fibres d’amiante à la dépose, vapeurs de solvant en pièce fermée.',
   },
   processus: {
     contexte: 'découpe d’un carreau en grès cérame à la meuleuse',
     danger: 'Disque de la meuleuse',
     operateur: 'L’apprenti qui découpe',
-    situation: 'Il tient le carreau d’une main, sur son genou',
+    situation: 'Il tient le carreau d’une main, calé sur sa cuisse',
     evenement: 'Le disque accroche et éclate',
     dommage: 'Coupure profonde de la cuisse ou de la main',
   },
@@ -57,7 +57,7 @@ export const spec: TradeCourseSpec = {
   },
   principes: 'Principe n° 6 : découper à l’eau plutôt qu’à sec = moins de silice dans l’air. Principe n° 8 : l’aspiration protège toute l’équipe, le masque ne protège que celui qui le porte.',
   protections: {
-    prevention: 'découper à l’eau, choisir un produit moins nocif, monter les sacs au monte-matériaux.',
+    prevention: 'découper à l’eau, primaire en phase aqueuse plutôt qu’à solvant, monte-matériaux pour les sacs.',
     collective: 'aspiration sur la meuleuse, aération de la pièce, prise protégée par un différentiel 30 mA.',
     individuelle: 'genouillères, gants nitrile, lunettes, masque FFP3, chaussures de sécurité.',
   },
@@ -71,11 +71,11 @@ export const spec: TradeCourseSpec = {
   droitRetrait: 'Dalles suspectées d’amiante à arracher sans repérage, câble dénudé de la scie à eau dans une flaque, plancher qui fléchit sous les palettes : j’arrête, je sors, j’alerte.',
   sirene: 'Votre réflexe métier : arrêter et débrancher la scie et la meuleuse, refermer les pots de primaire et de résine.',
   proteger:
-    'Collègue au sol dans une flaque, près de la scie à eau : je pense d’abord au courant. Je ne touche ni l’eau ni la victime, je coupe d’abord le courant au tableau électrique.',
+    'Collègue au sol dans une flaque, près de la scie à eau : je pense d’abord au courant. Je ne touche ni l’eau ni la victime avant d’avoir coupé le courant au tableau électrique.',
   supprimer: 'Couper le courant au disjoncteur, arrêter la scie et la meuleuse, refermer les bidons de solvant.',
   isoler: 'Baliser la zone mouillée et la zone de découpe, fermer la pièce, empêcher le client d’approcher.',
   alerter: 'Seul chez un client ? J’appelle moi-même, haut-parleur activé, sans quitter la victime. Je connais l’adresse, l’étage et le code d’accès avant de commencer.',
-  lieuxAlerte: 'Adresse, étage, appartement, salle de bains, code.',
+  lieuxAlerte: 'Adresse, étage, appartement, salle de bains, code d’accès.',
   natureAlerte: 'Électrisation, coupure, chute, produit dans l’œil…',
   messageAlerte:
     'Je suis apprenti carreleur, je vous appelle du 8 rue Voltaire à Tours, au 3e étage, porte de droite. Mon collègue s’est ouvert l’avant-bras avec le disque de la meuleuse, il saigne beaucoup. Une seule victime, il me parle. Je comprime la plaie. Quelqu’un vous attendra en bas de l’immeuble.',
@@ -98,9 +98,9 @@ export const spec: TradeCourseSpec = {
   casConcrets: [
     { titre: 'Découpe à la meuleuse', texte: 'Le disque éclate. Votre collègue se tient l’avant-bras, le sang coule fort. La meuleuse tourne encore au sol.' },
     { titre: 'Scie à eau dans la douche', texte: 'Vous retrouvez votre collègue allongé dans l’eau, la scie à eau renversée à côté de lui. Il ne bouge pas.' },
-    { titre: 'Recoupe près du solvant', texte: 'Les étincelles de la meuleuse enflamment un bidon de nettoyant. Votre collègue a la main et le poignet brûlés.' },
-    { titre: 'Primaire en sous-sol', texte: 'Votre collègue passe un primaire dans un sous-sol sans fenêtre. Il a des vertiges, puis s’assoit, très pâle.' },
+    { titre: 'Recoupe près du solvant', texte: 'Les étincelles de la meuleuse enflamment un bidon de solvant ouvert. Votre collègue a la main et le poignet brûlés.' },
+    { titre: 'Primaire en sous-sol', texte: 'Votre collègue passe un primaire à solvant dans un sous-sol sans fenêtre. Il a des vertiges, puis s’assoit, très pâle.' },
   ],
   casConcretsNotes:
-    'Quatre scénarios pour les cas concrets, un par catégorie de danger. Pour chacun, faire dérouler : protéger (quel danger persistant ? comment le supprimer ?), examiner, faire alerter, secourir. 1 : meuleuse encore branchée (la débrancher), saignement abondant. 2 : danger électrique persistant (eau + courant, couper au tableau), puis victime qui ne répond pas et ne respire pas. 3 : feu de solvant (s’éloigner, fermer la pièce), brûlure thermique à arroser à l’eau tempérée. 4 : atmosphère toxique (vapeurs de solvant), malaise : ne pas rester dans le sous-sol, aérer depuis l’extérieur, mise au repos à l’air libre, avis médical.',
+    'Quatre scénarios pour les cas concrets, un par catégorie de danger. Pour chacun, faire dérouler : protéger (quel danger persistant ? comment le supprimer ?), examiner, faire alerter, secourir. 1 : meuleuse qui tourne encore (la débrancher à la prise, sans approcher du disque), saignement abondant. 2 : danger électrique persistant (eau + courant : couper au tableau, sans toucher l’eau ni la victime), puis victime qui ne répond pas et ne respire pas. 3 : feu de solvant (éloigner la victime, fermer la porte, extincteur seulement si le feu est petit et qu’on sait s’en servir), brûlure thermique grave (main, poignet) : arroser à l’eau courante tempérée au moins 10 minutes, alerter. 4 : atmosphère toxique (vapeurs de solvant), malaise : refermer le pot, sortir ensemble à l’air libre, ne pas retourner dans le sous-sol, ni flamme ni étincelle, aérer depuis l’extérieur ; mise au repos, questionner, avis médical.',
 };

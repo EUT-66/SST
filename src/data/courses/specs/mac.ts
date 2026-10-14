@@ -5,9 +5,9 @@ export const spec: TradeCourseSpec = {
   code: 'MAC',
   diplome: 'CAP MAC',
   intitule: 'CAP Maçon',
-  prefixe: 'MAC',
+  prefixe: 'Maçon',
   public: 'Maçons — CFA BTP',
-  cote: 'Côté MAC',
+  cote: 'Côté maçon',
   lieux: 'chantier de gros œuvre, maison individuelle en construction, atelier du CFA',
   roles: {
     prevention: 'signaler un garde-corps retiré sur l’échafaudage ou une trémie non protégée.',
@@ -16,7 +16,7 @@ export const spec: TradeCourseSpec = {
   atmp: {
     at: 'chute d’échafaudage, pied écrasé par un parpaing, brûlure au béton frais tombé dans la botte.',
     trajet: 'accident de scooter en venant au CFA ou en rejoignant le chantier.',
-    mp: 'lombalgie due aux charges lourdes, eczéma au ciment, surdité, silicose (poussières de découpe).',
+    mp: 'hernie discale due aux charges lourdes, eczéma au ciment, surdité, silicose (poussières de découpe).',
   },
   causes: {
     manutention: 'parpaings, sacs de ciment, étais, coffrages',
@@ -26,17 +26,17 @@ export const spec: TradeCourseSpec = {
   },
   premierMaillon: 'Sur un pavillon en construction, vous êtes souvent deux ou trois, loin du bureau et parfois sans adresse précise : le premier maillon des secours, c’est vous.',
   quiFormer: 'En entreprise de maçonnerie, un SST par équipe de chantier : c’est l’idéal. Sur un gros chantier, demandez qui est SST dès l’accueil.',
-  observer: 'En arrivant sur le chantier : garde-corps, trémies, charges de la grue, engins, bord des fouilles, état du sol… deux minutes d’observation avant de gâcher.',
-  dangers: ['Une chute depuis l’échafaudage', 'Une charge suspendue à la grue', 'Le ciment frais sur la peau et dans l’œil', 'Le disque et les gaz de la découpeuse'],
+  observer: 'En arrivant sur le chantier : garde-corps, trémies, charges de la grue, engins, bord des fouilles, état du sol… deux minutes d’observation avant de gâcher le mortier.',
+  dangers: ['Le vide : échafaudage, trémie, bord de dalle','Une charge suspendue à la grue', 'Le ciment frais sur la peau et dans l’œil', 'Le disque et les gaz de la découpeuse'],
   categories: {
-    mecanique: 'Chute d’échafaudage ou par une trémie, charge de la grue, bétonnière, rebond de la découpeuse, éboulement.',
+    mecanique: 'Chute d’échafaudage ou par une trémie, charge de la grue, bétonnière, rebond de la découpeuse, éboulement de fouille.',
     electrique: 'Bétonnière sur une rallonge abîmée, câble enterré touché en creusant, ligne aérienne près de la grue.',
     thermique: 'Plein d’essence de la découpeuse moteur chaud, gerbe d’étincelles du disque, coup de chaleur en été.',
-    atmosphere: 'Monoxyde de carbone de la découpeuse en sous-sol, poussière de silice, fond de fouille mal ventilé.',
+    atmosphere: 'Monoxyde de carbone de la découpeuse en sous-sol, poussière de silice, vide sanitaire non ventilé.',
   },
   processus: {
     contexte: 'montage d’un mur en parpaings depuis un échafaudage',
-    danger: 'Le vide sous l’échafaudage',
+    danger: 'Le vide au bord de l’échafaudage',
     operateur: 'L’apprenti qui monte le mur',
     situation: 'Il travaille sans garde-corps, retiré pour passer les blocs',
     evenement: 'Il recule pour prendre un parpaing et bascule',
@@ -53,7 +53,7 @@ export const spec: TradeCourseSpec = {
       'Travail en plein soleil, sans eau ni ombre',
     ],
     corrections:
-      'Trémie bâchée : mécanique/chute de hauteur, on marche sur la bâche et on passe au travers, fractures, traumatisme crânien (plancher fixé ou garde-corps). Palette sous la grue : mécanique, chute de la charge ou d’un bloc mal élingué, écrasement (ne jamais rester sous une charge suspendue). Découpeuse en sous-sol : atmosphère toxique, accumulation de monoxyde de carbone, intoxication ; poussière de silice, silicose à long terme (découpe à l’eau, à l’extérieur, aspiration). Rallonge dans l’eau : électrique, contact avec un conducteur, électrisation. Mortier à mains nues : ciment frais, brûlure alcaline et eczéma, maladie professionnelle (gants adaptés, manches longues). Plein soleil : thermique, coup de chaleur, malaise (eau fraîche, pauses à l’ombre, horaires adaptés).',
+      'Trémie bâchée : mécanique/chute de hauteur, on marche sur la bâche et on passe au travers, fractures, traumatisme crânien (platelage solide et fixé, ou garde-corps). Palette sous la grue : mécanique, chute de la charge ou d’un bloc mal élingué, écrasement (accessoire de levage avec filet, ne jamais rester sous une charge suspendue). Découpeuse en sous-sol : atmosphère toxique, accumulation de monoxyde de carbone, intoxication ; poussière de silice, silicose à long terme (découpeuse électrique ou découpe à l’extérieur, à l’eau, aspiration). Rallonge dans l’eau : électrique, contact avec un conducteur, électrisation (rallonge en bon état, hors de l’eau, coffret de chantier avec différentiel). Mortier à mains nues : ciment frais, brûlure alcaline et eczéma, maladie professionnelle (gants nitrile, manches longues, lavage des mains). Plein soleil : thermique, coup de chaleur, malaise (eau fraîche, pauses à l’ombre, horaires adaptés).',
   },
   principes: 'Principe n° 6 : découper à l’eau plutôt qu’à sec = beaucoup moins de silice. Principe n° 8 : un garde-corps protège toute l’équipe, le harnais seulement celui qui le porte.',
   protections: {
@@ -64,9 +64,9 @@ export const spec: TradeCourseSpec = {
   exerciceNouveau: {
     titre: 'Le nouvel apprenti et la découpeuse',
     situation:
-      'vous ouvrez une baie dans un mur en blocs béton, au sous-sol, avec la découpeuse thermique. Aujourd’hui, un nouvel apprenti fait son premier jour dans l’entreprise et vient vous aider à tenir les blocs !',
+      'vous recoupez des blocs béton à la découpeuse thermique, dans le sous-sol de la maison. Aujourd’hui, un nouvel apprenti fait son premier jour dans l’entreprise : il vient vous aider en tenant les blocs pendant la découpe !',
     corrections:
-      'danger = disque en rotation, gaz d’échappement, poussière ; situation dangereuse = apprenti non formé à côté du disque, dans un sous-sol peu ventilé ; événement = rebond de la découpeuse, accumulation de monoxyde de carbone ; dommage = coupure grave, intoxication, silicose à long terme. Prévention : pas de découpeuse thermique en local fermé (découpeuse électrique), découpe à l’eau, caler la pièce au lieu de la tenir. Collective : ventilation, aspiration, balisage de la zone. Individuelle : visière ou lunettes, protections auditives, masque FFP3, gants, chaussures de sécurité. Information : accueil sécurité, montrer où se placer, ne jamais tenir la pièce à la main pendant la découpe.',
+      'danger = disque en rotation, gaz d’échappement, poussière ; situation dangereuse = apprenti non formé qui tient le bloc à côté du disque, dans un sous-sol peu ventilé ; événement = rebond de la découpeuse, accumulation de monoxyde de carbone ; dommage = coupure grave, intoxication, silicose à long terme. Prévention : pas de découpeuse thermique en local fermé (découpeuse électrique), découpe à l’eau, caler la pièce au lieu de la tenir. Collective : ventilation, aspiration, balisage de la zone. Individuelle : visière ou lunettes, protections auditives, masque FFP3, gants, chaussures de sécurité. Information : accueil sécurité, montrer où se placer, ne jamais tenir la pièce à la main pendant la découpe.',
   },
   droitRetrait: 'Tranchée profonde non blindée, échafaudage sans garde-corps ou qui bouge, charge qui passe au-dessus de l’équipe par grand vent : j’arrête, je sors de la zone, j’alerte.',
   sirene: 'Votre réflexe métier : arrêter la bétonnière et la découpeuse, descendre de l’échafaudage, rejoindre avec l’équipe un local fermé (base vie, bâtiment).',
