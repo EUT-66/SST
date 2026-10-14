@@ -1,0 +1,149 @@
+rules_version = '2';
+
+// Règles de sécurité de « Mon espace SST ».
+// Rôles : admin, referent, formateur, pending (en attente), disabled.
+// Les permissions individuelles (users/{uid}.permissions) surchargent celles du rôle.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+    function userPath(uid) {
+      return /databases/$(database)/documents/users/$(uid);
+    }
+    function me() {
+      return get(userPath(request.auth.uid)).data;
+    }
+    function role() {
+      return signedIn() && exists(userPath(request.auth.uid)) ? me().role : 'none';
+    }
+    function isAdmin() {
+      return role() == 'admin';
+    }
+    function isStaff() {
+      return role() in ['admin', 'referent', 'formateur'];
+    }
+    function roleDefault(p) {
+      return role() == 'admin'
+        || (role() == 'referent' && p in ['manageCourses', 'manageQuestions', 'manageCases']);
+    }
+    function can(p) {
+      let override = me().get('permissions', {}).get(p, null);
+      return isStaff() && (isAdmin() || override == true || (override == null && roleDefault(p)));
+    }
+
+    // ------------------------------------------------------------ Utilisateurs
+    match /meta/bootstrap {
+      allow read: if signedIn();
+      // Le tout premier compte créé devient administrateur.
+      allow create: if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && getAfter(userPath(request.auth.uid)).data.role == 'admin';
+    }
+
+    match /users/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || can('manageUsers') || can('viewAllSessions'));
+      allow create: if signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.uid == uid
+        && request.resource.data.email == request.auth.token.email
+        && !('permissions' in request.resource.data)
+        && (
+          request.resource.data.role == 'pending'
+          || (
+            request.resource.data.role == 'admin'
+            && !exists(/databases/$(database)/documents/meta/bootstrap)
+            && getAfter(/databases/$(database)/documents/meta/bootstrap).data.uid == uid
+          )
+        );
+      allow update: if signedIn() && (
+        (
+          can('manageUsers')
+          && (isAdmin() || (resource.data.role != 'admin' && request.resource.data.role != 'admin'))
+        )
+        || (
+          request.auth.uid == uid
+          && !request.resource.data.diff(resource.data).affectedKeys()
+              .hasAny(['role', 'permissions', 'uid', 'email', 'validatedAt', 'validatedBy'])
+        )
+      );
+      allow delete: if isAdmin() && request.auth.uid != uid;
+    }
+
+    // ------------------------------------------------------------ Paramètres et contenus
+    match /settings/{doc} {
+      allow read: if isStaff();
+      allow write: if can('manageSettings');
+    }
+    match /trades/{id} {
+      allow read: if isStaff();
+      allow write: if can('manageTrades');
+    }
+    match /courses/{id} {
+      allow read: if isStaff();
+      allow write: if can('manageCourses');
+    }
+    match /questions/{id} {
+      allow read: if isStaff();
+      allow write: if can('manageQuestions');
+    }
+    match /quizzes/{id} {
+      allow read: if isStaff();
+      allow write: if can('manageQuestions');
+    }
+    match /cases/{id} {
+      allow read: if isStaff();
+      allow write: if can('manageCases');
+    }
+
+    // ------------------------------------------------------------ Sessions de formation
+    function sessionData(sid) {
+      return get(/databases/$(database)/documents/sessions/$(sid)).data;
+    }
+    function ownsSession(sid) {
+      return sessionData(sid).trainerId == request.auth.uid;
+    }
+
+    match /sessions/{sid} {
+      allow read: if isStaff() && (resource.data.trainerId == request.auth.uid || can('viewAllSessions'));
+      allow create: if isStaff() && request.resource.data.trainerId == request.auth.uid;
+      allow update: if isStaff() && (
+        isAdmin()
+        || (resource.data.trainerId == request.auth.uid && request.resource.data.trainerId == request.auth.uid)
+      );
+      allow delete: if isStaff() && (isAdmin() || resource.data.trainerId == request.auth.uid);
+
+      // Apprentis, évaluations et passations de QCM
+      match /{sub}/{docId} {
+        allow read: if isStaff() && (ownsSession(sid) || can('viewAllSessions'));
+        allow write: if isStaff() && (ownsSession(sid) || isAdmin());
+      }
+    }
+
+    // ------------------------------------------------------------ QCM à distance (code d'accès)
+    // Les apprentis se connectent anonymement avec le code : ils lisent le questionnaire
+    // (sans les bonnes réponses pour une évaluation) et déposent leurs réponses.
+    match /publicRuns/{code} {
+      allow get: if signedIn();
+      allow list: if isStaff();
+      allow create: if isStaff() && request.resource.data.ownerId == request.auth.uid;
+      allow update, delete: if isStaff() && (resource.data.ownerId == request.auth.uid || isAdmin());
+
+      function run() {
+        return get(/databases/$(database)/documents/publicRuns/$(code)).data;
+      }
+
+      match /submissions/{subId} {
+        allow create: if signedIn()
+          && run().open == true
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.learnerId in run().learnerIds
+          && request.resource.data.answers is map
+          && (run().type == 'entrainement' || subId == request.resource.data.learnerId);
+        allow get: if signedIn() && (resource.data.uid == request.auth.uid || run().ownerId == request.auth.uid || isAdmin());
+        allow list, delete: if signedIn() && (run().ownerId == request.auth.uid || isAdmin());
+      }
+    }
+  }
+}

@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-[#f4f8f5] text-ink antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display text-ink;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-sst-400 ring-offset-2 ring-offset-white;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition
+      disabled:cursor-not-allowed disabled:opacity-50 whitespace-nowrap;
+  }
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs rounded-lg;
+  }
+  .btn-lg {
+    @apply px-6 py-3.5 text-base;
+  }
+  .btn-primary {
+    @apply btn bg-sst-600 text-white shadow-sm hover:bg-sst-700 active:bg-sst-800;
+  }
+  .btn-secondary {
+    @apply btn border border-sst-200 bg-white text-sst-800 hover:border-sst-300 hover:bg-sst-50;
+  }
+  .btn-ghost {
+    @apply btn text-ink-soft hover:bg-sst-50 hover:text-sst-800;
+  }
+  .btn-danger {
+    @apply btn border border-red-200 bg-white text-red-700 hover:bg-red-50;
+  }
+  .card {
+    @apply rounded-2xl border border-sst-100/80 bg-white shadow-card;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-semibold text-ink-soft;
+  }
+  .input {
+    @apply block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-ink shadow-sm
+      placeholder:text-slate-400 focus:border-sst-400 focus:outline-none focus:ring-2 focus:ring-sst-100;
+  }
+  .help {
+    @apply mt-1 text-xs text-ink-muted;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+  .badge-green {
+    @apply badge bg-sst-100 text-sst-800;
+  }
+  .badge-gray {
+    @apply badge bg-slate-100 text-slate-700;
+  }
+  .badge-amber {
+    @apply badge bg-amber-100 text-amber-800;
+  }
+  .badge-red {
+    @apply badge bg-red-100 text-red-700;
+  }
+  .badge-blue {
+    @apply badge bg-sky-100 text-sky-800;
+  }
+  .table-base {
+    @apply w-full text-left text-sm;
+  }
+  .table-base th {
+    @apply border-b border-sst-100 bg-sst-50/60 px-4 py-3 text-xs font-bold uppercase tracking-wide text-sst-800;
+  }
+  .table-base td {
+    @apply border-b border-slate-100 px-4 py-3 align-middle;
+  }
+  .table-base tr:last-child td {
+    @apply border-b-0;
+  }
+  .tab {
+    @apply inline-flex items-center gap-2 border-b-2 border-transparent px-1 pb-3 pt-1 text-sm font-semibold text-ink-muted
+      transition hover:text-sst-700;
+  }
+  .tab-active {
+    @apply border-sst-600 text-sst-700;
+  }
+  .page-title {
+    @apply text-2xl font-extrabold tracking-tight text-ink sm:text-3xl;
+  }
+  .section-title {
+    @apply text-lg font-bold text-ink;
+  }
+  .kicker {
+    @apply text-xs font-bold uppercase tracking-[0.16em] text-sst-600;
+  }
+}
+
+/* Roue de tirage */
+.wheel-rotor {
+  transition: transform 5.2s cubic-bezier(0.12, 0.65, 0.08, 1);
+}
+
+/* Impression : seules les zones marquées sont imprimées */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+}
+
+@keyframes pop-in {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.animate-pop {
+  animation: pop-in 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-20px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(420px) rotate(540deg);
+    opacity: 0;
+  }
+}
+.confetti {
+  animation: confetti-fall 2.4s ease-in forwards;
+}

@@ -1,0 +1,11 @@
+node_modules
+dist
+*.local
+.firebase
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+database-debug.log
+pubsub-debug.log
+.DS_Store
+coverage

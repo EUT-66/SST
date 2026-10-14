@@ -1,0 +1,23 @@
+rules_version = '2';
+
+// Pièces jointes des supports de cours (PowerPoint, PDF…).
+service firebase.storage {
+  match /b/{bucket}/o {
+    function profile() {
+      return firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data;
+    }
+    function isStaff() {
+      return request.auth != null && profile().role in ['admin', 'referent', 'formateur'];
+    }
+    function canManageCourses() {
+      let override = profile().get('permissions', {}).get('manageCourses', null);
+      return isStaff() && (profile().role == 'admin' || override == true
+        || (override == null && profile().role == 'referent'));
+    }
+
+    match /courses/{courseId}/{fileName} {
+      allow read: if isStaff();
+      allow write: if canManageCourses() && (request.resource == null || request.resource.size < 50 * 1024 * 1024);
+    }
+  }
+}

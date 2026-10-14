@@ -1,0 +1,96 @@
+import type { Trade } from '../lib/types';
+
+/** Métiers du BTP proposés par défaut (modifiables dans Paramètres > Métiers). */
+export const DEFAULT_TRADES: Trade[] = [
+  {
+    id: 'mit',
+    code: 'MIT',
+    label: 'Monteur en installations thermiques',
+    keywords: ['MIT', 'installations thermiques', 'installation thermique', 'monteur thermique', 'chauffagiste', 'thermique'],
+    order: 1,
+  },
+  {
+    id: 'mis',
+    code: 'MIS',
+    label: 'Monteur en installations sanitaires (plombier)',
+    keywords: ['MIS', 'installations sanitaires', 'installation sanitaire', 'sanitaire', 'plombier', 'plomberie'],
+    order: 2,
+  },
+  {
+    id: 'elec',
+    code: 'ELEC',
+    label: 'Électricien',
+    keywords: ['electricien', 'electricite', 'electrotechnique', 'ELEC', 'MELEC', 'installateur electrique'],
+    order: 3,
+  },
+  {
+    id: 'macon',
+    code: 'MAC',
+    label: 'Maçon',
+    keywords: ['macon', 'maconnerie', 'gros oeuvre', 'MAC'],
+    order: 4,
+  },
+  {
+    id: 'menuisier',
+    code: 'MEN',
+    label: 'Menuisier (fabricant / installateur)',
+    keywords: ['menuisier', 'menuiserie', 'MFAM', 'MIA', 'ebeniste'],
+    order: 5,
+  },
+  {
+    id: 'charpentier',
+    code: 'CHA',
+    label: 'Charpentier bois',
+    keywords: ['charpentier', 'charpente'],
+    order: 6,
+  },
+  {
+    id: 'couvreur',
+    code: 'COU',
+    label: 'Couvreur',
+    keywords: ['couvreur', 'couverture', 'zingueur', 'etancheur', 'etancheite'],
+    order: 7,
+  },
+  {
+    id: 'peintre',
+    code: 'PEI',
+    label: 'Peintre applicateur de revêtements',
+    keywords: ['peintre', 'peinture', 'PAR', 'revetements', 'solier'],
+    order: 8,
+  },
+  {
+    id: 'platrier',
+    code: 'PLA',
+    label: 'Plâtrier plaquiste',
+    keywords: ['platrier', 'plaquiste', 'platrerie', 'plaque de platre'],
+    order: 9,
+  },
+  {
+    id: 'carreleur',
+    code: 'CAR',
+    label: 'Carreleur mosaïste',
+    keywords: ['carreleur', 'carrelage', 'mosaiste'],
+    order: 10,
+  },
+  {
+    id: 'metallier',
+    code: 'MET',
+    label: 'Métallier (serrurier)',
+    keywords: ['metallier', 'serrurier', 'serrurerie', 'metallerie', 'soudeur', 'chaudronnier'],
+    order: 11,
+  },
+  {
+    id: 'tp',
+    code: 'TP',
+    label: 'Travaux publics (routes, canalisations)',
+    keywords: ['travaux publics', 'constructeur de routes', 'routes', 'canalisations', 'conducteur d engins', 'TP', 'VRD'],
+    order: 12,
+  },
+  {
+    id: 'froid',
+    code: 'FRO',
+    label: 'Installateur en froid et conditionnement d’air',
+    keywords: ['froid', 'climatisation', 'conditionnement d air', 'frigoriste', 'IFCA', 'MFCA'],
+    order: 13,
+  },
+];
