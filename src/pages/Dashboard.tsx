@@ -3,6 +3,7 @@ import { ArrowRight, BookOpen, Briefcase, CalendarDays, ClipboardList, ListCheck
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLoader } from '../components/ui';
+import { CONTENT_VERSION } from '../data/version';
 import { useAuth } from '../hooks/useAuth';
 import { useData } from '../hooks/useData';
 import { useCollection } from '../hooks/useFirestore';
@@ -45,13 +46,17 @@ export default function Dashboard() {
         </svg>
       </div>
 
-      {can('manageSettings') && !settings.contentVersion && (
+      {can('manageSettings') && (settings.contentVersion ?? 0) < CONTENT_VERSION && (
         <div className="card mb-6 flex flex-col gap-4 border-amber-200 bg-amber-50 p-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex gap-3">
             <Sparkles className="mt-0.5 h-6 w-6 shrink-0 text-amber-600" />
             <div>
-              <p className="font-bold">Installez le contenu pédagogique</p>
-              <p className="text-sm text-ink-soft">Cours MIT et aide-mémoire, banque de QCM, 18 cas pratiques MIT et propositions pour les autres métiers du BTP.</p>
+              <p className="font-bold">{settings.contentVersion ? 'Nouveaux contenus disponibles' : 'Installez le contenu pédagogique'}</p>
+              <p className="text-sm text-ink-soft">
+                {settings.contentVersion
+                  ? 'De nouveaux supports de cours sont prêts (un par métier). Cliquez sur « Installer ce qui manque » : vos contenus actuels ne sont pas modifiés.'
+                  : 'Supports de cours par métier et aide-mémoire, banque de QCM, 18 cas pratiques MIT et propositions pour les autres métiers du BTP.'}
+              </p>
             </div>
           </div>
           <Link to="/admin/parametres" className="btn-primary">
