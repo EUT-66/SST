@@ -351,6 +351,10 @@ export default function LearnerEvaluation() {
             <dl className="space-y-2 text-sm">
               <BilanRow label="Épreuve 1" value={summary.epreuve1} yes="Validée" no="À retravailler" />
               <BilanRow label="Épreuve 2" value={summary.epreuve2} yes="Validée" no="À retravailler" />
+              <div className="flex items-center justify-between">
+                <dt className="font-semibold">QCM</dt>
+                <dd>{ev.qcm ? <span className="badge-gray">{ev.qcm.score}/{ev.qcm.total}</span> : <span className="badge-amber">Non passé</span>}</dd>
+              </div>
             </dl>
             <div className="mt-4 grid grid-cols-4 gap-1.5">
               {COMPETENCE_ORDER.map((c) => (

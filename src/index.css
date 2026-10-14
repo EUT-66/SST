@@ -56,7 +56,7 @@
     @apply mt-1 text-xs text-ink-muted;
   }
   .badge {
-    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+    @apply inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold;
   }
   .badge-green {
     @apply badge bg-sst-100 text-sst-800;

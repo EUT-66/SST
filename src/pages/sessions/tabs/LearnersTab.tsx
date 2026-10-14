@@ -233,7 +233,6 @@ function LearnerModal({ sessionId, learner, onClose }: { sessionId: string; lear
 }
 
 function ReimportModal({ sessionId, tradeId, learners, onClose }: { sessionId: string; tradeId: string; learners: Learner[]; onClose: () => void }) {
-  const { trades } = useData();
   const { toast } = useFeedback();
   const [csv, setCsv] = useState<CsvResult | null>(null);
   const [removeMissing, setRemoveMissing] = useState(false);
@@ -270,7 +269,7 @@ function ReimportModal({ sessionId, tradeId, learners, onClose }: { sessionId: s
         </>
       }
     >
-      <CsvImport trades={trades} onChange={setCsv} />
+      <CsvImport onChange={setCsv} />
       {diff && (
         <div className="mt-5 grid gap-3 sm:grid-cols-4">
           <DiffStat n={diff.added.length} label="nouveaux" tone="text-sst-700" />

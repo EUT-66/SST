@@ -1,12 +1,13 @@
 import clsx from 'clsx';
 import { addDoc, collection } from 'firebase/firestore';
 import { ArrowLeft, ArrowRight, Check, Sparkles } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CsvImport, { type CsvResult } from '../../components/CsvImport';
 import { errorMessage, Field, PageHeader, Spinner, useFeedback } from '../../components/ui';
 import { useAuth } from '../../hooks/useAuth';
 import { useData } from '../../hooks/useData';
+import { detectSessionTrade } from '../../lib/csv';
 import { db } from '../../lib/firebase';
 import { fullName, todayIso } from '../../lib/format';
 import { addLearners } from '../../lib/sessionOps';
@@ -27,14 +28,15 @@ export default function SessionNew() {
   const [casePool, setCasePool] = useState<CasePool>('both');
 
   const datesValid = info.startDate && info.endDate && info.endDate >= info.startDate;
+  // recalculé si la liste des métiers arrive après le fichier
+  const detected = useMemo(() => (csv ? detectSessionTrade(csv.learners, trades) : null), [csv, trades]);
+  const selectedTrade = tradeId || detected?.id || '';
 
-  const goToTrade = () => {
-    if (!tradeId && csv?.detectedTrade) setTradeId(csv.detectedTrade.id);
-    setStep(2);
-  };
+  const goToTrade = () => setStep(2);
 
   const create = async () => {
-    if (!profile || !tradeId) return;
+    if (!profile || !selectedTrade) return;
+    const tradeId = selectedTrade;
     setBusy(true);
     try {
       const trade = trades.find((t) => t.id === tradeId);
@@ -117,7 +119,7 @@ export default function SessionNew() {
           <div>
             <h2 className="section-title mb-1">Importer les apprentis</h2>
             <p className="mb-4 text-sm text-ink-muted">Exportez la liste du groupe depuis Netyparéo au format CSV. Vous pourrez aussi ajouter, modifier ou réimporter les apprentis plus tard.</p>
-            <CsvImport trades={trades} onChange={setCsv} />
+            <CsvImport onChange={setCsv} />
           </div>
         )}
 
@@ -125,9 +127,9 @@ export default function SessionNew() {
           <div className="space-y-5">
             <div>
               <h2 className="section-title mb-1">Métier de la section</h2>
-              {csv?.detectedTrade ? (
+              {detected ? (
                 <p className="flex items-center gap-2 text-sm text-sst-700">
-                  <Sparkles className="h-4 w-4" /> Métier détecté dans le fichier : <strong>{csv.detectedTrade.label}</strong>
+                  <Sparkles className="h-4 w-4" /> Métier détecté dans le fichier : <strong>{detected.label}</strong>
                 </p>
               ) : (
                 <p className="text-sm text-ink-muted">Le métier n’a pas été détecté dans le fichier : choisissez-le. Il détermine les cas pratiques tirés au sort.</p>
@@ -141,7 +143,7 @@ export default function SessionNew() {
                   onClick={() => setTradeId(t.id)}
                   className={clsx(
                     'flex items-center gap-3 rounded-xl border p-3 text-left transition',
-                    tradeId === t.id ? 'border-sst-500 bg-sst-50 ring-2 ring-sst-200' : 'border-slate-200 hover:border-sst-300',
+                    selectedTrade === t.id ? 'border-sst-500 bg-sst-50 ring-2 ring-sst-200' : 'border-slate-200 hover:border-sst-300',
                   )}
                 >
                   <span className="w-12 shrink-0 rounded-lg bg-sst-600 px-2 py-1 text-center font-display text-xs font-extrabold text-white">{t.code}</span>
@@ -175,7 +177,7 @@ export default function SessionNew() {
             </button>
           )}
           {step === 2 && (
-            <button className="btn-primary" disabled={!tradeId || busy} onClick={create}>
+            <button className="btn-primary" disabled={!selectedTrade || busy} onClick={create}>
               {busy ? <Spinner className="h-4 w-4 text-white" /> : <Check className="h-4 w-4" />} Créer la session
             </button>
           )}

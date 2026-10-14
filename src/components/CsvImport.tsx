@@ -1,20 +1,18 @@
 import clsx from 'clsx';
 import { FileSpreadsheet, Upload } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { detectSessionTrade, FIELD_LABELS, parseCsvBuffer, rowsToLearners, type ColumnMapping, type ImportedLearner, type LearnerField, type ParsedCsv } from '../lib/csv';
+import { FIELD_LABELS, parseCsvBuffer, rowsToLearners, type ColumnMapping, type ImportedLearner, type LearnerField, type ParsedCsv } from '../lib/csv';
 import { frDate } from '../lib/format';
-import type { Trade } from '../lib/types';
 
 export interface CsvResult {
   learners: ImportedLearner[];
-  detectedTrade: Trade | null;
   fileName: string;
 }
 
 const FIELDS: LearnerField[] = ['lastName', 'firstName', 'fullName', 'birthDate', 'externalId', 'formation', 'groupName', 'company', 'email', 'phone'];
 
 /** Dépôt d'un fichier CSV + vérification de la correspondance des colonnes. */
-export default function CsvImport({ trades, onChange }: { trades: Trade[]; onChange: (r: CsvResult | null) => void }) {
+export default function CsvImport({ onChange }: { onChange: (r: CsvResult | null) => void }) {
   const [parsed, setParsed] = useState<ParsedCsv | null>(null);
   const [mapping, setMapping] = useState<ColumnMapping>({});
   const [fileName, setFileName] = useState('');
@@ -25,7 +23,7 @@ export default function CsvImport({ trades, onChange }: { trades: Trade[]; onCha
 
   const emit = (p: ParsedCsv, m: ColumnMapping, name: string) => {
     const list = rowsToLearners(p, m);
-    onChange(list.length ? { learners: list, detectedTrade: detectSessionTrade(list, trades), fileName: name } : null);
+    onChange(list.length ? { learners: list, fileName: name } : null);
   };
 
   const load = async (file: File) => {

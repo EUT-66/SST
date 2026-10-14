@@ -115,7 +115,7 @@ function Standard({ slide }: { slide: Slide }) {
         {callouts.length > 0 && (
           <div className={clsx('flex gap-4', side ? 'w-[400px] shrink-0 flex-col' : 'flex-row')}>
             {callouts.map((c, i) => (
-              <CalloutBox key={i} c={c} />
+              <CalloutBox key={i} c={c} stretch={!side} />
             ))}
           </div>
         )}
@@ -214,10 +214,10 @@ const CALLOUT_STYLE: Record<Callout['kind'], { box: string; head: string; icon: 
   question: { box: 'bg-[#e8f3f6]', head: 'text-[#1f7a8c]', icon: <HelpCircle className="h-6 w-6" />, label: 'Question' },
 };
 
-function CalloutBox({ c }: { c: Callout }) {
+function CalloutBox({ c, stretch }: { c: Callout; stretch: boolean }) {
   const s = CALLOUT_STYLE[c.kind];
   return (
-    <div className={clsx('flex-1 rounded-2xl p-5', s.box)}>
+    <div className={clsx('rounded-2xl p-5', stretch && 'flex-1', s.box)}>
       <p className={clsx('mb-2 flex items-center gap-2 text-[16px] font-extrabold uppercase tracking-[0.14em]', s.head)}>
         {s.icon} {c.title ?? s.label}
       </p>

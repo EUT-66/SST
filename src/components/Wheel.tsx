@@ -70,8 +70,8 @@ export default function Wheel({
   const fontSize = Math.max(11, Math.min(22, 260 / Math.max(n, 1) + 8));
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="relative w-full max-w-[520px]">
+    <div className="flex w-full flex-col items-center">
+      <div className="relative w-full max-w-[560px]">
         <svg viewBox={`0 0 ${size} ${size}`} className="w-full drop-shadow-xl">
           <circle cx={c} cy={c} r={c - 2} fill="#0b3a23" />
           <g className="wheel-rotor" style={{ transform: `rotate(${rotation}deg)`, transformOrigin: '50% 50%' }}>
@@ -85,9 +85,20 @@ export default function Wheel({
               const mid = (i + 0.5) * angle;
               const color = n > 1 && LIGHT.has(COLORS[i % COLORS.length]) ? '#0b3a23' : '#ffffff';
               const label = it.label.length > 18 ? it.label.slice(0, 17) + '…' : it.label;
+              // côté gauche de la roue : on retourne le texte pour qu'il reste lisible
+              const flip = mid > 180;
               return (
-                <g key={it.id} transform={`rotate(${mid - 90} ${c} ${c})`}>
-                  <text x={c + r - 18} y={c} fill={color} fontSize={fontSize} fontWeight={700} textAnchor="end" dominantBaseline="middle" fontFamily="Nunito, sans-serif">
+                <g key={it.id} transform={`rotate(${flip ? mid + 90 : mid - 90} ${c} ${c})`}>
+                  <text
+                    x={flip ? c - r + 18 : c + r - 18}
+                    y={c}
+                    fill={color}
+                    fontSize={fontSize}
+                    fontWeight={700}
+                    textAnchor={flip ? 'start' : 'end'}
+                    dominantBaseline="middle"
+                    fontFamily="Nunito, sans-serif"
+                  >
                     {label}
                   </text>
                 </g>
