@@ -53,7 +53,7 @@ export const DEFAULT_TRADES: Trade[] = [
   },
   {
     id: 'peintre',
-    code: 'PEI',
+    code: 'PAR',
     label: 'Peintre applicateur de revêtements',
     keywords: ['peintre', 'peinture', 'PAR', 'revetements', 'solier'],
     order: 8,
@@ -88,9 +88,9 @@ export const DEFAULT_TRADES: Trade[] = [
   },
   {
     id: 'froid',
-    code: 'FRO',
+    code: 'FCA',
     label: 'Installateur en froid et conditionnement d’air',
-    keywords: ['froid', 'climatisation', 'conditionnement d air', 'frigoriste', 'IFCA', 'MFCA'],
+    keywords: ['froid', 'climatisation', 'conditionnement d air', 'frigoriste', 'FCA', 'IFCA', 'MFCA'],
     order: 13,
   },
 ];
