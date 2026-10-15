@@ -9,3 +9,4 @@ database-debug.log
 pubsub-debug.log
 .DS_Store
 coverage
+*.tsbuildinfo
