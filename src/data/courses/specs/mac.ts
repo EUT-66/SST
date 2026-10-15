@@ -27,9 +27,9 @@ export const spec: TradeCourseSpec = {
   premierMaillon: 'Sur un pavillon en construction, vous êtes souvent deux ou trois, loin du bureau et parfois sans adresse précise : le premier maillon des secours, c’est vous.',
   quiFormer: 'En entreprise de maçonnerie, un SST par équipe de chantier : c’est l’idéal. Sur un gros chantier, demandez qui est SST dès l’accueil.',
   observer: 'En arrivant sur le chantier : garde-corps, trémies, charges de la grue, engins, bord des fouilles, état du sol… deux minutes d’observation avant de gâcher le mortier.',
-  dangers: ['Le vide : échafaudage, trémie, bord de dalle','Une charge suspendue à la grue', 'Le ciment frais sur la peau et dans l’œil', 'Le disque et les gaz de la découpeuse'],
+  dangers: ['Le vide : échafaudage, trémie, bord de dalle', 'Une charge suspendue à la grue', 'Le ciment frais sur la peau et dans l’œil', 'Le disque et les gaz de la découpeuse'],
   categories: {
-    mecanique: 'Chute d’échafaudage ou par une trémie, charge de la grue, bétonnière, rebond de la découpeuse, éboulement de fouille.',
+    mecanique: 'Chute d’échafaudage, charge de la grue, bétonnière, rebond de la découpeuse, éboulement de fouille.',
     electrique: 'Bétonnière sur une rallonge abîmée, câble enterré touché en creusant, ligne aérienne près de la grue.',
     thermique: 'Plein d’essence de la découpeuse moteur chaud, gerbe d’étincelles du disque, coup de chaleur en été.',
     atmosphere: 'Monoxyde de carbone de la découpeuse en sous-sol, poussière de silice, vide sanitaire non ventilé.',
@@ -64,7 +64,7 @@ export const spec: TradeCourseSpec = {
   exerciceNouveau: {
     titre: 'Le nouvel apprenti et la découpeuse',
     situation:
-      'vous recoupez des blocs béton à la découpeuse thermique, dans le sous-sol de la maison. Aujourd’hui, un nouvel apprenti fait son premier jour dans l’entreprise : il vient vous aider en tenant les blocs pendant la découpe !',
+      'vous recoupez des blocs béton à la découpeuse thermique, au sous-sol d’un pavillon. Aujourd’hui, un nouvel apprenti fait son premier jour dans l’entreprise : il vient vous aider en tenant les blocs pendant la découpe !',
     corrections:
       'danger = disque en rotation, gaz d’échappement, poussière ; situation dangereuse = apprenti non formé qui tient le bloc à côté du disque, dans un sous-sol peu ventilé ; événement = rebond de la découpeuse, accumulation de monoxyde de carbone ; dommage = coupure grave, intoxication, silicose à long terme. Prévention : pas de découpeuse thermique en local fermé (découpeuse électrique), découpe à l’eau, caler la pièce au lieu de la tenir. Collective : ventilation, aspiration, balisage de la zone. Individuelle : visière ou lunettes, protections auditives, masque FFP3, gants, chaussures de sécurité. Information : accueil sécurité, montrer où se placer, ne jamais tenir la pièce à la main pendant la découpe.',
   },
@@ -72,26 +72,26 @@ export const spec: TradeCourseSpec = {
   sirene: 'Votre réflexe métier : arrêter la bétonnière et la découpeuse, descendre de l’échafaudage, rejoindre avec l’équipe un local fermé (base vie, bâtiment).',
   proteger:
     'Collègue au sol au pied de l’échafaudage : je regarde d’abord en l’air (charge de la grue, blocs qui peuvent tomber), je fais arrêter la grue et les engins, je ne monte pas sur un échafaudage abîmé.',
-  supprimer: 'Arrêter la bétonnière et la découpeuse, couper le courant au coffret de chantier, faire stopper la grue.',
-  isoler: 'Baliser sous l’échafaudage, faire arrêter les engins, interdire l’approche du bord de la fouille.',
-  alerter: 'Chantier neuf sans numéro de rue ? Je repère avant de commencer l’adresse, le lot et l’accès des camions. J’envoie quelqu’un au portail pour guider les secours.',
+  supprimer: 'Arrêter bétonnière et découpeuse, couper le courant au coffret de chantier, faire poser la charge de la grue.',
+  isoler: 'Baliser sous l’échafaudage, dévier la circulation des engins, interdire l’approche du bord de la fouille.',
+  alerter: 'Chantier neuf sans numéro de rue ? Avant de commencer, je repère l’adresse, le numéro du lot et l’accès des camions. J’envoie quelqu’un à l’entrée du chantier guider les secours.',
   lieuxAlerte: 'Adresse, numéro du lot, niveau, accès des camions.',
   natureAlerte: 'Chute d’échafaudage, ensevelissement, écrasement…',
   messageAlerte:
-    'Je suis apprenti maçon, je vous appelle du chantier du lotissement Les Tilleuls, lot 7, rue des Peupliers à Angers. Mon collègue est tombé de l’échafaudage, d’environ 3 mètres. Une seule victime, il me répond mais a très mal au dos, je lui ai dit de ne pas bouger. Quelqu’un vous attendra à l’entrée du chantier.',
+    'Je suis apprenti maçon, je vous appelle du chantier du lotissement Les Tilleuls, lot 7, rue des Peupliers à Angers. Mon collègue est tombé de l’échafaudage, d’environ 3 mètres. Une seule victime, il me répond mais il a très mal au dos, je lui ai dit de ne pas bouger. Quelqu’un vous attendra à l’entrée du chantier.',
   urgence: {
     titre: 'Ensevelissement en tranchée',
     texte: 'Je ne descends pas dans la tranchée : elle peut s’ébouler encore. J’alerte le 18 et je fais arrêter les engins.',
     notes:
-      'Le dégagement d’une personne ensevelie est l’affaire des pompiers : faire arrêter les engins et les vibrations, ne pas s’approcher du bord, ne rien déposer en bordure. Conduite de gaz touchée en creusant : s’éloigner, ne rien actionner, appeler depuis l’extérieur le 18 ou l’Urgence Sécurité Gaz (GRDF) : 0 800 47 33 33.',
+      'Le dégagement d’une personne ensevelie est l’affaire des pompiers : faire arrêter les engins et les vibrations, ne pas s’approcher du bord, ne rien déposer en bordure. Conduite de gaz touchée en creusant : arrêter les travaux et couper les moteurs sans déplacer l’engin, aucune flamme ni cigarette, éloigner tout le monde, puis appeler à distance le 18 ou l’Urgence Sécurité Gaz (GRDF) : 0 800 47 33 33.',
   },
   secourir: {
-    saignement: 'Coupure profonde à la jambe par le disque de la découpeuse qui rebondit, ou à la main sur un fer à béton.',
+    saignement: 'Coupure profonde à la cuisse par le disque de la découpeuse qui rebondit, ou à l’avant-bras avec la disqueuse.',
     etouffement: 'Pause casse-croûte dans la base vie : un collègue avale de travers un morceau de pain.',
-    malaise: 'Coup de chaleur sur la dalle en été : à l’ombre et au frais, je le rafraîchis, eau fraîche par petites gorgées s’il peut boire.',
-    brulure: 'Béton dans la botte : brûlure alcaline, indolore au début. Avec des gants, j’ôte botte et habits imbibés, je rince abondamment.',
+    malaise: 'Coup de chaleur sur la dalle en été : je l’installe au frais, je le rafraîchis, eau fraîche par petites gorgées s’il peut boire.',
+    brulure: 'Béton dans la botte : brûlure alcaline, indolore au début. Avec des gants, j’ôte botte et vêtements imbibés, je rince abondamment.',
     traumatisme: 'Chute d’échafaudage ou dans une trémie, pied écrasé par un bloc, dos bloqué en portant un sac de ciment.',
-    plaie: 'Main entaillée sur une attente en fer à béton, grain de ciment dans l’œil, clou de coffrage planté dans le pied.',
+    plaie: 'Main entaillée sur une attente en fer à béton, éclat de béton dans l’œil, clou de coffrage planté dans le pied.',
     inconscient: 'Collègue inconscient au sous-sol où tournait la découpeuse thermique : monoxyde de carbone possible, je protège avant d’entrer.',
     arret: 'Électrisation par la bétonnière ou une rallonge abîmée : couper le courant au coffret de chantier avant de toucher la victime.',
   },
@@ -103,5 +103,5 @@ export const spec: TradeCourseSpec = {
     { titre: 'Ouverture d’une baie en sous-sol', texte: 'Au sous-sol, votre collègue découpe un mur à la découpeuse thermique. Il s’assoit, a mal à la tête et vomit.' },
   ],
   casConcretsNotes:
-    'Quatre scénarios pour les cas concrets, un par catégorie de danger. Pour chacun, faire dérouler : protéger (quel danger persistant ? comment le supprimer ?), examiner, faire alerter, secourir. 1 : chute de hauteur, danger persistant = blocs et outils qui peuvent tomber, grue en mouvement ; victime qui ne répond pas et respire après un traumatisme : la laisser sur le dos, voies aériennes libres, pas de PLS. 2 : danger électrique persistant (couper le courant au coffret avant de toucher), puis victime qui ne répond pas et ne respire pas. 3 : incendie (éloigner le bidon, extincteur, étouffer les flammes au sol avec une veste ou une couverture), puis brûlure thermique : arroser à l’eau courante tempérée. 4 : atmosphère toxique (monoxyde de carbone de la découpeuse thermique) : ne pas descendre, aérer depuis l’extérieur, faire remonter la victime à l’air libre si elle le peut (dégagement d’urgence seulement si elle est visible, facile à atteindre et sans risque), puis malaise.',
+    'Quatre scénarios pour les cas concrets, un par catégorie de danger. Pour chacun, faire dérouler : protéger (quel danger persistant ? comment le supprimer ?), examiner, faire alerter, secourir. 1 : chute de hauteur ; danger persistant = blocs et outils qui peuvent tomber, charge de la grue ; victime qui ne répond pas et respire après un traumatisme : sur le dos, voies aériennes libres, pas de PLS. 2 : danger électrique persistant (couper le courant au coffret avant de toucher), puis victime qui ne répond pas et ne respire pas. 3 : incendie (empêcher la victime de courir, l’allonger, étouffer les flammes avec une veste ou une couverture ; extincteur sur l’essence au sol), puis brûlure thermique : arroser à l’eau courante tempérée. 4 : atmosphère toxique (monoxyde de carbone) : ne pas descendre, aérer depuis l’extérieur, la faire remonter à l’air libre si elle le peut (dégagement d’urgence seulement si elle est visible, facile à atteindre et sans risque), puis malaise, avis médical.',
 };
