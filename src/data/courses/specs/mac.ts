@@ -3,7 +3,7 @@ import type { TradeCourseSpec } from '../tradeCourse';
 export const spec: TradeCourseSpec = {
   tradeId: 'macon',
   code: 'MAC',
-  diplome: 'CAP MAC',
+  diplome: 'CAP Maçon',
   intitule: 'CAP Maçon',
   prefixe: 'Maçon',
   public: 'Maçons — CFA BTP',
