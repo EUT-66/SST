@@ -3,7 +3,7 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { PenLine, Save } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import SignaturePad from '../components/SignaturePad';
-import { errorMessage, Field, PageHeader, useFeedback } from '../components/ui';
+import { errorMessage, Field, PageHeader, PasswordInput, useFeedback } from '../components/ui';
 import { useAuth } from '../hooks/useAuth';
 import { auth, db } from '../lib/firebase';
 import { ROLE_LABELS } from '../lib/permissions';
@@ -39,6 +39,15 @@ export default function ProfilePage() {
       setDrawing(false);
       setSignature(null);
       toast('Signature enregistrée');
+    } catch (err) {
+      toast(errorMessage(err), 'error');
+    }
+  };
+
+  const removeSignature = async () => {
+    try {
+      await updateDoc(doc(db, 'users', profile.uid), { signature: null });
+      toast('Signature supprimée');
     } catch (err) {
       toast(errorMessage(err), 'error');
     }
@@ -82,7 +91,7 @@ export default function ProfilePage() {
 
         <div className="card space-y-4 p-6">
           <h2 className="section-title">Ma signature</h2>
-          <p className="text-sm text-ink-muted">Elle sera apposée automatiquement sur les grilles de certification que vous générez.</p>
+          <p className="text-sm text-ink-muted">Elle est apposée automatiquement sur les grilles de certification de vos sessions. Signez à l’écran, ou importez une photo ou un scan de votre signature.</p>
           {!drawing && (
             <div className="flex flex-wrap items-center gap-6">
               <div className="flex h-28 w-72 items-center justify-center rounded-2xl border border-sst-100 bg-sst-50/40 p-3">
@@ -92,9 +101,16 @@ export default function ProfilePage() {
                   <span className="text-sm text-ink-muted">Aucune signature</span>
                 )}
               </div>
-              <button className="btn-secondary" onClick={() => setDrawing(true)}>
-                <PenLine className="h-4 w-4" /> {profile.signature ? 'Refaire ma signature' : 'Signer'}
-              </button>
+              <div className="flex flex-wrap gap-2">
+                <button className="btn-secondary" onClick={() => setDrawing(true)}>
+                  <PenLine className="h-4 w-4" /> {profile.signature ? 'Changer ma signature' : 'Ajouter ma signature'}
+                </button>
+                {profile.signature && (
+                  <button className="btn-ghost" onClick={removeSignature}>
+                    Supprimer
+                  </button>
+                )}
+              </div>
             </div>
           )}
           {drawing && (
@@ -104,7 +120,13 @@ export default function ProfilePage() {
                 <button className="btn-primary" disabled={!signature} onClick={saveSignature}>
                   Enregistrer la signature
                 </button>
-                <button className="btn-ghost" onClick={() => setDrawing(false)}>
+                <button
+                  className="btn-ghost"
+                  onClick={() => {
+                    setDrawing(false);
+                    setSignature(null);
+                  }}
+                >
                   Annuler
                 </button>
               </div>
@@ -115,7 +137,7 @@ export default function ProfilePage() {
         <form onSubmit={changePassword} className="card space-y-4 p-6">
           <h2 className="section-title">Mot de passe</h2>
           <Field label="Nouveau mot de passe" help="8 caractères minimum.">
-            <input className="input" type="password" minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
+            <PasswordInput minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
           </Field>
           <button className="btn-secondary" disabled={password.length < 8}>
             Modifier le mot de passe

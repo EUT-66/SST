@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { addDoc, collection } from 'firebase/firestore';
-import { ArrowLeft, ArrowRight, Check, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, GraduationCap, RefreshCcw, Sparkles } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CsvImport, { type CsvResult } from '../../components/CsvImport';
@@ -11,9 +11,15 @@ import { detectSessionTrade } from '../../lib/csv';
 import { db } from '../../lib/firebase';
 import { fullName, todayIso } from '../../lib/format';
 import { addLearners } from '../../lib/sessionOps';
-import type { CasePool, Session } from '../../lib/types';
+import { FORMATION_LABELS } from '../../lib/sessions';
+import type { CasePool, FormationType, Session } from '../../lib/types';
 
-const STEPS = ['Dates et intitulé', 'Apprentis', 'Métier'];
+const STEPS = ['Formation et dates', 'Apprentis', 'Métier'];
+
+const FORMATION_CHOICES: { id: FormationType; icon: React.ReactNode; help: string }[] = [
+  { id: 'initiale', icon: <GraduationCap className="h-5 w-5" />, help: 'Première certification SST (14 heures).' },
+  { id: 'mac', icon: <RefreshCcw className="h-5 w-5" />, help: 'MAC : recyclage des SST déjà certifiés, tous les 24 mois (7 heures).' },
+];
 
 export default function SessionNew() {
   const { profile } = useAuth();
@@ -26,6 +32,7 @@ export default function SessionNew() {
   const [csv, setCsv] = useState<CsvResult | null>(null);
   const [tradeId, setTradeId] = useState('');
   const [casePool, setCasePool] = useState<CasePool>('both');
+  const [formationType, setFormationType] = useState<FormationType>('initiale');
 
   const datesValid = info.startDate && info.endDate && info.endDate >= info.startDate;
   // recalculé si la liste des métiers arrive après le fichier
@@ -42,10 +49,11 @@ export default function SessionNew() {
       const trade = trades.find((t) => t.id === tradeId);
       const group = info.groupName.trim() || csv?.learners.find((l) => l.groupName)?.groupName || '';
       const session: Omit<Session, 'id'> = {
-        title: info.title.trim() || `SST ${trade?.code ?? ''} ${group}`.replace(/\s+/g, ' ').trim(),
+        title: info.title.trim() || `${formationType === 'mac' ? 'MAC SST' : 'SST'} ${trade?.code ?? ''} ${group}`.replace(/\s+/g, ' ').trim(),
         trainerId: profile.uid,
         trainerName: fullName(profile),
         tradeId,
+        formationType,
         groupName: group,
         location: info.location.trim(),
         startDate: info.startDate,
@@ -93,6 +101,30 @@ export default function SessionNew() {
       <div className="card p-6">
         {step === 0 && (
           <div className="space-y-4">
+            <div>
+              <p className="label">Type de formation</p>
+              <div role="radiogroup" aria-label="Type de formation" className="grid gap-3 sm:grid-cols-2">
+                {FORMATION_CHOICES.map((f) => (
+                  <button
+                    key={f.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={formationType === f.id}
+                    onClick={() => setFormationType(f.id)}
+                    className={clsx(
+                      'flex items-start gap-3 rounded-xl border p-4 text-left transition',
+                      formationType === f.id ? 'border-sst-500 bg-sst-50 ring-2 ring-sst-200' : 'border-slate-200 hover:border-sst-300',
+                    )}
+                  >
+                    <span className={clsx('mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg', formationType === f.id ? 'bg-sst-600 text-white' : 'bg-sst-50 text-sst-700')}>{f.icon}</span>
+                    <span>
+                      <span className="block font-bold">{FORMATION_LABELS[f.id]}</span>
+                      <span className="block text-sm text-ink-muted">{f.help}</span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Du">
                 <input className="input" type="date" value={info.startDate} onChange={(e) => setInfo({ ...info, startDate: e.target.value, endDate: e.target.value > info.endDate ? e.target.value : info.endDate })} />
@@ -101,8 +133,8 @@ export default function SessionNew() {
                 <input className="input" type="date" min={info.startDate} value={info.endDate} onChange={(e) => setInfo({ ...info, endDate: e.target.value })} />
               </Field>
             </div>
-            <Field label="Intitulé (facultatif)" help="Laissé vide, il sera composé à partir du métier et du groupe (ex. : SST MIT 1A).">
-              <input className="input" value={info.title} onChange={(e) => setInfo({ ...info, title: e.target.value })} placeholder="SST – CAP MIT 1re année" />
+            <Field label="Intitulé (facultatif)" help={`Laissé vide, il sera composé à partir du métier et du groupe (ex. : ${formationType === 'mac' ? 'MAC SST MIT 2A' : 'SST MIT 1A'}).`}>
+              <input className="input" value={info.title} onChange={(e) => setInfo({ ...info, title: e.target.value })} placeholder={formationType === 'mac' ? 'MAC SST – CAP MIT 2e année' : 'SST – CAP MIT 1re année'} />
             </Field>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Groupe / classe (facultatif)">

@@ -1,5 +1,5 @@
 import { deleteDoc, doc, setDoc } from 'firebase/firestore';
-import { Briefcase, Database, Download, ImagePlus, Plus, Save, Settings, Trash2 } from 'lucide-react';
+import { Briefcase, Database, Download, Plus, Save, Settings, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { errorMessage, Field, Modal, PageHeader, Tabs, useFeedback } from '../../components/ui';
 import { CONTENT_VERSION, installDefaultContent, SEED_SUMMARY, type SeedPart } from '../../data/seed';
@@ -7,6 +7,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useData } from '../../hooks/useData';
 import { db } from '../../lib/firebase';
 import { slug } from '../../lib/format';
+import { schoolYear } from '../../lib/gridFiles';
 import type { AppSettings, Trade } from '../../lib/types';
 
 type Tab = 'general' | 'metiers' | 'contenu';
@@ -30,27 +31,6 @@ export default function SettingsPage() {
   );
 }
 
-function readImage(file: File, maxSize = 360): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = reject;
-    reader.onload = () => {
-      const img = new Image();
-      img.onerror = reject;
-      img.onload = () => {
-        const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.round(img.width * scale);
-        canvas.height = Math.round(img.height * scale);
-        canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL('image/png'));
-      };
-      img.src = reader.result as string;
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
 function GeneralSettings() {
   const { settings } = useData();
   const { toast } = useFeedback();
@@ -65,34 +45,6 @@ function GeneralSettings() {
       toast(errorMessage(err), 'error');
     }
   };
-
-  const logo = (key: 'logoLeft' | 'logoRight', label: string) => (
-    <div>
-      <p className="label">{label}</p>
-      <div className="flex items-center gap-3">
-        <div className="flex h-20 w-32 items-center justify-center rounded-xl border border-sst-100 bg-sst-50/40 p-2">
-          {form[key] ? <img src={form[key]!} alt="" className="max-h-full max-w-full" /> : <span className="text-xs text-ink-muted">Aucun</span>}
-        </div>
-        <label className="btn-secondary btn-sm cursor-pointer">
-          <ImagePlus className="h-4 w-4" /> Choisir
-          <input
-            type="file"
-            accept="image/png,image/jpeg"
-            className="hidden"
-            onChange={async (e) => {
-              const f = e.target.files?.[0];
-              if (f) setForm({ ...form, [key]: await readImage(f) });
-            }}
-          />
-        </label>
-        {form[key] && (
-          <button className="btn-ghost btn-sm" onClick={() => setForm({ ...form, [key]: null })}>
-            Retirer
-          </button>
-        )}
-      </div>
-    </div>
-  );
 
   return (
     <div className="max-w-3xl space-y-6">
@@ -130,13 +82,11 @@ function GeneralSettings() {
         </Field>
         <p className="text-xs text-ink-muted">Dans tous les cas, le formateur garde la main : chaque case de la grille reste modifiable avant la génération du PDF.</p>
       </div>
-      <div className="card space-y-4 p-6">
-        <h2 className="section-title">Logos des documents PDF</h2>
-        <p className="text-sm text-ink-muted">Facultatif : placés en en-tête de la grille de certification (par exemple les logos fournis avec votre habilitation, ou celui du CFA).</p>
-        <div className="grid gap-6 sm:grid-cols-2">
-          {logo('logoLeft', 'Logo à gauche')}
-          {logo('logoRight', 'Logo à droite')}
-        </div>
+      <div className="card space-y-2 p-6">
+        <h2 className="section-title">Grille de certification</h2>
+        <p className="text-sm text-ink-muted">
+          Le PDF reprend la grille officielle de l’INRS (juin 2020) à l’identique, logos compris : les informations sont écrites à l’emplacement de chaque champ. Les fichiers sont nommés « Grille Evaluation SST {schoolYear()} NOM Prénom ».
+        </p>
       </div>
       <button className="btn-primary" onClick={save}>
         <Save className="h-4 w-4" /> Enregistrer les paramètres

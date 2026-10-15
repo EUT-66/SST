@@ -197,12 +197,17 @@ export interface PracticalCase {
 
 export type CasePool = 'both' | 'metier' | 'vie_quotidienne';
 
+/** Formation initiale ou MAC (maintien et actualisation des compétences). */
+export type FormationType = 'initiale' | 'mac';
+
 export interface Session {
   id: string;
   title: string;
   trainerId: string;
   trainerName: string;
   tradeId: string;
+  /** Absent des sessions créées avant l'ajout du MAC : formation initiale. */
+  formationType?: FormationType;
   groupName?: string;
   location?: string;
   startDate: string; // AAAA-MM-JJ

@@ -1,5 +1,5 @@
 import { todayIso } from './format';
-import type { CasePool, PracticalCase, Session } from './types';
+import type { CasePool, FormationType, PracticalCase, Session } from './types';
 
 export type SessionPhase = 'a_venir' | 'en_cours' | 'a_cloturer' | 'cloturee' | 'archivee';
 
@@ -38,4 +38,19 @@ export function caseMatchesPool(c: PracticalCase, tradeId: string, pool: CasePoo
 export function availableCases(cases: PracticalCase[], session: Pick<Session, 'tradeId' | 'casePool' | 'drawnCaseIds'>): PracticalCase[] {
   const drawn = new Set(session.drawnCaseIds ?? []);
   return cases.filter((c) => caseMatchesPool(c, session.tradeId, session.casePool) && !drawn.has(c.id));
+}
+
+export const FORMATION_LABELS: Record<FormationType, string> = {
+  initiale: 'Formation initiale',
+  mac: 'Maintien et actualisation des compétences',
+};
+
+export const FORMATION_SHORT: Record<FormationType, string> = {
+  initiale: 'Initiale',
+  mac: 'MAC',
+};
+
+/** Les sessions créées avant l'ajout du MAC sont des formations initiales. */
+export function formationOf(s: Pick<Session, 'formationType'>): FormationType {
+  return s.formationType === 'mac' ? 'mac' : 'initiale';
 }

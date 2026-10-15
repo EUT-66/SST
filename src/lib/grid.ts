@@ -232,7 +232,11 @@ export function gridForLearner(params: {
   trainer: Pick<UserProfile, 'firstName' | 'lastName' | 'signature'> | null;
 }): GridState {
   const { learner, session, evaluation, caseData, settings, trainer } = params;
-  if (evaluation?.grid) return evaluation.grid;
+  // la signature enregistrée dans le profil est reprise si la grille n'en a pas
+  if (evaluation?.grid) {
+    const g = evaluation.grid;
+    return g.trainer.signature || !trainer?.signature ? g : { ...g, trainer: { ...g.trainer, signature: trainer.signature } };
+  }
   const ev: Evaluation = evaluation ?? { learnerId: learner.id, actions: {}, prevention: {}, manual: {} };
   return buildGrid({ learner, session, trainer, summary: summarize(caseData, ev, settings) });
 }

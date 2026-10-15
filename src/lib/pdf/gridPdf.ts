@@ -1,238 +1,257 @@
-// Grille de certification des compétences du SST – formation initiale (INRS, juin 2020),
-// reproduite à l'identique et pré-remplie.
-import type { PDFDocument, PDFImage } from 'pdf-lib';
-import { COMPETENCES, COMPETENCE_ORDER, type CompetenceDef } from '../competences';
+// Grille de certification des compétences du SST (INRS) : le PDF officiel sert de fond de page
+// (logos, tableaux et textes à l'identique) et les informations sont écrites aux emplacements
+// exacts des champs du formulaire d'origine, avec le même rendu que dans Acrobat.
+import { degrees, rgb, type PDFDocument, type PDFEmbeddedPage, type PDFFont, type PDFImage, type PDFPage } from 'pdf-lib';
+import { COMPETENCE_ORDER } from '../competences';
 import { frDate } from '../format';
-import type { GridState } from '../types';
-import { A4, C, createDoc, embedDataUrl, Painter, type Fonts, type FontFiles } from './kit';
+import type { CompetenceId, FormationType, GridState, IndicatorId } from '../types';
+import { A4, createDoc, embedDataUrl, type FontFiles, type Fonts } from './kit';
+
+export interface GridPdfItem {
+  grid: GridState;
+  /** Formation initiale par défaut. */
+  formation?: FormationType;
+  /** Apprenti absent : grille sans cases cochées, barrée de la mention « ABSENT ». */
+  absent?: boolean;
+}
 
 export interface GridPdfOptions {
-  logoLeft?: string | null;
-  logoRight?: string | null;
   fontFiles?: FontFiles;
+  /** Fonds de grille déjà chargés (tests) ; sinon lus dans /grilles. */
+  templates?: Partial<Record<FormationType, ArrayBuffer | Uint8Array>>;
 }
 
-const X0 = 29;
-const X1 = 569.5;
-const COL = { code: X0, comp: 50, ind: 207, acq: 406, nacq: 448, cond: 492, end: X1 };
-const SIZE = 9.6;
-const LH = 11.8;
+/**
+ * Fonds de grille (PDF de l'INRS préparés par scripts/preparer-grille.py).
+ * Sans grille MAC officielle, la grille de formation initiale est utilisée avec le sous-titre MAC.
+ */
+const TEMPLATE_FILES: Record<FormationType, string | null> = {
+  initiale: '/grilles/grille-certification-sst-initiale.pdf',
+  mac: null,
+};
 
-interface Assets {
-  logoLeft: PDFImage | null;
-  logoRight: PDFImage | null;
+const BLACK = rgb(0, 0, 0);
+const WHITE = rgb(1, 1, 1);
+const SUBTITLE_GREEN = rgb(0.149, 0.588, 0.376);
+const ABSENT_BLUE = rgb(0.04, 0.33, 0.86);
+
+// Coordonnées PDF (origine en bas à gauche), relevées sur les champs du formulaire officiel.
+type Point = [number, number];
+
+/** Cases « Acquis / Non acquis » des indicateurs (champs « Check Box 1 » à « Check Box 34 »). */
+const INDICATOR_BOXES: Record<IndicatorId, { page: 0 | 1; acquis: Point; nonAcquis: Point }> = {
+  C2a: { page: 0, acquis: [418.53, 535.95], nonAcquis: [460.94, 536.16] },
+  C2b: { page: 0, acquis: [418.52, 493.4], nonAcquis: [460.83, 493.46] },
+  C2c: { page: 0, acquis: [418.58, 459.01], nonAcquis: [460.89, 459.07] },
+  C2d: { page: 0, acquis: [418.47, 432.81], nonAcquis: [460.78, 432.42] },
+  C2e: { page: 0, acquis: [418.36, 405.27], nonAcquis: [461.12, 405.32] },
+  C3a: { page: 0, acquis: [418.76, 372.17], nonAcquis: [461.07, 372.67] },
+  C3b: { page: 0, acquis: [418.66, 337.05], nonAcquis: [460.97, 337.1] },
+  C4a: { page: 0, acquis: [418.55, 304.16], nonAcquis: [460.86, 304.21] },
+  C4b: { page: 0, acquis: [418.64, 275.97], nonAcquis: [461.0, 275.53] },
+  C5a: { page: 0, acquis: [418.47, 245.87], nonAcquis: [460.78, 245.48] },
+  C5b: { page: 0, acquis: [418.36, 203.17], nonAcquis: [461.12, 203.22] },
+  C5c: { page: 0, acquis: [418.7, 139.5], nonAcquis: [461.01, 139.56] },
+  C1a: { page: 1, acquis: [418.52, 637.3], nonAcquis: [460.83, 636.91] },
+  C6a: { page: 1, acquis: [418.42, 595.49], nonAcquis: [460.73, 595.54] },
+  C7a: { page: 1, acquis: [418.76, 551.42], nonAcquis: [461.07, 551.47] },
+  C8a: { page: 1, acquis: [418.42, 465.87], nonAcquis: [461.17, 465.92] },
+  C8b: { page: 1, acquis: [418.31, 423.61], nonAcquis: [460.62, 423.22] },
+};
+const BOX = 14.17;
+
+/** Cases « Acquise / Non acquise » des compétences et du résultat (page 2). */
+const COMPETENCE_Y: Record<CompetenceId, number> = {
+  C1: 351.84,
+  C2: 334.92,
+  C3: 318.0,
+  C4: 301.08,
+  C5: 284.16,
+  C6: 267.24,
+  C7: 250.32,
+  C8: 233.52,
+};
+const RESULT_Y = 186.96;
+const ACQUISE_X = 359.76;
+const NON_ACQUISE_X = 437.76;
+
+/** Champs texte : début du champ, ligne de base des libellés voisins, fin du champ. */
+interface TextField {
+  page: 0 | 1;
+  x: number;
+  baseline: number;
+  right: number;
 }
+const FIELDS = {
+  lastName: { page: 0, x: 77.76, baseline: 676.08, right: 295.04 },
+  firstName: { page: 0, x: 77.53, baseline: 660.6, right: 294.82 },
+  birthDate: { page: 0, x: 123.02, baseline: 645.25, right: 294.38 },
+  from: { page: 0, x: 322.8, baseline: 676.08, right: 504.41 },
+  to: { page: 0, x: 323.25, baseline: 660.6, right: 504.86 },
+  trainerLastName: { page: 1, x: 62.26, baseline: 325.2, right: 259.93 },
+  trainerFirstName: { page: 1, x: 72.74, baseline: 297.11, right: 260.15 },
+  certificationDate: { page: 1, x: 33.28, baseline: 203.0, right: 218.45 },
+} satisfies Record<string, TextField>;
 
-function header(p: Painter, assets: Assets) {
-  if (assets.logoLeft) p.image(assets.logoLeft, X0, 22, 110, 52, 'left');
-  if (assets.logoRight) p.image(assets.logoRight, X1 - 64, 18, 64, 64, 'right');
-  p.text('Grille de certification des compétences du SST', 0, 50, { font: p.fonts.bold, size: 15.5, color: C.green, align: 'center', width: A4.w });
-  p.text('Formation initiale', 0, 74, { size: 12, color: C.green, align: 'center', width: A4.w });
-}
+/** Emplacement de la signature, à droite du libellé « Signature : » (page 2). */
+const SIGNATURE_AREA = { x: 88, y: 232, width: 168, height: 56 };
 
-function footer(p: Painter, page: number) {
-  p.text(`Page ${page}/2`, X1 - 80, 790, { size: 9.5, align: 'right', width: 60 });
-  const bold = 'INRS – Département formation';
-  const rest = ' – 65, bd Richard Lenoir – 75011 Paris';
-  const wb = p.fonts.bold.widthOfTextAtSize(bold, 8.5);
-  const wr = p.fonts.regular.widthOfTextAtSize(rest, 8.5);
-  const x = (A4.w - wb - wr) / 2;
-  p.text(bold, x, 812, { font: p.fonts.bold, size: 8.5, color: C.brown });
-  p.text(rest, x + wb, 812, { size: 8.5, color: C.brown });
-  p.text('Juin 2020', 0, 824, { font: p.fonts.italic, size: 8.5, color: C.brown, align: 'center', width: A4.w });
-}
+// ------------------------------------------------------------------ Fonds de grille
 
-function footnote(p: Painter, top: number, text: string, highlighted?: string) {
-  const w = p.text(text, X0 + 12, top, { font: p.fonts.italic, size: 9 });
-  if (highlighted) p.text(highlighted, X0 + 12 + w, top, { font: p.fonts.italic, size: 9, highlight: true });
-}
+const templateCache = new Map<string, Promise<ArrayBuffer>>();
 
-/** Tableau d'une épreuve ; renvoie l'ordonnée de fin. */
-function epreuveTable(p: Painter, top: number, title: string, comps: CompetenceDef[], grid: GridState): number {
-  const f = p.fonts;
-  // Bandeau de l'épreuve
-  const titleH = p.measure(title, X1 - X0 - 12, { font: f.bold, size: 9.4, lineHeight: 11.4 }) + 6;
-  p.paragraph(title, X0 + 6, top + 3, X1 - X0 - 12, { font: f.bold, size: 9.4, lineHeight: 11.4, color: C.greenText, align: 'center' });
-  let y = top + titleH;
-  // En-têtes de colonnes
-  const headH = 27;
-  const headTexts: [number, number, string][] = [
-    [COL.comp, COL.ind, 'Compétences'],
-    [COL.ind, COL.acq, 'INDICATEURS DE REUSSITE'],
-    [COL.acq, COL.nacq, 'Acquis'],
-    [COL.nacq, COL.cond, 'Non\nacquis'],
-    [COL.cond, COL.end, 'Conditions\nd’acquisition'],
-  ];
-  for (const [a, b, t] of headTexts) {
-    const lines = t.split('\n');
-    lines.forEach((l, i) =>
-      p.text(l, a, y + (headH - lines.length * 11) / 2 + i * 11, { font: f.bold, size: 9.4, color: C.greenText, align: 'center', width: b - a }),
-    );
+function fetchTemplate(path: string): Promise<ArrayBuffer> {
+  let p = templateCache.get(path);
+  if (!p) {
+    p = fetch(path).then((r) => {
+      if (!r.ok) throw new Error('Grille officielle introuvable : rechargez la page puis réessayez.');
+      return r.arrayBuffer();
+    });
+    p.catch(() => templateCache.delete(path));
+    templateCache.set(path, p);
   }
-  p.line(X0, y, X1, y, 0.8);
-  y += headH;
-  p.line(X0, y, X1, y, 0.8);
+  return p;
+}
 
-  for (const comp of comps) {
-    const compTop = y;
-    const merged = comp.conditions.length !== comp.groups.length;
-    const groupTops: number[] = [];
-    for (const [gi, g] of comp.groups.entries()) {
-      groupTops.push(y);
-      const labelH = p.measure(g.label, COL.ind - COL.comp - 8, { size: SIZE, lineHeight: LH }) + 8;
-      let indH = 4;
-      if (g.intro) indH += p.measure(g.intro, COL.acq - COL.ind - 8, { size: SIZE, lineHeight: LH }) + 6;
-      const rows = g.indicators.map((i) => {
-        const prefix = comp.id === 'C8' ? 18 : 0;
-        const h = Math.max(22, p.measure(i.text, COL.acq - COL.ind - 8 - prefix, { size: SIZE, lineHeight: LH }) + 9);
-        indH += h;
-        return h;
-      });
-      indH += 2;
-      const condH = merged ? 0 : p.measure(comp.conditions[gi] ?? '', COL.end - COL.cond - 8, { size: SIZE, lineHeight: LH }) + 8;
-      const h = Math.max(labelH, indH, condH, 30);
+interface Background {
+  pages: [PDFEmbeddedPage, PDFEmbeddedPage];
+  /** Sous-titre « Formation initiale » à remplacer par celui du MAC. */
+  macSubtitle: boolean;
+}
 
-      // Libellé de la compétence (centré verticalement)
-      const lh = labelH - 8;
-      p.paragraph(g.label, COL.comp + 4, y + (h - lh) / 2, COL.ind - COL.comp - 8, { size: SIZE, lineHeight: LH });
-
-      // Indicateurs et cases
-      let iy = y + (h - indH) / 2 + 4;
-      if (g.intro) {
-        iy += p.paragraph(g.intro, COL.ind + 4, iy, COL.acq - COL.ind - 8, { size: SIZE, lineHeight: LH }) + 6;
-      }
-      g.indicators.forEach((ind, k) => {
-        const rh = rows[k];
-        const prefix = comp.id === 'C8' ? 18 : 0;
-        const textH = p.measure(ind.text, COL.acq - COL.ind - 8 - prefix, { size: SIZE, lineHeight: LH });
-        const ty = iy + (rh - textH) / 2;
-        if (prefix) p.text('-', COL.ind + 6, ty, { size: SIZE, highlight: ind.key });
-        p.paragraph(ind.text, COL.ind + 4 + prefix, ty, COL.acq - COL.ind - 8 - prefix, { size: SIZE, lineHeight: LH, highlight: ind.key });
-        const v = grid.indicators[ind.id] ?? null;
-        const box = 11.5;
-        p.checkbox(COL.acq + (COL.nacq - COL.acq - box) / 2, iy + (rh - box) / 2, box, v === 'acquis');
-        p.checkbox(COL.nacq + (COL.cond - COL.nacq - box) / 2, iy + (rh - box) / 2, box, v === 'non_acquis');
-        iy += rh;
-      });
-
-      // Conditions propres au groupe
-      if (!merged) {
-        const ch = condH - 8;
-        p.paragraph(comp.conditions[gi], COL.cond + 4, y + (h - ch) / 2, COL.end - COL.cond - 8, { size: SIZE, lineHeight: LH });
-      }
-      y += h;
-      if (gi < comp.groups.length - 1) p.line(COL.comp, y, merged ? COL.cond : X1, y, 0.8);
+async function loadBackgrounds(doc: PDFDocument, formations: Set<FormationType>, options: GridPdfOptions) {
+  const embedded = new Map<FormationType, [PDFEmbeddedPage, PDFEmbeddedPage]>();
+  const embed = async (source: FormationType) => {
+    let pages = embedded.get(source);
+    if (!pages) {
+      const bytes = options.templates?.[source] ?? (await fetchTemplate(TEMPLATE_FILES[source]!));
+      const [p1, p2] = await doc.embedPdf(bytes, [0, 1]);
+      pages = [p1, p2];
+      embedded.set(source, pages);
     }
-    // Conditions fusionnées (ex. C5)
-    if (merged) {
-      const ch = p.measure(comp.conditions[0], COL.end - COL.cond - 8, { size: SIZE, lineHeight: LH });
-      p.paragraph(comp.conditions[0], COL.cond + 4, compTop + (y - compTop - ch) / 2, COL.end - COL.cond - 8, { size: SIZE, lineHeight: LH });
-    }
-    // Code de la compétence
-    p.text(comp.id, COL.code, compTop + (y - compTop - SIZE) / 2, { font: f.bold, size: SIZE, align: 'center', width: COL.comp - COL.code });
-    p.line(X0, y, X1, y, 0.8);
+    return pages;
+  };
+  const out = new Map<FormationType, Background>();
+  for (const f of formations) {
+    const own = TEMPLATE_FILES[f] !== null || options.templates?.[f] !== undefined;
+    out.set(f, { pages: await embed(own ? f : 'initiale'), macSubtitle: f === 'mac' && !own });
   }
-  // Colonnes et cadre
-  const headTop = top + titleH;
-  for (const x of [COL.comp, COL.ind, COL.acq, COL.nacq, COL.cond]) p.line(x, headTop, x, y, 0.8);
-  p.rect(X0, top, X1 - X0, y - top, { border: 1.6 });
-  return y;
+  return out;
 }
 
-function labelValue(p: Painter, label: string, value: string, x: number, top: number, opts: { green?: boolean } = {}) {
-  const w = p.text(label, x, top, { font: opts.green ? p.fonts.bold : p.fonts.regular, size: 10.5, color: opts.green ? C.greenText : C.ink });
-  if (value) p.text(value, x + w + 6, top - 0.5, { font: p.fonts.bold, size: 11, color: C.filled });
+// ------------------------------------------------------------------ Dessin
+
+/** Case d'indicateur, comme l'apparence du champ d'origine (cadre blanc, croix fine). */
+function indicatorBox(page: PDFPage, [x, y]: Point, checked: boolean) {
+  page.drawRectangle({ x: x + 0.5, y: y + 0.5, width: BOX - 1, height: BOX - 1, color: WHITE, borderColor: BLACK, borderWidth: 1 });
+  if (!checked) return;
+  page.drawLine({ start: { x: x + 2, y: y + BOX - 2 }, end: { x: x + BOX - 2, y: y + 2 }, thickness: 1, color: BLACK });
+  page.drawLine({ start: { x: x + BOX - 2, y: y + BOX - 2 }, end: { x: x + 2, y: y + 2 }, thickness: 1, color: BLACK });
 }
 
-function pageOne(doc: PDFDocument, fonts: Fonts, grid: GridState, assets: Assets) {
-  const p = new Painter(doc.addPage([A4.w, A4.h]), fonts);
-  header(p, assets);
-  // Cadre candidat / session
-  const top = 104;
-  const h = 82;
-  const mid = 299;
-  p.rect(X0, top, X1 - X0, h, { border: 1.6 });
-  p.line(mid, top, mid, top + h, 0.8);
-  p.text('Candidat :', X0 + 4, top + 5, { font: fonts.bold, size: 10.5, color: C.greenText, underline: true });
-  labelValue(p, 'Nom :', grid.candidate.lastName, X0 + 4, top + 32);
-  labelValue(p, 'Prénom :', grid.candidate.firstName, X0 + 4, top + 47);
-  labelValue(p, 'Date de naissance :', frDate(grid.candidate.birthDate), X0 + 4, top + 62);
-  p.text('Session :', mid + 5, top + 5, { font: fonts.bold, size: 10.5, color: C.greenText, underline: true });
-  labelValue(p, 'Du :', frDate(grid.session.from), mid + 5, top + 32);
-  labelValue(p, 'Au :', frDate(grid.session.to), mid + 5, top + 47);
-
-  const end = epreuveTable(
-    p,
-    top + h + 14,
-    'EPREUVE 1 : Lors d’une mise en situation d’accident du travail simulée (action / analyse), le candidat devra montrer sa capacité à mettre en œuvre l’intégralité des compétences lui permettant d’intervenir efficacement',
-    COMPETENCES.filter((c) => c.epreuve === 1),
-    grid,
-  );
-  footnote(p, end + 4, 'Les critères de réussite incontournables sont surlignés en jaune : ', 'exemple');
-  footer(p, 1);
+/** Case de compétence ou de résultat cochée (apparence « On » du champ d'origine). */
+function competenceMark(page: PDFPage, x: number, y: number) {
+  page.drawRectangle({ x: x + 2.16, y: y + 1.68, width: 6.72, height: 3.96, color: BLACK });
 }
 
-async function pageTwo(doc: PDFDocument, fonts: Fonts, grid: GridState, assets: Assets) {
-  const p = new Painter(doc.addPage([A4.w, A4.h]), fonts);
-  header(p, assets);
-  const end = epreuveTable(
-    p,
-    104,
-    'EPREUVE 2 : Lors d’un entretien avec le formateur, le candidat devra répondre à un questionnement simple portant sur sa connaissance du cadre réglementaire de l’activité SST et ses compétences en matière de prévention',
-    COMPETENCES.filter((c) => c.epreuve === 2),
-    grid,
-  );
-  footnote(p, end + 4, 'Les critères de réussite incontournables sont surlignés en jaune : ', 'exemple');
+/** Texte d'un champ, en Calibri gras 11 comme le formulaire ; réduit s'il est trop long. */
+function fieldText(page: PDFPage, field: TextField, value: string, font: PDFFont) {
+  const text = value.trim();
+  if (!text) return;
+  const max = field.right - field.x - 4;
+  let size = 11;
+  while (size > 6 && font.widthOfTextAtSize(text, size) > max) size -= 0.5;
+  page.drawText(text, { x: field.x + 2, y: field.baseline, size, font, color: BLACK });
+}
 
-  // Cadre formateur / résultat
-  const top = Math.max(end + 40, 470);
-  const mid = 262;
-  const rowH = 17;
-  const compH = 8 + rowH * 8 + 4;
-  const h = compH + 58;
-  p.rect(X0, top, X1 - X0, h, { border: 1.6 });
-  p.line(mid, top, mid, top + h, 0.8);
-  p.line(X0, top + compH, X1, top + compH, 0.8);
+function macSubtitle(page: PDFPage, fonts: Fonts) {
+  // « Formation initiale » et son ombre portée
+  page.drawRectangle({ x: 240, y: 737.5, width: 132, height: 28, color: WHITE });
+  const text = 'Maintien et actualisation des compétences';
+  const size = 14.04;
+  const x = 301.35 - fonts.regular.widthOfTextAtSize(text, size) / 2;
+  page.drawText(text, { x: x + 1, y: 751.64, size, font: fonts.regular, color: BLACK, opacity: 0.2 });
+  page.drawText(text, { x, y: 752.64, size, font: fonts.regular, color: SUBTITLE_GREEN });
+}
 
-  p.text('Formateur / évaluateur :', X0 + 4, top + 6, { font: fonts.bold, size: 10.5, color: C.greenText, underline: true });
-  labelValue(p, 'NOM :', grid.trainer.lastName.toLocaleUpperCase('fr-FR'), X0 + 4, top + 34, { green: true });
-  labelValue(p, 'Prénom :', grid.trainer.firstName, X0 + 4, top + 61, { green: true });
-  p.text('Signature :', X0 + 4, top + 88, { font: fonts.bold, size: 10.5, color: C.greenText });
-  const sig = await embedDataUrl(doc, grid.trainer.signature);
-  if (sig) p.image(sig, X0 + 62, top + 84, mid - X0 - 72, compH - 92, 'left');
-
-  COMPETENCE_ORDER.forEach((c, i) => {
-    const ry = top + 8 + i * rowH;
-    const v = grid.competences[c] ?? null;
-    p.text(`Compétence ${c.slice(1)} :`, mid + 8, ry, { font: fonts.bold, size: 10, color: C.greenText });
-    p.checkbox(367, ry + 0.5, 9.5, v === 'acquise');
-    p.text('Acquise', 383, ry, { font: fonts.bold, size: 10, color: C.greenText });
-    p.checkbox(445, ry + 0.5, 9.5, v === 'non_acquise');
-    p.text('Non acquise', 461, ry, { font: fonts.bold, size: 10, color: C.greenText });
+/** Mention « ABSENT » en diagonale, centrée sur la page. */
+function absentStamp(page: PDFPage, font: PDFFont) {
+  const text = 'ABSENT';
+  const angle = Math.atan2(A4.h, A4.w);
+  const size = (Math.hypot(A4.w, A4.h) * 0.62) / font.widthOfTextAtSize(text, 1);
+  const w = font.widthOfTextAtSize(text, size);
+  const capHeight = size * 0.644;
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+  page.drawText(text, {
+    x: A4.w / 2 - (w / 2) * cos + (capHeight / 2) * sin,
+    y: A4.h / 2 - (w / 2) * sin - (capHeight / 2) * cos,
+    size,
+    font,
+    color: ABSENT_BLUE,
+    opacity: 0.85,
+    rotate: degrees((angle * 180) / Math.PI),
   });
+}
 
-  const by = top + compH;
-  p.text('Date de certification :', X0 + 4, by + 6, { font: fonts.bold, size: 10.5, color: C.greenText, underline: true });
-  if (grid.certificationDate) p.text(frDate(grid.certificationDate), X0 + 4, by + 30, { font: fonts.bold, size: 11, color: C.filled });
-  p.text('Résultat :', mid + 8, by + 6, { font: fonts.bold, size: 10.5, color: C.greenText, underline: true });
-  p.text('Candidat certifié', mid + 8, by + 34, { font: fonts.bold, size: 10, color: C.greenText });
-  p.checkbox(367, by + 34.5, 9.5, grid.certified === true);
-  p.text('OUI*', 383, by + 34, { font: fonts.bold, size: 10, color: C.greenText });
-  p.checkbox(445, by + 34.5, 9.5, grid.certified === false);
-  p.text('NON', 461, by + 34, { font: fonts.bold, size: 10, color: C.greenText });
+async function drawGrid(doc: PDFDocument, fonts: Fonts, bg: Background, item: GridPdfItem, signature: PDFImage | null) {
+  const { grid, absent } = item;
+  const pages = bg.pages.map((p) => {
+    const page = doc.addPage([A4.w, A4.h]);
+    page.drawPage(p, { x: 0, y: 0, width: A4.w, height: A4.h });
+    if (bg.macSubtitle) macSubtitle(page, fonts);
+    return page;
+  });
+  const text = (f: TextField, v: string) => fieldText(pages[f.page], f, v, fonts.bold);
 
-  footnote(p, top + h + 4, '* : 8 compétences acquises donnent la certification');
-  footer(p, 2);
+  text(FIELDS.lastName, grid.candidate.lastName);
+  text(FIELDS.firstName, grid.candidate.firstName);
+  text(FIELDS.birthDate, frDate(grid.candidate.birthDate));
+  text(FIELDS.from, frDate(grid.session.from));
+  text(FIELDS.to, frDate(grid.session.to));
+  text(FIELDS.trainerLastName, grid.trainer.lastName.toLocaleUpperCase('fr-FR'));
+  text(FIELDS.trainerFirstName, grid.trainer.firstName);
+  if (!absent) text(FIELDS.certificationDate, frDate(grid.certificationDate));
+
+  for (const [id, box] of Object.entries(INDICATOR_BOXES) as [IndicatorId, (typeof INDICATOR_BOXES)[IndicatorId]][]) {
+    const v = absent ? null : (grid.indicators[id] ?? null);
+    indicatorBox(pages[box.page], box.acquis, v === 'acquis');
+    indicatorBox(pages[box.page], box.nonAcquis, v === 'non_acquis');
+  }
+  if (!absent) {
+    for (const c of COMPETENCE_ORDER) {
+      const v = grid.competences[c] ?? null;
+      if (v === 'acquise') competenceMark(pages[1], ACQUISE_X, COMPETENCE_Y[c]);
+      if (v === 'non_acquise') competenceMark(pages[1], NON_ACQUISE_X, COMPETENCE_Y[c]);
+    }
+    if (grid.certified === true) competenceMark(pages[1], ACQUISE_X, RESULT_Y);
+    if (grid.certified === false) competenceMark(pages[1], NON_ACQUISE_X, RESULT_Y);
+  }
+
+  if (signature) {
+    const a = SIGNATURE_AREA;
+    const scale = Math.min(a.width / signature.width, a.height / signature.height, 1);
+    const w = signature.width * scale;
+    const h = signature.height * scale;
+    pages[1].drawImage(signature, { x: a.x, y: a.y + (a.height - h) / 2, width: w, height: h });
+  }
+
+  if (absent) pages.forEach((p) => absentStamp(p, fonts.bold));
 }
 
 /** Génère un PDF contenant une grille (2 pages) par candidat. */
-export async function renderGridsPdf(grids: GridState[], options: GridPdfOptions = {}): Promise<Uint8Array> {
-  const title = grids.length === 1 ? `Grille de certification SST – ${grids[0].candidate.lastName} ${grids[0].candidate.firstName}` : 'Grilles de certification SST';
+export async function renderGridsPdf(items: GridPdfItem[], options: GridPdfOptions = {}): Promise<Uint8Array> {
+  const first = items[0]?.grid.candidate;
+  const title = items.length === 1 && first ? `Grille de certification SST – ${first.lastName} ${first.firstName}` : 'Grilles de certification SST';
   const { doc, fonts } = await createDoc(title, options.fontFiles);
-  const assets: Assets = { logoLeft: await embedDataUrl(doc, options.logoLeft), logoRight: await embedDataUrl(doc, options.logoRight) };
-  for (const g of grids) {
-    pageOne(doc, fonts, g, assets);
-    await pageTwo(doc, fonts, g, assets);
+  const backgrounds = await loadBackgrounds(doc, new Set(items.map((i) => i.formation ?? 'initiale')), options);
+  // une signature n'est intégrée qu'une fois, même répétée sur toutes les grilles d'une session
+  const signatures = new Map<string, Promise<PDFImage | null>>();
+  for (const item of items) {
+    const url = item.grid.trainer.signature;
+    if (url && !signatures.has(url)) signatures.set(url, embedDataUrl(doc, url));
+    const signature = url ? await signatures.get(url)! : null;
+    await drawGrid(doc, fonts, backgrounds.get(item.formation ?? 'initiale')!, item, signature);
   }
   return doc.save();
 }

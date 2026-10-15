@@ -3,6 +3,7 @@ import { rgb, type PDFDocument } from 'pdf-lib';
 import { COMPETENCE_LABELS, COMPETENCE_ORDER } from '../competences';
 import { frDate } from '../format';
 import type { EvaluationSummary } from '../grid';
+import { formationOf } from '../sessions';
 import type { Evaluation, Learner, PracticalCase, Session } from '../types';
 import { A4, C, createDoc, Painter, type Fonts, type FontFiles } from './kit';
 
@@ -68,7 +69,8 @@ function renderOne(doc: PDFDocument, fonts: Fonts, input: FicheInput) {
   const meta = [
     learner.birthDate && `Né(e) le ${frDate(learner.birthDate)}`,
     learner.groupName && `Classe : ${learner.groupName}`,
-    `Session du ${frDate(session.startDate)} au ${frDate(session.endDate)}`,
+    `${formationOf(session) === 'mac' ? 'MAC – session' : 'Session'} du ${frDate(session.startDate)} au ${frDate(session.endDate)}`,
+    learner.absent && 'ABSENT',
     `Formateur : ${input.trainerName}`,
   ]
     .filter(Boolean)

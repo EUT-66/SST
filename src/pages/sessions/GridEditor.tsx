@@ -1,19 +1,22 @@
 import clsx from 'clsx';
-import { doc, setDoc } from 'firebase/firestore';
-import { FileDown, PenLine, RefreshCw, Save } from 'lucide-react';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
+import { FileDown, PenLine, RefreshCw, Save, UserX } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import SignaturePad from '../../components/SignaturePad';
 import { EmptyState, errorMessage, Field, Modal, PageHeader, PageLoader, Spinner, useFeedback } from '../../components/ui';
+import { useAuth } from '../../hooks/useAuth';
 import { useData } from '../../hooks/useData';
 import { useDocument } from '../../hooks/useFirestore';
 import { COMPETENCES, COMPETENCE_ORDER, computeCertified } from '../../lib/competences';
 import { db } from '../../lib/firebase';
 import { downloadBlob } from '../../lib/format';
 import { buildGrid, refreshGridDerived, summarize } from '../../lib/grid';
+import { gridFileName, schoolYear } from '../../lib/gridFiles';
+import { FORMATION_LABELS, formationOf } from '../../lib/sessions';
 import type { CompetenceId, CompetenceValue, Evaluation, GridState, IndicatorId, IndicatorValue } from '../../lib/types';
 import { useSessionBundle } from './SessionDetail';
-import { gridFileName, useSessionTrainer } from './tabs/ResultsTab';
+import { useSessionTrainer } from './tabs/ResultsTab';
 
 export default function GridEditor() {
   const { sid, lid } = useParams();
@@ -21,15 +24,19 @@ export default function GridEditor() {
   const evalDoc = useDocument<Evaluation>(sid && lid ? `sessions/${sid}/evaluations/${lid}` : null);
   const { caseById, settings } = useData();
   const { toast, confirm } = useFeedback();
+  const { profile } = useAuth();
   const [grid, setGrid] = useState<GridState | null>(null);
   const [dirty, setDirty] = useState(false);
   const [busy, setBusy] = useState(false);
   const [signing, setSigning] = useState(false);
   const [newSignature, setNewSignature] = useState<string | null>(null);
+  const [keepInProfile, setKeepInProfile] = useState(false);
 
   const learner = learners.find((l) => l.id === lid);
   const trainer = useSessionTrainer(session ?? ({ trainerId: '', trainerName: '' } as never));
   const readOnly = session?.status === 'closed';
+  const absent = !!learner?.absent;
+  const isMine = !!profile && session?.trainerId === profile.uid;
 
   const computed = useMemo(() => {
     if (!session || !learner) return null;
@@ -45,14 +52,16 @@ export default function GridEditor() {
     setGrid(saved ? { ...saved, trainer: { ...saved.trainer, signature: saved.trainer.signature ?? trainer.signature ?? null } } : computed);
   }, [grid, evalDoc.loading, evalDoc.data, computed, trainer.signature]);
 
-  if (loading || evalDoc.loading || !grid) return <PageLoader />;
+  if (loading || evalDoc.loading) return <PageLoader />;
   if (!session || !learner) return <EmptyState title="Apprenti introuvable" />;
+  if (!grid) return <PageLoader />;
 
   const edit = (next: GridState) => {
     if (readOnly) return;
     setGrid(next);
     setDirty(true);
   };
+  const formation = formationOf(session);
   const setIndicator = (id: IndicatorId, v: IndicatorValue) => {
     const current = grid.indicators[id] ?? null;
     edit(refreshGridDerived({ ...grid, indicators: { ...grid.indicators, [id]: current === v ? null : v } }));
@@ -87,8 +96,8 @@ export default function GridEditor() {
     try {
       if (dirty && !readOnly) await save();
       const { renderGridsPdf } = await import('../../lib/pdf/gridPdf');
-      const bytes = await renderGridsPdf([grid], { logoLeft: settings.logoLeft, logoRight: settings.logoRight });
-      downloadBlob(bytes, gridFileName(learner), 'application/pdf');
+      const bytes = await renderGridsPdf([{ grid, formation, absent }]);
+      downloadBlob(bytes, gridFileName(grid.candidate, schoolYear(session.startDate)), 'application/pdf');
     } catch (err) {
       toast(errorMessage(err), 'error');
     } finally {
@@ -110,9 +119,9 @@ export default function GridEditor() {
     <div>
       <PageHeader
         back={{ to: `/sessions/${session.id}/evaluation/${learner.id}`, label: 'Évaluation' }}
-        kicker="Grille de certification des compétences du SST – formation initiale"
+        kicker={`Grille de certification des compétences du SST – ${FORMATION_LABELS[formation]}`}
         title={`${learner.firstName} ${learner.lastName}`}
-        subtitle="Pré-remplie depuis l’évaluation. Cliquez sur une case pour la modifier, puis générez le PDF."
+        subtitle={absent ? 'Apprenti absent : la grille est générée sans aucune case cochée.' : 'Pré-remplie depuis l’évaluation. Cliquez sur une case pour la modifier, puis générez le PDF.'}
         actions={
           <>
             {!readOnly && (
@@ -131,6 +140,20 @@ export default function GridEditor() {
           </>
         }
       />
+
+      {absent && (
+        <div className="mx-auto mb-6 flex max-w-4xl flex-col gap-3 rounded-2xl border border-blue-200 bg-blue-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="flex items-start gap-2 text-sm text-blue-900">
+            <UserX className="mt-0.5 h-5 w-5 shrink-0" />
+            <span>
+              <strong>{learner.firstName} {learner.lastName} est noté(e) absent(e).</strong> Le PDF reprend son identité, la session et le formateur, sans aucune case cochée, avec la mention « ABSENT » en grand sur chaque page.
+            </span>
+          </p>
+          <Link to={`/sessions/${session.id}?onglet=apprentis`} className="btn-secondary btn-sm shrink-0">
+            Modifier la présence
+          </Link>
+        </div>
+      )}
 
       <div className="mx-auto max-w-4xl space-y-6 rounded-3xl bg-white p-4 shadow-card sm:p-8">
         {/* Candidat / session */}
@@ -175,7 +198,7 @@ export default function GridEditor() {
                   let first = true;
                   return comp.groups.flatMap((g, gi) =>
                     g.indicators.map((ind, ii) => {
-                      const v = grid.indicators[ind.id] ?? null;
+                      const v = absent ? null : (grid.indicators[ind.id] ?? null);
                       const row = (
                         <tr key={ind.id} className="align-middle">
                           {first && (
@@ -193,10 +216,10 @@ export default function GridEditor() {
                             <span className={clsx(ind.key && 'bg-yellow-300')}>{ind.text}</span>
                           </td>
                           <td className="border border-ink text-center">
-                            <Check checked={v === 'acquis'} onClick={() => setIndicator(ind.id, 'acquis')} disabled={readOnly} />
+                            <Check checked={v === 'acquis'} onClick={() => setIndicator(ind.id, 'acquis')} disabled={readOnly || absent} />
                           </td>
                           <td className="border border-ink text-center">
-                            <Check checked={v === 'non_acquis'} onClick={() => setIndicator(ind.id, 'non_acquis')} disabled={readOnly} />
+                            <Check checked={v === 'non_acquis'} onClick={() => setIndicator(ind.id, 'non_acquis')} disabled={readOnly || absent} />
                           </td>
                           {merged
                             ? first && (
@@ -264,10 +287,10 @@ export default function GridEditor() {
                 <div key={c} className="flex items-center gap-3 text-sm font-bold text-sst-700">
                   <span className="w-32">Compétence {c.slice(1)} :</span>
                   <label className="flex items-center gap-1.5">
-                    <Check checked={grid.competences[c] === 'acquise'} onClick={() => setCompetence(c, 'acquise')} disabled={readOnly} small /> Acquise
+                    <Check checked={!absent && grid.competences[c] === 'acquise'} onClick={() => setCompetence(c, 'acquise')} disabled={readOnly || absent} small /> Acquise
                   </label>
                   <label className="ml-4 flex items-center gap-1.5">
-                    <Check checked={grid.competences[c] === 'non_acquise'} onClick={() => setCompetence(c, 'non_acquise')} disabled={readOnly} small /> Non acquise
+                    <Check checked={!absent && grid.competences[c] === 'non_acquise'} onClick={() => setCompetence(c, 'non_acquise')} disabled={readOnly || absent} small /> Non acquise
                   </label>
                 </div>
               ))}
@@ -277,13 +300,13 @@ export default function GridEditor() {
               <div className="mt-2 flex items-center gap-3 text-sm font-bold text-sst-700">
                 <span className="w-32">Candidat certifié</span>
                 <label className="flex items-center gap-1.5">
-                  <Check checked={grid.certified === true} onClick={() => edit({ ...grid, certified: grid.certified === true ? null : true })} disabled={readOnly} small /> OUI*
+                  <Check checked={!absent && grid.certified === true} onClick={() => edit({ ...grid, certified: grid.certified === true ? null : true })} disabled={readOnly || absent} small /> OUI*
                 </label>
                 <label className="ml-4 flex items-center gap-1.5">
-                  <Check checked={grid.certified === false} onClick={() => edit({ ...grid, certified: grid.certified === false ? null : false })} disabled={readOnly} small /> NON
+                  <Check checked={!absent && grid.certified === false} onClick={() => edit({ ...grid, certified: grid.certified === false ? null : false })} disabled={readOnly || absent} small /> NON
                 </label>
               </div>
-              {grid.certified === true && COMPETENCE_ORDER.some((c) => grid.competences[c] !== 'acquise') && (
+              {!absent && grid.certified === true && COMPETENCE_ORDER.some((c) => grid.competences[c] !== 'acquise') && (
                 <p className="mt-2 text-xs font-semibold text-amber-700">Attention : les 8 compétences doivent être acquises pour certifier.</p>
               )}
             </div>
@@ -304,9 +327,17 @@ export default function GridEditor() {
             <button
               className="btn-primary"
               disabled={!newSignature}
-              onClick={() => {
+              onClick={async () => {
                 edit({ ...grid, trainer: { ...grid.trainer, signature: newSignature } });
                 setSigning(false);
+                if (keepInProfile && isMine && newSignature) {
+                  try {
+                    await updateDoc(doc(db, 'users', profile!.uid), { signature: newSignature });
+                    toast('Signature enregistrée aussi dans votre profil');
+                  } catch (err) {
+                    toast(errorMessage(err), 'error');
+                  }
+                }
               }}
             >
               Apposer la signature
@@ -314,8 +345,29 @@ export default function GridEditor() {
           </>
         }
       >
+        {isMine && profile?.signature && (
+          <div className="mb-4 flex items-center justify-between gap-3 rounded-2xl border border-sst-100 bg-sst-50/50 p-3">
+            <img src={profile.signature} alt="Signature enregistrée" className="h-12 max-w-[50%] object-contain" />
+            <button
+              className="btn-secondary btn-sm"
+              onClick={() => {
+                edit({ ...grid, trainer: { ...grid.trainer, signature: profile.signature ?? null } });
+                setSigning(false);
+              }}
+            >
+              Utiliser ma signature enregistrée
+            </button>
+          </div>
+        )}
         <SignaturePad onChange={setNewSignature} />
-        <p className="mt-2 text-xs text-ink-muted">Pour réutiliser automatiquement votre signature, enregistrez-la dans « Mon profil ».</p>
+        {isMine ? (
+          <label className="mt-3 flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={keepInProfile} onChange={(e) => setKeepInProfile(e.target.checked)} />
+            L’enregistrer aussi dans mon profil, pour toutes mes grilles
+          </label>
+        ) : (
+          <p className="mt-2 text-xs text-ink-muted">Chaque formateur peut enregistrer sa signature dans « Mon profil » : elle est alors reprise automatiquement.</p>
+        )}
       </Modal>
     </div>
   );

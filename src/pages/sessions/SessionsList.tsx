@@ -6,7 +6,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useData } from '../../hooks/useData';
 import { useSessions } from '../../hooks/useSessions';
 import { frDate } from '../../lib/format';
-import { archiveYear, PHASE_LABELS, sessionPhase, type SessionPhase } from '../../lib/sessions';
+import { archiveYear, FORMATION_SHORT, formationOf, PHASE_LABELS, sessionPhase, type SessionPhase } from '../../lib/sessions';
 import type { Session } from '../../lib/types';
 
 type Tab = 'actives' | 'cloturees' | 'archives';
@@ -120,7 +120,10 @@ function SessionGrid({ sessions, showTrainer, myUid }: { sessions: Session[]; sh
         return (
           <Link key={s.id} to={`/sessions/${s.id}`} className="card group flex flex-col p-5 transition hover:-translate-y-0.5 hover:shadow-lg">
             <div className="mb-3 flex items-start justify-between gap-3">
-              <span className="rounded-lg bg-sst-600 px-2.5 py-1 font-display text-xs font-extrabold text-white">{tradeById[s.tradeId]?.code ?? 'SST'}</span>
+              <span className="flex flex-wrap gap-1.5">
+                <span className="rounded-lg bg-sst-600 px-2.5 py-1 font-display text-xs font-extrabold text-white">{tradeById[s.tradeId]?.code ?? 'SST'}</span>
+                <span className={formationOf(s) === 'mac' ? 'badge-amber' : 'badge-green'}>{FORMATION_SHORT[formationOf(s)]}</span>
+              </span>
               <span className={PHASE_BADGE[phase]}>{PHASE_LABELS[phase]}</span>
             </div>
             <h3 className="font-bold leading-snug group-hover:text-sst-700">{s.title}</h3>

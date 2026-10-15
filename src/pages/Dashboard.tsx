@@ -9,7 +9,7 @@ import { useData } from '../hooks/useData';
 import { useCollection } from '../hooks/useFirestore';
 import { useSessions } from '../hooks/useSessions';
 import { frDate } from '../lib/format';
-import { PHASE_LABELS, sessionPhase } from '../lib/sessions';
+import { formationOf, PHASE_LABELS, sessionPhase } from '../lib/sessions';
 import type { UserProfile } from '../lib/types';
 
 export default function Dashboard() {
@@ -101,7 +101,10 @@ export default function Dashboard() {
                       {tradeById[s.tradeId]?.code ?? '—'}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate font-semibold">{s.title}</p>
+                      <p className="truncate font-semibold">
+                        {s.title}
+                        {formationOf(s) === 'mac' && <span className="badge-amber ml-2 align-middle">MAC</span>}
+                      </p>
                       <p className="text-xs text-ink-muted">
                         Du {frDate(s.startDate)} au {frDate(s.endDate)} · {s.learnerCount ?? 0} apprenti(s)
                       </p>

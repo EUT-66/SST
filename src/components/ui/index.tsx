@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { Check, Loader2, X } from 'lucide-react';
+import { Check, Eye, EyeOff, Loader2, X } from 'lucide-react';
 import {
   createContext,
   useCallback,
@@ -7,6 +7,7 @@ import {
   useEffect,
   useRef,
   useState,
+  type InputHTMLAttributes,
   type ReactNode,
 } from 'react';
 import { Link } from 'react-router-dom';
@@ -74,6 +75,27 @@ export function Field({ label, help, children, className }: { label: string; hel
       {children}
       {help && <p className="help">{help}</p>}
     </label>
+  );
+}
+
+/** Champ mot de passe avec un œil pour afficher ou masquer la saisie. */
+export function PasswordInput({ className, ...props }: Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>) {
+  const [visible, setVisible] = useState(false);
+  const label = visible ? 'Masquer le mot de passe' : 'Afficher le mot de passe';
+  return (
+    <span className="relative block">
+      <input {...props} type={visible ? 'text' : 'password'} className={clsx('input pr-12', className)} />
+      <button
+        type="button"
+        onClick={() => setVisible((v) => !v)}
+        aria-label={label}
+        aria-pressed={visible}
+        title={label}
+        className="absolute inset-y-0 right-0 flex w-12 items-center justify-center rounded-r-xl text-ink-muted transition hover:text-sst-700 focus-visible:text-sst-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sst-300"
+      >
+        {visible ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+      </button>
+    </span>
   );
 }
 

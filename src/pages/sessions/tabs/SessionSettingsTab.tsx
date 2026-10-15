@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { errorMessage, Field, useFeedback } from '../../../components/ui';
 import { useData } from '../../../hooks/useData';
 import { db } from '../../../lib/firebase';
-import type { CasePool, PrivateRun } from '../../../lib/types';
+import { FORMATION_LABELS, formationOf } from '../../../lib/sessions';
+import type { CasePool, FormationType, PrivateRun } from '../../../lib/types';
 import type { SessionBundle } from '../SessionDetail';
 
 export default function SessionSettingsTab({ session, learners, evaluations, readOnly, canEdit }: SessionBundle & { canEdit: boolean }) {
@@ -20,6 +21,7 @@ export default function SessionSettingsTab({ session, learners, evaluations, rea
     endDate: session.endDate,
     tradeId: session.tradeId,
     casePool: session.casePool,
+    formationType: formationOf(session),
   });
 
   const save = async () => {
@@ -114,6 +116,15 @@ export default function SessionSettingsTab({ session, learners, evaluations, rea
           </Field>
           <Field label="Lieu">
             <input className="input" disabled={disabled} value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} />
+          </Field>
+          <Field label="Type de formation">
+            <select className="input" disabled={disabled} value={form.formationType} onChange={(e) => setForm({ ...form, formationType: e.target.value as FormationType })}>
+              {(Object.keys(FORMATION_LABELS) as FormationType[]).map((f) => (
+                <option key={f} value={f}>
+                  {f === 'mac' ? `MAC – ${FORMATION_LABELS.mac}` : FORMATION_LABELS[f]}
+                </option>
+              ))}
+            </select>
           </Field>
           <Field label="Métier">
             <select className="input" disabled={disabled} value={form.tradeId} onChange={(e) => setForm({ ...form, tradeId: e.target.value })}>

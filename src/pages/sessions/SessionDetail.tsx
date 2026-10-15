@@ -8,7 +8,7 @@ import { useData } from '../../hooks/useData';
 import { useCollection, useDocument } from '../../hooks/useFirestore';
 import { db } from '../../lib/firebase';
 import { frDate, frDateTime } from '../../lib/format';
-import { PHASE_LABELS, sessionPhase } from '../../lib/sessions';
+import { FORMATION_LABELS, formationOf, PHASE_LABELS, sessionPhase } from '../../lib/sessions';
 import type { Evaluation, Learner, PrivateRun, Session } from '../../lib/types';
 import LearnersTab from './tabs/LearnersTab';
 import QcmTab from './tabs/QcmTab';
@@ -82,7 +82,7 @@ export default function SessionDetail() {
     <div>
       <PageHeader
         back={{ to: '/sessions', label: 'Sessions' }}
-        kicker={`${tradeById[session.tradeId]?.label ?? 'Métier non défini'}${session.groupName ? ` · ${session.groupName}` : ''}`}
+        kicker={`${formationOf(session) === 'mac' ? `MAC – ${FORMATION_LABELS.mac}` : FORMATION_LABELS.initiale} · ${tradeById[session.tradeId]?.label ?? 'Métier non défini'}${session.groupName ? ` · ${session.groupName}` : ''}`}
         title={session.title}
         subtitle={
           <>
