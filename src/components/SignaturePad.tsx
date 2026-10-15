@@ -57,9 +57,9 @@ function DrawPad({ onChange, height }: { onChange: (dataUrl: string | null) => v
   useEffect(() => {
     const canvas = canvasRef.current!;
     const ratio = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * ratio;
-    canvas.height = rect.height * ratio;
+    // taille de mise en page, insensible à l'animation d'ouverture (scale) de la fenêtre
+    canvas.width = canvas.clientWidth * ratio;
+    canvas.height = canvas.clientHeight * ratio;
     const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
     ctx.scale(ratio, ratio);
     ctx.lineWidth = 2.4;
@@ -69,8 +69,10 @@ function DrawPad({ onChange, height }: { onChange: (dataUrl: string | null) => v
   }, []);
 
   const point = (e: React.PointerEvent) => {
-    const rect = canvasRef.current!.getBoundingClientRect();
-    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    const canvas = canvasRef.current!;
+    const rect = canvas.getBoundingClientRect();
+    // coordonnées rapportées à la taille de mise en page, même si le cadre est mis à l'échelle
+    return { x: ((e.clientX - rect.left) * canvas.clientWidth) / rect.width, y: ((e.clientY - rect.top) * canvas.clientHeight) / rect.height };
   };
 
   const start = (e: React.PointerEvent) => {
@@ -138,11 +140,23 @@ function ImportPad({ onChange, height }: { onChange: (dataUrl: string | null) =>
   const [dragging, setDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // une image lâchée à côté de la zone ne doit pas ouvrir le fichier à la place de l'application
+  useEffect(() => {
+    const block = (e: DragEvent) => e.preventDefault();
+    window.addEventListener('dragover', block);
+    window.addEventListener('drop', block);
+    return () => {
+      window.removeEventListener('dragover', block);
+      window.removeEventListener('drop', block);
+    };
+  }, []);
+
   useEffect(() => {
     if (!file) return;
     let cancelled = false;
     setBusy(true);
     setError(null);
+    onChange(null);
     signatureFromFile(file, { removeBackground: cleanBackground })
       .then((url) => {
         if (cancelled) return;

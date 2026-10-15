@@ -58,10 +58,39 @@ export const C = {
   white: rgb(1, 1, 1),
 };
 
+// Lettres sans décomposition Unicode : remplacées par leur lettre de base si la police ne les a pas.
+const BASE_LETTERS: Record<string, string> = { ł: 'l', Ł: 'L', ı: 'i', đ: 'd', Đ: 'D', ø: 'o', Ø: 'O', ħ: 'h', Ħ: 'H', ŧ: 't', Ŧ: 'T', ß: 'ss', æ: 'ae', Æ: 'AE', œ: 'oe', Œ: 'OE' };
+const charsets = new WeakMap<PDFFont, Set<number>>();
+
+/**
+ * Texte que la police sait afficher : une lettre absente de la police (alphabet rare) est
+ * remplacée par sa lettre de base plutôt que de disparaître du document.
+ */
+export function printable(font: PDFFont, text: string): string {
+  let set = charsets.get(font);
+  if (!set) {
+    set = new Set(font.getCharacterSet());
+    charsets.set(font, set);
+  }
+  const has = (c: string) => [...c].every((ch) => set!.has(ch.codePointAt(0)!));
+  let out = '';
+  for (const ch of text.normalize('NFC')) {
+    if (has(ch) || ch === '\n') out += ch;
+    else {
+      const base = ch.normalize('NFD').replace(/\p{M}/gu, '');
+      if (base && has(base)) out += base;
+      else if (BASE_LETTERS[ch] && has(BASE_LETTERS[ch])) out += BASE_LETTERS[ch];
+      else if (/\s/.test(ch)) out += ' ';
+      else out += '?';
+    }
+  }
+  return out;
+}
+
 /** Découpe un texte en lignes tenant dans `maxWidth`. */
 export function wrap(text: string, font: PDFFont, size: number, maxWidth: number): string[] {
   const out: string[] = [];
-  for (const paragraph of text.split('\n')) {
+  for (const paragraph of printable(font, text).split('\n')) {
     const words = paragraph.split(/\s+/).filter(Boolean);
     let line = '';
     for (const w of words) {
@@ -92,6 +121,7 @@ export class Painter {
   ) {
     const font = opts.font ?? this.fonts.regular;
     const size = opts.size ?? 10;
+    s = printable(font, s);
     const w = font.widthOfTextAtSize(s, size);
     let dx = x;
     if (opts.align === 'center' && opts.width) dx = x + (opts.width - w) / 2;

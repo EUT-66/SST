@@ -11,7 +11,7 @@ import { useDocument } from '../../hooks/useFirestore';
 import { COMPETENCES, COMPETENCE_ORDER, computeCertified } from '../../lib/competences';
 import { db } from '../../lib/firebase';
 import { downloadBlob } from '../../lib/format';
-import { buildGrid, refreshGridDerived, summarize } from '../../lib/grid';
+import { buildGrid, refreshGridDerived, summarize, withProfileSignature } from '../../lib/grid';
 import { gridFileName, schoolYear } from '../../lib/gridFiles';
 import { FORMATION_LABELS, formationOf } from '../../lib/sessions';
 import type { CompetenceId, CompetenceValue, Evaluation, GridState, IndicatorId, IndicatorValue } from '../../lib/types';
@@ -48,9 +48,16 @@ export default function GridEditor() {
   useEffect(() => {
     if (grid || evalDoc.loading || !computed) return;
     const saved = evalDoc.data?.grid;
-    // la signature enregistrée dans le profil est reprise si la grille n'en a pas
-    setGrid(saved ? { ...saved, trainer: { ...saved.trainer, signature: saved.trainer.signature ?? trainer.signature ?? null } } : computed);
-  }, [grid, evalDoc.loading, evalDoc.data, computed, trainer.signature]);
+    setGrid(saved ? withProfileSignature(saved, trainer) : computed);
+  }, [grid, evalDoc.loading, evalDoc.data, computed, trainer]);
+
+  // modifications non enregistrées : prévenir avant de quitter la page
+  useEffect(() => {
+    if (!dirty) return;
+    const warn = (e: BeforeUnloadEvent) => e.preventDefault();
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [dirty]);
 
   if (loading || evalDoc.loading) return <PageLoader />;
   if (!session || !learner) return <EmptyState title="Apprenti introuvable" />;
@@ -62,6 +69,16 @@ export default function GridEditor() {
     setDirty(true);
   };
   const formation = formationOf(session);
+  const openSigning = () => {
+    setNewSignature(null);
+    setKeepInProfile(false);
+    setSigning(true);
+  };
+  const closeSigning = () => {
+    setSigning(false);
+    setNewSignature(null);
+    setKeepInProfile(false);
+  };
   const setIndicator = (id: IndicatorId, v: IndicatorValue) => {
     const current = grid.indicators[id] ?? null;
     edit(refreshGridDerived({ ...grid, indicators: { ...grid.indicators, [id]: current === v ? null : v } }));
@@ -265,11 +282,11 @@ export default function GridEditor() {
                 </div>
                 {!readOnly && (
                   <div className="flex flex-col gap-1">
-                    <button className="btn-secondary btn-sm" onClick={() => setSigning(true)}>
+                    <button className="btn-secondary btn-sm" onClick={openSigning}>
                       <PenLine className="h-4 w-4" /> Signer
                     </button>
                     {grid.trainer.signature && (
-                      <button className="btn-ghost btn-sm" onClick={() => edit({ ...grid, trainer: { ...grid.trainer, signature: null } })}>
+                      <button className="btn-ghost btn-sm" onClick={() => edit({ ...grid, trainer: { ...grid.trainer, signature: '' } })}>
                         Retirer
                       </button>
                     )}
@@ -317,22 +334,24 @@ export default function GridEditor() {
 
       <Modal
         open={signing}
-        onClose={() => setSigning(false)}
+        onClose={closeSigning}
         title="Signature du formateur"
         footer={
           <>
-            <button className="btn-secondary" onClick={() => setSigning(false)}>
+            <button className="btn-secondary" onClick={closeSigning}>
               Annuler
             </button>
             <button
               className="btn-primary"
               disabled={!newSignature}
               onClick={async () => {
-                edit({ ...grid, trainer: { ...grid.trainer, signature: newSignature } });
-                setSigning(false);
-                if (keepInProfile && isMine && newSignature) {
+                const signature = newSignature;
+                const alsoInProfile = keepInProfile && isMine;
+                edit({ ...grid, trainer: { ...grid.trainer, signature } });
+                closeSigning();
+                if (alsoInProfile && signature) {
                   try {
-                    await updateDoc(doc(db, 'users', profile!.uid), { signature: newSignature });
+                    await updateDoc(doc(db, 'users', profile!.uid), { signature });
                     toast('Signature enregistrée aussi dans votre profil');
                   } catch (err) {
                     toast(errorMessage(err), 'error');
@@ -352,7 +371,7 @@ export default function GridEditor() {
               className="btn-secondary btn-sm"
               onClick={() => {
                 edit({ ...grid, trainer: { ...grid.trainer, signature: profile.signature ?? null } });
-                setSigning(false);
+                closeSigning();
               }}
             >
               Utiliser ma signature enregistrée

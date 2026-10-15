@@ -142,9 +142,9 @@ function renderOne(doc: PDFDocument, fonts: Fonts, input: FicheInput) {
   f.title('Bilan par compétence');
   for (const c of COMPETENCE_ORDER) {
     f.ensure(15);
-    const v = summary.competences[c];
+    const v = learner.absent ? null : summary.competences[c];
     p().text(`${c} – ${COMPETENCE_LABELS[c]}`, M, f.y, { size: 9.5 });
-    p().text(v === 'acquise' ? 'Acquise' : v === 'non_acquise' ? 'Non acquise' : 'À évaluer', M + W - 80, f.y, {
+    p().text(learner.absent ? 'Absent' : v === 'acquise' ? 'Acquise' : v === 'non_acquise' ? 'Non acquise' : 'À évaluer', M + W - 80, f.y, {
       font: fonts.bold,
       size: 9.5,
       color: v === 'non_acquise' ? rgb(0.75, 0.15, 0.1) : v === 'acquise' ? GREEN : C.grey,
@@ -155,7 +155,14 @@ function renderOne(doc: PDFDocument, fonts: Fonts, input: FicheInput) {
   }
   f.ensure(30);
   f.y += 6;
-  const result = summary.certified === true ? 'Candidat certifié' : summary.certified === false ? 'Candidat non certifié' : 'Certification à finaliser';
-  p().rect(M, f.y, W, 24, { border: 0, fill: summary.certified ? GREEN : LIGHT });
-  p().text(result, M, f.y + 6, { font: fonts.bold, size: 12, color: summary.certified ? C.white : C.ink, align: 'center', width: W });
+  const certified = !learner.absent && summary.certified === true;
+  const result = learner.absent
+    ? 'Candidat absent – non évalué'
+    : summary.certified === true
+      ? 'Candidat certifié'
+      : summary.certified === false
+        ? 'Candidat non certifié'
+        : 'Certification à finaliser';
+  p().rect(M, f.y, W, 24, { border: 0, fill: certified ? GREEN : LIGHT });
+  p().text(result, M, f.y + 6, { font: fonts.bold, size: 12, color: certified ? C.white : C.ink, align: 'center', width: W });
 }

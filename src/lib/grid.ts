@@ -216,6 +216,19 @@ export function buildGrid(params: {
   };
 }
 
+const personKey = (p: { firstName?: string; lastName?: string }) =>
+  `${p.lastName ?? ''} ${p.firstName ?? ''}`.normalize('NFD').replace(/\p{M}/gu, '').replace(/[\s'’-]+/g, ' ').trim().toLowerCase();
+
+/**
+ * Reprend la signature du profil sur une grille enregistrée qui n'en a pas encore. Une signature
+ * retirée volontairement (chaîne vide) n'est pas remise, ni sur une grille au nom d'un autre formateur.
+ */
+export function withProfileSignature(grid: GridState, trainer: Pick<UserProfile, 'firstName' | 'lastName' | 'signature'> | null): GridState {
+  if (grid.trainer.signature != null || !trainer?.signature) return grid;
+  if (personKey(grid.trainer) !== personKey(trainer)) return grid;
+  return { ...grid, trainer: { ...grid.trainer, signature: trainer.signature } };
+}
+
 /** Recalcule compétences et certification après modification des indicateurs de la grille. */
 export function refreshGridDerived(grid: GridState): GridState {
   const competences = computeAllCompetences(grid.indicators);
@@ -232,11 +245,7 @@ export function gridForLearner(params: {
   trainer: Pick<UserProfile, 'firstName' | 'lastName' | 'signature'> | null;
 }): GridState {
   const { learner, session, evaluation, caseData, settings, trainer } = params;
-  // la signature enregistrée dans le profil est reprise si la grille n'en a pas
-  if (evaluation?.grid) {
-    const g = evaluation.grid;
-    return g.trainer.signature || !trainer?.signature ? g : { ...g, trainer: { ...g.trainer, signature: trainer.signature } };
-  }
+  if (evaluation?.grid) return withProfileSignature(evaluation.grid, trainer);
   const ev: Evaluation = evaluation ?? { learnerId: learner.id, actions: {}, prevention: {}, manual: {} };
   return buildGrid({ learner, session, trainer, summary: summarize(caseData, ev, settings) });
 }

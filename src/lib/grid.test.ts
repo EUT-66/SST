@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { computeAllCompetences, computeCertified } from './competences';
-import { proposeIndicators, summarize } from './grid';
+import { proposeIndicators, summarize, withProfileSignature } from './grid';
 import { archiveYear, availableCases, sessionPhase } from './sessions';
 import type { Evaluation, PracticalCase } from './types';
 
@@ -96,5 +96,32 @@ describe('sessions', () => {
     const s = { tradeId: 'mit', casePool: 'both' as const, drawnCaseIds: ['k'] };
     expect(availableCases([kase, vq, other], s).map((c) => c.id)).toEqual(['vq']);
     expect(availableCases([kase, vq, other], { ...s, drawnCaseIds: [], casePool: 'metier' }).map((c) => c.id)).toEqual(['k']);
+  });
+});
+
+describe('signature reprise du profil', () => {
+  const base = {
+    candidate: { lastName: 'DUPONT', firstName: 'Léa', birthDate: '' },
+    session: { from: '', to: '' },
+    indicators: {},
+    competences: {},
+    certified: null,
+    certificationDate: '',
+  };
+  const profile = { firstName: 'Élodie', lastName: 'MARTIN', signature: 'data:image/png;base64,AAA' };
+
+  it('complète une grille enregistrée sans signature', () => {
+    const g = withProfileSignature({ ...base, trainer: { firstName: 'Elodie', lastName: 'Martin', signature: null } }, profile);
+    expect(g.trainer.signature).toBe(profile.signature);
+  });
+
+  it('ne remet pas une signature retirée volontairement', () => {
+    const g = withProfileSignature({ ...base, trainer: { firstName: 'Élodie', lastName: 'MARTIN', signature: '' } }, profile);
+    expect(g.trainer.signature).toBe('');
+  });
+
+  it('ne signe pas une grille au nom d’un autre formateur', () => {
+    const g = withProfileSignature({ ...base, trainer: { firstName: 'Karim', lastName: 'BENSAÏD', signature: null } }, profile);
+    expect(g.trainer.signature).toBeNull();
   });
 });

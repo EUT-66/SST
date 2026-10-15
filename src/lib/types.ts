@@ -271,6 +271,7 @@ export interface GridState {
   indicators: Partial<Record<IndicatorId, IndicatorValue>>;
   competences: Partial<Record<CompetenceId, CompetenceValue>>;
   certified: boolean | null;
+  /** signature : PNG en data URL ; chaîne vide = retirée volontairement de cette grille. */
   trainer: { lastName: string; firstName: string; signature?: string | null };
   certificationDate: string;
 }

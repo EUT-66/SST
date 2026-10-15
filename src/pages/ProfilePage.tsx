@@ -3,7 +3,7 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { PenLine, Save } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import SignaturePad from '../components/SignaturePad';
-import { errorMessage, Field, PageHeader, PasswordInput, useFeedback } from '../components/ui';
+import { errorMessage, Field, PageHeader, PasswordField, useFeedback } from '../components/ui';
 import { useAuth } from '../hooks/useAuth';
 import { auth, db } from '../lib/firebase';
 import { ROLE_LABELS } from '../lib/permissions';
@@ -136,9 +136,7 @@ export default function ProfilePage() {
 
         <form onSubmit={changePassword} className="card space-y-4 p-6">
           <h2 className="section-title">Mot de passe</h2>
-          <Field label="Nouveau mot de passe" help="8 caractères minimum.">
-            <PasswordInput minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
-          </Field>
+          <PasswordField label="Nouveau mot de passe" help="8 caractères minimum." minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
           <button className="btn-secondary" disabled={password.length < 8}>
             Modifier le mot de passe
           </button>

@@ -5,7 +5,7 @@ import { degrees, rgb, type PDFDocument, type PDFEmbeddedPage, type PDFFont, typ
 import { COMPETENCE_ORDER } from '../competences';
 import { frDate } from '../format';
 import type { CompetenceId, FormationType, GridState, IndicatorId } from '../types';
-import { A4, createDoc, embedDataUrl, type FontFiles, type Fonts } from './kit';
+import { A4, createDoc, embedDataUrl, printable, type FontFiles, type Fonts } from './kit';
 
 export interface GridPdfItem {
   grid: GridState;
@@ -154,13 +154,21 @@ function competenceMark(page: PDFPage, x: number, y: number) {
   page.drawRectangle({ x: x + 2.16, y: y + 1.68, width: 6.72, height: 3.96, color: BLACK });
 }
 
-/** Texte d'un champ, en Calibri gras 11 comme le formulaire ; réduit s'il est trop long. */
-function fieldText(page: PDFPage, field: TextField, value: string, font: PDFFont) {
-  const text = value.trim();
-  if (!text) return;
-  const max = field.right - field.x - 4;
+/** Texte d'un champ, en Calibri gras 11 comme le formulaire ; réduit, puis tronqué, s'il est trop long. */
+export function fitFieldText(value: string, font: PDFFont, maxWidth: number): { text: string; size: number } {
+  let text = printable(font, value.replace(/\s+/g, ' ').trim());
   let size = 11;
-  while (size > 6 && font.widthOfTextAtSize(text, size) > max) size -= 0.5;
+  while (size > 7 && font.widthOfTextAtSize(text, size) > maxWidth) size -= 0.5;
+  if (font.widthOfTextAtSize(text, size) > maxWidth) {
+    while (text.length > 1 && font.widthOfTextAtSize(`${text}…`, size) > maxWidth) text = text.slice(0, -1).trimEnd();
+    text = `${text}…`;
+  }
+  return { text, size };
+}
+
+function fieldText(page: PDFPage, field: TextField, value: string, font: PDFFont) {
+  if (!value.trim()) return;
+  const { text, size } = fitFieldText(value, font, field.right - field.x - 4);
   page.drawText(text, { x: field.x + 2, y: field.baseline, size, font, color: BLACK });
 }
 

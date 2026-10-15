@@ -39,3 +39,21 @@ describe('grille PDF', () => {
     if (process.env.GRID_PDF_OUT) writeFileSync(process.env.GRID_PDF_OUT, bytes);
   });
 });
+
+describe('textes des champs de la grille', () => {
+  it('garde les lettres accentuées des noms étrangers et tronque un nom démesuré', async () => {
+    const { createDoc } = await import('./kit');
+    const { fitFieldText } = await import('./gridPdf');
+    const { fonts } = await createDoc('test', fontFiles);
+    const charset = new Set(fonts.bold.getCharacterSet());
+    for (const ch of 'Şükrü Łukasz Ștefan Kılıç Nguyễn Dvořák Ćosić') {
+      if (ch !== ' ') expect(charset.has(ch.codePointAt(0)!), ch).toBe(true);
+    }
+    expect(fitFieldText('Şükrü', fonts.bold, 200)).toEqual({ text: 'Şükrü', size: 11 });
+    // caractère absent de la police : lettre de base plutôt qu'un blanc
+    expect(fitFieldText('AഅB', fonts.bold, 200).text).toBe('A?B');
+    const long = fitFieldText('W'.repeat(120), fonts.bold, 213);
+    expect(long.text.endsWith('…')).toBe(true);
+    expect(fonts.bold.widthOfTextAtSize(long.text, long.size)).toBeLessThanOrEqual(213);
+  });
+});

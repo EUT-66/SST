@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useId,
   useRef,
   useState,
   type InputHTMLAttributes,
@@ -78,24 +79,37 @@ export function Field({ label, help, children, className }: { label: string; hel
   );
 }
 
-/** Champ mot de passe avec un œil pour afficher ou masquer la saisie. */
-export function PasswordInput({ className, ...props }: Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>) {
+/**
+ * Champ mot de passe avec un œil pour afficher ou masquer la saisie. Le bouton est hors du
+ * libellé, pour que le nom du champ reste « Mot de passe » pour les lecteurs d'écran.
+ */
+export function PasswordField({ label, help, className, ...props }: { label: string; help?: ReactNode } & Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'id'>) {
+  const id = useId();
   const [visible, setVisible] = useState(false);
-  const label = visible ? 'Masquer le mot de passe' : 'Afficher le mot de passe';
   return (
-    <span className="relative block">
-      <input {...props} type={visible ? 'text' : 'password'} className={clsx('input pr-12', className)} />
-      <button
-        type="button"
-        onClick={() => setVisible((v) => !v)}
-        aria-label={label}
-        aria-pressed={visible}
-        title={label}
-        className="absolute inset-y-0 right-0 flex w-12 items-center justify-center rounded-r-xl text-ink-muted transition hover:text-sst-700 focus-visible:text-sst-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sst-300"
-      >
-        {visible ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-      </button>
-    </span>
+    <div className={className}>
+      <label htmlFor={id} className="label">
+        {label}
+      </label>
+      <div className="relative">
+        <input {...props} id={id} type={visible ? 'text' : 'password'} aria-describedby={help ? `${id}-aide` : undefined} className="input pr-12" />
+        <button
+          type="button"
+          onClick={() => setVisible((v) => !v)}
+          aria-label={visible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+          aria-controls={id}
+          title={visible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+          className="absolute inset-y-0 right-0 flex w-12 items-center justify-center rounded-r-xl text-ink-muted transition hover:text-sst-700 focus-visible:text-sst-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sst-300"
+        >
+          {visible ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+        </button>
+      </div>
+      {help && (
+        <p id={`${id}-aide`} className="help">
+          {help}
+        </p>
+      )}
+    </div>
   );
 }
 

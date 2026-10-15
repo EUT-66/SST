@@ -10,7 +10,7 @@ import { Clock, HeartPulse, ShieldCheck } from 'lucide-react';
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Logo } from '../../components/Layout';
-import { errorMessage, Field, PasswordInput, Spinner } from '../../components/ui';
+import { errorMessage, Field, PasswordField, Spinner } from '../../components/ui';
 import { useAuth } from '../../hooks/useAuth';
 import { auth, db } from '../../lib/firebase';
 import type { UserProfile } from '../../lib/types';
@@ -90,9 +90,7 @@ export function LoginPage() {
         <Field label="E-mail">
           <input className="input" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
         </Field>
-        <Field label="Mot de passe">
-          <PasswordInput autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} />
-        </Field>
+        <PasswordField label="Mot de passe" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} />
         {error && <p className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
         {info && <p className="rounded-xl bg-sst-50 px-3 py-2 text-sm text-sst-800">{info}</p>}
         <button className="btn-primary w-full" disabled={busy}>
@@ -198,9 +196,7 @@ export function RegisterPage() {
         <Field label="E-mail">
           <input className="input" type="email" required value={form.email} onChange={set('email')} autoComplete="email" />
         </Field>
-        <Field label="Mot de passe" help="8 caractères minimum.">
-          <PasswordInput required minLength={8} value={form.password} onChange={set('password')} autoComplete="new-password" />
-        </Field>
+        <PasswordField label="Mot de passe" help="8 caractères minimum." required minLength={8} value={form.password} onChange={set('password')} autoComplete="new-password" />
         {error && <p className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
         <button className="btn-primary w-full" disabled={busy}>
           {busy && <Spinner className="h-4 w-4 text-white" />} Envoyer ma demande
