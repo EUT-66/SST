@@ -269,6 +269,16 @@ export function PendingPage() {
           ? 'Votre accès a été désactivé. Contactez l’administratrice si vous pensez qu’il s’agit d’une erreur.'
           : `Bonjour ${profile?.firstName ?? ''}, votre compte a bien été créé. L’administratrice doit maintenant valider votre accès formateur. Cette page se mettra à jour automatiquement.`}
       </p>
+      {profile?.email && (
+        <p className="mt-4 rounded-xl bg-slate-50 px-3 py-2 text-sm text-ink-soft">
+          Compte : <strong>{profile.email}</strong>
+        </p>
+      )}
+      {!disabled && (
+        <p className="mt-4 text-sm text-ink-muted">
+          Vous avez déjà un compte avec une autre adresse e-mail ? Déconnectez-vous, puis utilisez « Se connecter » avec cette adresse : une nouvelle demande d’accès crée un nouveau compte.
+        </p>
+      )}
       <button className="btn-secondary mt-8 w-full" onClick={() => signOut()}>
         Se déconnecter
       </button>
