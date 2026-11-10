@@ -75,7 +75,7 @@ export default function SessionSettingsTab({ session, learners, evaluations, rea
     });
     if (!ok) return;
     try {
-      for (const sub of ['learners', 'evaluations', 'runs']) {
+      for (const sub of ['learners', 'evaluations', 'runs', 'training']) {
         const snap = await getDocs(collection(db, 'sessions', session.id, sub));
         for (let i = 0; i < snap.docs.length; i += 400) {
           const batch = writeBatch(db);

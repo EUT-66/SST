@@ -112,6 +112,13 @@ describe('sessions', () => {
     await assertFails(updateDoc(doc(user('f1'), 'sessions', 's1'), { trainerId: 'f2' }));
     await assertSucceeds(deleteDoc(doc(user('f1'), 'sessions', 's1', 'learners', 'l1')));
   });
+
+  it('l’entraînement à la mise en pratique reste propre à la session du formateur', async () => {
+    const data = { series: 1, passages: [{ learnerId: 'l1', caseId: 'c1', at: 1 }], usedCaseIds: ['c1'], casePool: 'both', avoidCertificationCases: true, updatedAt: 1 };
+    await assertSucceeds(setDoc(doc(user('f1'), 'sessions', 's1', 'training', 'current'), data));
+    await assertFails(setDoc(doc(user('f2'), 'sessions', 's1', 'training', 'current'), data));
+    await assertFails(getDoc(doc(user('f2'), 'sessions', 's1', 'training', 'current')));
+  });
 });
 
 describe('QCM à distance', () => {

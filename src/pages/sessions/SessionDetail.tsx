@@ -1,5 +1,5 @@
 import { doc, updateDoc } from 'firebase/firestore';
-import { Award, Dices, ListChecks, Lock, Settings, Unlock, Users } from 'lucide-react';
+import { Award, Dices, Dumbbell, ListChecks, Lock, Settings, Unlock, Users } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { EmptyState, errorMessage, PageHeader, PageLoader, Tabs, useFeedback } from '../../components/ui';
@@ -94,9 +94,14 @@ export default function SessionDetail() {
         }
         actions={
           !readOnly && (
-            <Link to={`/sessions/${session.id}/tirage`} className="btn-primary">
-              <Dices className="h-4 w-4" /> Tirage au sort
-            </Link>
+            <>
+              <Link to={`/sessions/${session.id}/entrainement`} className="btn-secondary" title="Roue et cas au hasard, sans effet sur la certification">
+                <Dumbbell className="h-4 w-4" /> Entraînement
+              </Link>
+              <Link to={`/sessions/${session.id}/tirage`} className="btn-primary">
+                <Dices className="h-4 w-4" /> Tirage au sort
+              </Link>
+            </>
           )
         }
       />

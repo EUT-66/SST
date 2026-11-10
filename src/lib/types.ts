@@ -224,6 +224,25 @@ export interface Session {
   updatedAt?: number;
 }
 
+/** Passage d'un apprenti à l'entraînement (sans effet sur la certification). */
+export interface TrainingPassage {
+  learnerId: string;
+  caseId: string | null;
+  at: number;
+}
+
+/** Entraînement à la mise en pratique : sessions/{id}/training/current. */
+export interface TrainingDraw {
+  series: number;
+  passages: TrainingPassage[];
+  /** Cas déjà joués à l'entraînement : ils ne reviennent qu'une fois tous joués. */
+  usedCaseIds: string[];
+  casePool: CasePool;
+  /** Ne pas proposer les cas déjà tirés pour la certification. */
+  avoidCertificationCases: boolean;
+  updatedAt: number;
+}
+
 export interface Learner {
   id: string;
   lastName: string;

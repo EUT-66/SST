@@ -3,6 +3,7 @@ import { ArrowLeft, ClipboardCheck, Dices, Eye, EyeOff, Maximize, RotateCcw, Shu
 import { useCallback, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import CasePicker from '../../components/CasePicker';
+import Confetti from '../../components/Confetti';
 import { errorMessage, Modal, PageLoader, useFeedback } from '../../components/ui';
 import Wheel, { type WheelItem } from '../../components/Wheel';
 import { useData } from '../../hooks/useData';
@@ -202,26 +203,6 @@ export default function DrawPage() {
           « Ordre seulement » remet tous les apprentis dans la roue en gardant leurs cas. « Ordre et cas » retire aussi les cas attribués et les remet tous en jeu (les évaluations déjà saisies ne sont pas supprimées).
         </p>
       </Modal>
-    </div>
-  );
-}
-
-function Confetti() {
-  const pieces = useMemo(
-    () =>
-      Array.from({ length: 40 }, (_, i) => ({
-        left: `${(i * 37) % 100}%`,
-        delay: `${(i % 10) * 0.08}s`,
-        color: ['#279d5f', '#f2a900', '#82d3a5', '#ffffff', '#16663e'][i % 5],
-        size: 6 + (i % 4) * 2,
-      })),
-    [],
-  );
-  return (
-    <div className="pointer-events-none absolute inset-x-0 top-0 h-full overflow-hidden">
-      {pieces.map((p, i) => (
-        <span key={i} className="confetti absolute top-10 rounded-sm" style={{ left: p.left, animationDelay: p.delay, background: p.color, width: p.size, height: p.size * 1.6 }} />
-      ))}
     </div>
   );
 }

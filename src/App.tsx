@@ -14,6 +14,7 @@ const SessionDetail = lazy(() => import('./pages/sessions/SessionDetail'));
 const LearnerEvaluation = lazy(() => import('./pages/sessions/LearnerEvaluation'));
 const GridEditor = lazy(() => import('./pages/sessions/GridEditor'));
 const DrawPage = lazy(() => import('./pages/sessions/DrawPage'));
+const TrainingDrawPage = lazy(() => import('./pages/sessions/TrainingDrawPage'));
 const LocalQuiz = lazy(() => import('./pages/sessions/LocalQuiz'));
 const CoursesList = lazy(() => import('./pages/courses/CoursesList'));
 const CourseViewer = lazy(() => import('./pages/courses/CourseViewer'));
@@ -63,6 +64,7 @@ export default function App() {
         <Route path="/apprenti/:code" element={<JoinPage />} />
 
         <Route path="/sessions/:sid/tirage" element={<RequireStaff><DrawPage /></RequireStaff>} />
+        <Route path="/sessions/:sid/entrainement" element={<RequireStaff><TrainingDrawPage /></RequireStaff>} />
         <Route path="/sessions/:sid/passation" element={<RequireStaff><LocalQuiz /></RequireStaff>} />
         <Route path="/cours/:cid/presentation" element={<RequireStaff><CourseViewer presentation /></RequireStaff>} />
 
