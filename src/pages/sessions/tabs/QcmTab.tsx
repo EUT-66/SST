@@ -1,13 +1,14 @@
 import clsx from 'clsx';
 import { orderBy } from 'firebase/firestore';
-import { CheckCircle2, Copy, Lock, MonitorSmartphone, Play, Smartphone, Trash2, Unlock, Wifi } from 'lucide-react';
+import { CheckCircle2, Copy, Download, Lock, Maximize, MonitorSmartphone, Play, QrCode as QrIcon, Smartphone, Trash2, Unlock, Wifi, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import QrCode, { qrPng } from '../../../components/QrCode';
 import { useNavigate } from 'react-router-dom';
 import { EmptyState, errorMessage, Field, Modal, useFeedback } from '../../../components/ui';
 import { useAuth } from '../../../hooks/useAuth';
 import { useData } from '../../../hooks/useData';
 import { useCollection } from '../../../hooks/useFirestore';
-import { frDateTime } from '../../../lib/format';
+import { downloadBlob, frDateTime } from '../../../lib/format';
 import { pickBalanced, questionMatchesTrade } from '../../../lib/quiz';
 import { applySubmissions, createRun, deleteRun, deleteSubmission, resultFor, setRunOpen } from '../../../lib/runOps';
 import type { PrivateRun, QuizType, Submission } from '../../../lib/types';
@@ -166,6 +167,7 @@ function RunCard({ run, session, learners, readOnly }: SessionBundle & { run: Pr
   const applied = new Set(run.appliedLearnerIds ?? []);
   const nameById = Object.fromEntries(learners.map((l) => [l.id, `${l.lastName} ${l.firstName}`]));
   const joinUrl = `${window.location.origin}/apprenti/${run.code}`;
+  const [projecting, setProjecting] = useState(false);
 
   // Les résultats d'évaluation reçus sont reportés automatiquement dans les évaluations.
   const pendingCount = subs.data.filter((s) => !applied.has(s.learnerId)).length;
@@ -218,10 +220,26 @@ function RunCard({ run, session, learners, readOnly }: SessionBundle & { run: Pr
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {run.code && (
-            <div className="rounded-2xl bg-sst-700 px-4 py-2 text-center text-white">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-sst-200">Code</p>
-              <p className="font-mono text-2xl font-extrabold tracking-[0.2em]">{run.code}</p>
-            </div>
+            <>
+              <button
+                type="button"
+                onClick={() => setProjecting(true)}
+                title="Afficher le QR code en grand"
+                aria-label="Afficher le QR code en grand"
+                className="rounded-xl border border-slate-200 bg-white p-1 transition hover:border-sst-400 hover:shadow"
+              >
+                <QrCode value={joinUrl} label={`QR code du QCM ${run.code}`} className="h-[60px] w-[60px]" />
+              </button>
+              <div className="rounded-2xl bg-sst-700 px-4 py-2 text-center text-white">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-sst-200">Code</p>
+                <p className="font-mono text-2xl font-extrabold tracking-[0.2em]">{run.code}</p>
+              </div>
+            </>
+          )}
+          {run.code && (
+            <button className="btn-secondary btn-sm" onClick={() => setProjecting(true)}>
+              <QrIcon className="h-4 w-4" /> QR code
+            </button>
           )}
           {!readOnly && (
             <>
@@ -246,11 +264,12 @@ function RunCard({ run, session, learners, readOnly }: SessionBundle & { run: Pr
           )}
         </div>
       </div>
+      {projecting && run.code && <JoinScreen title={run.title} code={run.code} url={joinUrl} open={run.open} onClose={() => setProjecting(false)} />}
       {run.code && (
         <div className="p-5">
           {run.open && (
             <p className="mb-3 text-sm text-ink-soft">
-              Les apprentis ouvrent <strong>{window.location.host}/apprenti</strong> et saisissent le code <strong>{run.code}</strong>.
+              Les apprentis scannent le QR code avec l’appareil photo de leur téléphone, ou ouvrent <strong>{window.location.host}/apprenti</strong> et saisissent le code <strong>{run.code}</strong>.
             </p>
           )}
           {subs.data.length === 0 ? (
@@ -300,6 +319,51 @@ function RunCard({ run, session, learners, readOnly }: SessionBundle & { run: Pr
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+/** QR code et code d'accès en grand, à projeter au tableau. */
+function JoinScreen({ title, code, url, open, onClose }: { title: string; code: string; url: string; open: boolean; onClose: () => void }) {
+  const { toast } = useFeedback();
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
+    };
+  }, [onClose]);
+
+  const download = async () => {
+    try {
+      downloadBlob(await qrPng(url), `QR code QCM ${code}.png`, 'image/png');
+    } catch (err) {
+      toast(errorMessage(err), 'error');
+    }
+  };
+
+  return (
+    <div role="dialog" aria-modal="true" aria-label={`QR code du QCM ${code}`} className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 overflow-auto bg-white p-6 text-center">
+      <div className="absolute right-4 top-4 flex gap-2">
+        <button className="btn-ghost btn-sm" onClick={download}>
+          <Download className="h-4 w-4" /> Image
+        </button>
+        <button className="btn-ghost btn-sm" onClick={() => document.documentElement.requestFullscreen?.().catch(() => undefined)}>
+          <Maximize className="h-4 w-4" /> Plein écran
+        </button>
+        <button className="btn-secondary btn-sm" onClick={onClose} aria-label="Fermer">
+          <X className="h-4 w-4" /> Fermer
+        </button>
+      </div>
+      <p className="kicker">{title}</p>
+      <h2 className="font-display text-3xl font-extrabold sm:text-4xl">Scanne le QR code avec ton téléphone</h2>
+      {!open && <p className="rounded-xl bg-amber-50 px-3 py-1.5 text-sm font-semibold text-amber-800">Ce QCM est fermé : rouvrez-le pour que les apprentis puissent répondre.</p>}
+      <QrCode value={url} label={`QR code vers ${url}`} className="h-[min(58vh,82vw)] w-[min(58vh,82vw)]" />
+      <p className="text-lg text-ink-soft">
+        ou va sur <strong>{window.location.host}/apprenti</strong> et tape le code
+      </p>
+      <p className="font-mono text-5xl font-extrabold tracking-[0.25em] text-sst-700 sm:text-6xl">{code}</p>
     </div>
   );
 }
