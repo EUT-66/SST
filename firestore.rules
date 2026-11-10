@@ -61,6 +61,9 @@ service cloud.firestore {
         (
           can('manageUsers')
           && (isAdmin() || (resource.data.role != 'admin' && request.resource.data.role != 'admin'))
+          // personne, admin compris, ne modifie son propre rôle : évite de perdre l'accès par erreur
+          && (request.auth.uid != uid
+              || !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'permissions']))
         )
         || (
           request.auth.uid == uid

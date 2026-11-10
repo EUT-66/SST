@@ -5,7 +5,7 @@ import { PageLoader } from './components/ui';
 import { useAuth } from './hooks/useAuth';
 import { DataProvider } from './hooks/useData';
 import type { Permission } from './lib/types';
-import { CompleteProfilePage, LoginPage, PendingPage, RegisterPage } from './pages/auth/AuthPages';
+import { CompleteProfilePage, LoginPage, PendingPage, ProfileErrorPage, RegisterPage } from './pages/auth/AuthPages';
 
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const SessionsList = lazy(() => import('./pages/sessions/SessionsList'));
@@ -29,10 +29,11 @@ const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const JoinPage = lazy(() => import('./pages/learner/JoinPage'));
 
 function RequireStaff({ children }: { children: ReactNode }) {
-  const { firebaseUser, profile, loading, isStaff } = useAuth();
+  const { firebaseUser, profile, profileError, loading, isStaff } = useAuth();
   const location = useLocation();
   if (loading) return <PageLoader />;
   if (!firebaseUser || firebaseUser.isAnonymous) return <Navigate to="/connexion" state={{ from: location }} replace />;
+  if (!profile && profileError) return <ProfileErrorPage />;
   if (!profile) return <CompleteProfilePage />;
   if (!isStaff) return <PendingPage />;
   return <DataProvider>{children}</DataProvider>;

@@ -47,6 +47,14 @@ describe('inscription et premier administrateur', () => {
     await assertSucceeds(updateDoc(doc(b, 'users', 'bob'), { firstName: 'Robert', signature: 'data:image/png;base64,xx' }));
   });
 
+  it('une administratrice ne peut pas se retirer ses propres droits, même par une réinscription', async () => {
+    await seedUser('admin', 'admin');
+    const a = user('admin');
+    await assertFails(updateDoc(doc(a, 'users', 'admin'), { role: 'pending' }));
+    await assertFails(setDoc(doc(a, 'users', 'admin'), { uid: 'admin', email: 'admin@ex.fr', role: 'pending', firstName: 'A', lastName: 'A' }));
+    await assertSucceeds(updateDoc(doc(a, 'users', 'admin'), { signature: 'data:image/png;base64,xx' }));
+  });
+
   it('seul un admin valide un compte ; un gestionnaire non admin ne peut pas créer d’admin', async () => {
     await seedUser('admin', 'admin');
     await seedUser('ref', 'referent', { manageUsers: true });

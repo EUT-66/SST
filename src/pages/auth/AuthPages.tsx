@@ -5,7 +5,7 @@ import {
   updateProfile,
   type User,
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, writeBatch } from 'firebase/firestore';
+import { doc, getDoc, getDocFromServer, runTransaction, writeBatch } from 'firebase/firestore';
 import { Clock, HeartPulse, ShieldCheck } from 'lucide-react';
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -118,8 +118,14 @@ export function LoginPage() {
   );
 }
 
-/** Crée la fiche utilisateur : le tout premier compte devient administrateur. */
+/**
+ * Crée la fiche utilisateur : le tout premier compte devient administrateur.
+ * Une fiche qui existe déjà n'est jamais remplacée (elle porte le rôle et la signature).
+ */
 export async function createProfile(user: User, firstName: string, lastName: string): Promise<UserProfile> {
+  const ref = doc(db, 'users', user.uid);
+  const existing = await getDocFromServer(ref);
+  if (existing.exists()) return { ...(existing.data() as UserProfile), uid: user.uid };
   const base = {
     uid: user.uid,
     email: user.email ?? '',
@@ -142,8 +148,13 @@ export async function createProfile(user: User, firstName: string, lastName: str
     }
   }
   const profile: UserProfile = { ...base, role: 'pending' };
-  await setDoc(doc(db, 'users', user.uid), profile);
-  return profile;
+  // création seule : échoue si la fiche est apparue entre-temps, au lieu de l'écraser
+  return runTransaction(db, async (tx) => {
+    const snap = await tx.get(ref);
+    if (snap.exists()) return { ...(snap.data() as UserProfile), uid: user.uid };
+    tx.set(ref, profile);
+    return profile;
+  });
 }
 
 export function RegisterPage() {
@@ -251,6 +262,23 @@ export function CompleteProfilePage() {
           Se déconnecter
         </button>
       </form>
+    </AuthShell>
+  );
+}
+
+/** La fiche du compte n'a pas pu être lue : on propose de réessayer, sans rien réécrire. */
+export function ProfileErrorPage() {
+  const { signOut } = useAuth();
+  return (
+    <AuthShell>
+      <h2 className="text-2xl font-extrabold">Connexion interrompue</h2>
+      <p className="mt-2 text-sm text-ink-muted">Votre compte n’a pas pu être chargé, sans doute à cause du réseau. Vérifiez la connexion Internet, puis réessayez.</p>
+      <button className="btn-primary mt-8 w-full" onClick={() => window.location.reload()}>
+        Réessayer
+      </button>
+      <button className="btn-ghost mt-2 w-full" onClick={() => signOut()}>
+        Se déconnecter
+      </button>
     </AuthShell>
   );
 }
