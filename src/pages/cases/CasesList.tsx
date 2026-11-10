@@ -8,13 +8,14 @@ import { useData } from '../../hooks/useData';
 export default function CasesList() {
   const { cases, trades, tradeById } = useData();
   const { can } = useAuth();
-  const [filters, setFilters] = useState({ q: '', trade: '', category: '' });
+  const [filters, setFilters] = useState({ q: '', trade: '', category: '', usage: '' });
 
   const list = useMemo(() => {
     const q = filters.q.trim().toLowerCase();
     return cases
       .filter((c) => !filters.trade || c.tradeIds.includes(filters.trade) || (filters.trade === 'tous' && c.tradeIds.length === 0))
       .filter((c) => !filters.category || c.category === filters.category)
+      .filter((c) => !filters.usage || (filters.usage === 'entrainement') === !!c.trainingOnly)
       .filter((c) => !q || `${c.title} ${c.geste} ${c.scenario}`.toLowerCase().includes(q));
   }, [cases, filters]);
 
@@ -60,6 +61,11 @@ export default function CasesList() {
           <option value="metier">Situations de travail</option>
           <option value="vie_quotidienne">Vie quotidienne</option>
         </select>
+        <select className="input lg:w-56" value={filters.usage} onChange={(e) => setFilters({ ...filters, usage: e.target.value })}>
+          <option value="">Examen et entraînement</option>
+          <option value="certification">Cas d’examen</option>
+          <option value="entrainement">Cas d’entraînement</option>
+        </select>
       </div>
       {groups.length === 0 ? (
         <EmptyState icon={<Briefcase />} title="Aucun cas pratique" />
@@ -79,6 +85,7 @@ export default function CasesList() {
                       <span className="block text-sm text-ink-muted">{c.geste}</span>
                       <span className="mt-2 flex flex-wrap gap-1">
                         {c.category === 'vie_quotidienne' && <span className="badge-blue">Vie quotidienne</span>}
+                        {c.trainingOnly && <span className="badge-gray">Entraînement</span>}
                         {!c.reviewed && <span className="badge-amber">À relire</span>}
                       </span>
                     </span>

@@ -2,20 +2,26 @@
 // certification, mais rien n'est écrit sur les apprentis, les évaluations ou la session.
 import { doc, runTransaction } from 'firebase/firestore';
 import { db } from './firebase';
-import { randomInt } from './format';
+import { randomInt, shuffle } from './format';
 import { caseMatchesPool } from './sessions';
 import type { PracticalCase, Session, TrainingDraw } from './types';
 
 export const trainingPath = (sessionId: string) => `sessions/${sessionId}/training/current`;
 
 export function emptyTraining(session: Pick<Session, 'casePool'>): TrainingDraw {
-  return { series: 1, passages: [], usedCaseIds: [], casePool: session.casePool ?? 'both', avoidCertificationCases: true, updatedAt: 0 };
+  return { series: 1, passages: [], usedCaseIds: [], casePool: session.casePool ?? 'both', source: 'entrainement', avoidCertificationCases: true, updatedAt: 0 };
 }
 
-/** Cas jouables à l'entraînement pour cette session (métier et type de cas choisis). */
+/**
+ * Cas jouables à l'entraînement pour cette session (métier et type de cas choisis). Par défaut,
+ * les cas réservés à l'entraînement ; s'il n'y en a aucun pour ce métier, tous les cas.
+ */
 export function trainingPool(cases: PracticalCase[], session: Pick<Session, 'tradeId' | 'drawnCaseIds'>, state: TrainingDraw): PracticalCase[] {
   const certification = new Set(session.drawnCaseIds ?? []);
-  return cases.filter((c) => caseMatchesPool(c, session.tradeId, state.casePool) && !(state.avoidCertificationCases && certification.has(c.id)));
+  const eligible = cases.filter((c) => caseMatchesPool(c, session.tradeId, state.casePool) && !(state.avoidCertificationCases && certification.has(c.id)));
+  if (state.source === 'tous') return eligible;
+  const reserved = eligible.filter((c) => c.trainingOnly);
+  return reserved.length ? reserved : eligible;
 }
 
 /**
@@ -50,6 +56,26 @@ export function withCaseChange(state: TrainingDraw, learnerId: string, caseId: s
   return { ...state, passages: state.passages.map((p) => (p.learnerId === learnerId ? { ...p, caseId } : p)), usedCaseIds: used, updatedAt: at };
 }
 
+/**
+ * Tout l'ordre de passage d'un coup : les apprentis pas encore passés, mélangés au hasard,
+ * chacun avec un cas tiré sans répétition.
+ */
+export function withAllPassages(
+  state: TrainingDraw,
+  learnerIds: string[],
+  cases: PracticalCase[],
+  session: Pick<Session, 'tradeId' | 'drawnCaseIds'>,
+  at = Date.now(),
+): TrainingDraw {
+  const passed = new Set(state.passages.map((p) => p.learnerId));
+  let next = state;
+  for (const id of shuffle(learnerIds.filter((l) => !passed.has(l)))) {
+    const { kase, recycled } = pickTrainingCase(cases, session, next);
+    next = withPassage(next, id, kase?.id ?? null, recycled, at);
+  }
+  return next;
+}
+
 /** Nouvelle série : tout le monde revient dans la roue ; les cas joués restent écartés, sauf remise à zéro. */
 export function nextSeries(state: TrainingDraw, keepPlayedCases: boolean, at = Date.now()): TrainingDraw {
   return { ...state, series: state.series + 1, passages: [], usedCaseIds: keepPlayedCases ? state.usedCaseIds : [], updatedAt: at };
@@ -74,5 +100,8 @@ export const changeTrainingCase = (session: Session, learnerId: string, caseId: 
 
 export const startNextSeries = (session: Session, keepPlayedCases: boolean) => update(session, (s) => nextSeries(s, keepPlayedCases));
 
-export const setTrainingOptions = (session: Session, options: Pick<TrainingDraw, 'casePool' | 'avoidCertificationCases'>) =>
+export const drawAllTraining = (session: Session, learnerIds: string[], cases: PracticalCase[]) =>
+  update(session, (s) => withAllPassages(s, learnerIds, cases, session));
+
+export const setTrainingOptions = (session: Session, options: Pick<TrainingDraw, 'casePool' | 'source' | 'avoidCertificationCases'>) =>
   update(session, (s) => ({ ...s, ...options, updatedAt: Date.now() }));

@@ -6,6 +6,7 @@ import { COURSE_AIDE_MEMOIRE } from './courseAideMemoire';
 import { COURSE_MIT } from './courseMit';
 import { TRADE_COURSES } from './courses';
 import { DEFAULT_QUESTIONS, DEFAULT_QUIZZES } from './questions';
+import { TRAINING_CASES } from './training';
 import { DEFAULT_TRADES } from './trades';
 
 export { CONTENT_VERSION } from './version';
@@ -16,7 +17,7 @@ export const SEED_SUMMARY: Record<SeedPart, { label: string; count: number }> = 
   trades: { label: 'Métiers du BTP', count: DEFAULT_TRADES.length },
   courses: { label: 'Supports de cours', count: 2 + TRADE_COURSES.length },
   questions: { label: 'Questions et modèles de QCM', count: DEFAULT_QUESTIONS.length + DEFAULT_QUIZZES.length },
-  cases: { label: 'Cas pratiques', count: MIT_CASES.length + BTP_CASES.length },
+  cases: { label: 'Cas pratiques (examen et entraînement)', count: MIT_CASES.length + BTP_CASES.length + TRAINING_CASES.length },
 };
 
 function docsFor(part: SeedPart): [string, { id: string } & DocumentData][] {
@@ -31,7 +32,7 @@ function docsFor(part: SeedPart): [string, { id: string } & DocumentData][] {
         ...DEFAULT_QUIZZES.map((q): [string, { id: string } & DocumentData] => ['quizzes', q]),
       ];
     case 'cases':
-      return [...MIT_CASES, ...BTP_CASES].map((c) => ['cases', c]);
+      return [...MIT_CASES, ...BTP_CASES, ...TRAINING_CASES].map((c) => ['cases', c]);
   }
 }
 

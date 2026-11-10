@@ -54,7 +54,7 @@ export default function Dashboard() {
               <p className="font-bold">{settings.contentVersion ? 'Nouveaux contenus disponibles' : 'Installez le contenu pédagogique'}</p>
               <p className="text-sm text-ink-soft">
                 {settings.contentVersion
-                  ? 'De nouveaux supports de cours sont prêts (un par métier). Cliquez sur « Installer ce qui manque » : vos contenus actuels ne sont pas modifiés.'
+                  ? 'De nouveaux contenus sont prêts : cas d’entraînement par métier et de vie quotidienne, supports de cours par métier. Cliquez sur « Installer ce qui manque » : vos contenus actuels ne sont pas modifiés.'
                   : 'Supports de cours par métier et aide-mémoire, banque de QCM, 18 cas pratiques MIT et propositions pour les autres métiers du BTP.'}
               </p>
             </div>

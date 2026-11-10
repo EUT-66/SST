@@ -99,6 +99,10 @@ export default function CaseEditor() {
           <Field label="Geste évalué" className="md:col-span-6">
             <input className="input" value={c.geste} onChange={text('geste')} />
           </Field>
+          <label className="flex items-center gap-2 text-sm font-semibold md:col-span-6">
+            <input type="checkbox" className="h-4 w-4 accent-sst-600" checked={!!c.trainingOnly} onChange={(e) => setC({ ...c, trainingOnly: e.target.checked })} />
+            Réservé à l’entraînement (jamais tiré pour la certification)
+          </label>
           <div className="md:col-span-6">
             <p className="label">Métiers (aucun = tous les métiers)</p>
             <div className="flex flex-wrap gap-2">

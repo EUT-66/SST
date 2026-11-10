@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { ArrowLeft, Dices, Dumbbell, ExternalLink, Eye, EyeOff, Maximize, RotateCcw, Sparkles } from 'lucide-react';
+import { ArrowLeft, Dices, Dumbbell, ExternalLink, Eye, EyeOff, ListOrdered, Maximize, RotateCcw, Shuffle, Sparkles } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import CaseSheet from '../../components/CaseSheet';
@@ -11,6 +11,7 @@ import { useData } from '../../hooks/useData';
 import { useDocument } from '../../hooks/useFirestore';
 import {
   changeTrainingCase,
+  drawAllTraining,
   emptyTraining,
   pickTrainingCase,
   recordTrainingPassage,
@@ -37,6 +38,8 @@ export default function TrainingDrawPage() {
   const [reveal, setReveal] = useState<Record<string, boolean>>({});
   const [showCase, setShowCase] = useState<PracticalCase | null>(null);
   const [resetOpen, setResetOpen] = useState(false);
+  const [orderOpen, setOrderOpen] = useState(false);
+  const [drawingAll, setDrawingAll] = useState(false);
 
   const state = useMemo(() => (session ? { ...emptyTraining(session), ...(training.data ?? {}) } : null), [session, training.data]);
   const drawnIds = useMemo(() => new Set(state?.passages.map((p) => p.learnerId)), [state]);
@@ -82,9 +85,9 @@ export default function TrainingDrawPage() {
     }
   };
 
-  const setOptions = async (options: Partial<Pick<TrainingDraw, 'casePool' | 'avoidCertificationCases'>>) => {
+  const setOptions = async (options: Partial<Pick<TrainingDraw, 'casePool' | 'source' | 'avoidCertificationCases'>>) => {
     try {
-      await setTrainingOptions(session, { casePool: state.casePool, avoidCertificationCases: state.avoidCertificationCases, ...options });
+      await setTrainingOptions(session, { casePool: state.casePool, source: state.source, avoidCertificationCases: state.avoidCertificationCases, ...options });
     } catch (err) {
       toast(errorMessage(err), 'error');
     }
@@ -101,6 +104,18 @@ export default function TrainingDrawPage() {
     }
   };
 
+  const drawAll = async () => {
+    setDrawingAll(true);
+    try {
+      await drawAllTraining(session, remaining.map((l) => l.id), cases);
+      setOrderOpen(true);
+    } catch (err) {
+      toast(errorMessage(err), 'error');
+    } finally {
+      setDrawingAll(false);
+    }
+  };
+
   const fullscreen = () => document.documentElement.requestFullscreen?.().catch(() => undefined);
 
   return (
@@ -110,6 +125,16 @@ export default function TrainingDrawPage() {
           <ArrowLeft className="h-4 w-4" /> {session.title}
         </Link>
         <div className="flex flex-wrap items-center gap-2">
+          <select
+            className="input w-auto py-2"
+            aria-label="Origine des cas"
+            disabled={!canEdit}
+            value={state.source}
+            onChange={(e) => setOptions({ source: e.target.value as TrainingDraw['source'] })}
+          >
+            <option value="entrainement">Cas d’entraînement (jamais à l’examen)</option>
+            <option value="tous">Tous les cas, examen compris</option>
+          </select>
           <select
             className="input w-auto py-2"
             aria-label="Cas proposés à l’entraînement"
@@ -154,7 +179,14 @@ export default function TrainingDrawPage() {
           {!canEdit ? (
             <p className="card p-8 text-center text-sm text-ink-muted">Session clôturée ou d’un autre formateur : l’entraînement n’est pas disponible.</p>
           ) : items.length > 0 ? (
-            <Wheel items={items} onResult={onResult} disabled={!!winnerId} />
+            <>
+              <Wheel items={items} onResult={onResult} disabled={!!winnerId || drawingAll} />
+              {items.length > 1 && (
+                <button className="btn-secondary mt-4" disabled={!!winnerId || drawingAll} onClick={drawAll}>
+                  <Shuffle className="h-4 w-4" /> Tirer tout l’ordre d’un coup
+                </button>
+              )}
+            </>
           ) : (
             <div className="card flex flex-col items-center p-10 text-center">
               <Sparkles className="mb-3 h-10 w-10 text-amber-500" />
@@ -170,7 +202,14 @@ export default function TrainingDrawPage() {
         </section>
 
         <aside className="card h-fit p-5">
-          <h2 className="section-title mb-1">Passages de la série {state.series}</h2>
+          <div className="mb-1 flex items-center justify-between gap-2">
+            <h2 className="section-title">Passages de la série {state.series}</h2>
+            {state.passages.length > 0 && (
+              <button className="btn-ghost btn-sm" onClick={() => setOrderOpen(true)}>
+                <ListOrdered className="h-4 w-4" /> Afficher en grand
+              </button>
+            )}
+          </div>
           <p className="mb-4 text-xs text-ink-muted">Cliquez sur l’œil pour voir le cas, ou sur son titre pour la mise en situation.</p>
           {state.passages.length === 0 ? (
             <p className="text-sm text-ink-muted">Aucun passage pour l’instant.</p>
@@ -249,6 +288,31 @@ export default function TrainingDrawPage() {
       )}
 
       {showCase && <CaseModal kase={showCase} onClose={() => setShowCase(null)} />}
+
+      <Modal
+        open={orderOpen}
+        onClose={() => setOrderOpen(false)}
+        size="lg"
+        title={`Ordre de passage – entraînement, série ${state.series}`}
+        footer={
+          <button className="btn-primary" onClick={() => setOrderOpen(false)}>
+            C’est parti !
+          </button>
+        }
+      >
+        <ol className="grid gap-2 sm:grid-cols-2">
+          {state.passages.map((p, i) => {
+            const l = learnerById[p.learnerId];
+            return (
+              <li key={p.learnerId} className="flex items-center gap-3 rounded-xl bg-amber-50 px-3 py-2">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-500 font-bold text-white">{i + 1}</span>
+                <span className="text-lg font-bold">{l ? `${l.firstName} ${l.lastName}` : 'Apprenti retiré'}</span>
+              </li>
+            );
+          })}
+        </ol>
+        <p className="mt-4 text-xs text-ink-muted">Chacun a reçu un cas tiré au hasard, sans répétition. Les cas restent masqués : ouvrez-les au moment du passage.</p>
+      </Modal>
 
       <Modal
         open={resetOpen}

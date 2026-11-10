@@ -18,7 +18,7 @@ export default function CasePicker({ session, learner, onClose }: { session: Ses
   const list = useMemo(() => {
     const q = query.trim().toLowerCase();
     return cases
-      .filter((c) => caseMatchesPool(c, session.tradeId, 'both'))
+      .filter((c) => !c.trainingOnly && caseMatchesPool(c, session.tradeId, 'both'))
       .filter((c) => !q || `${c.title} ${c.geste}`.toLowerCase().includes(q));
   }, [cases, session.tradeId, query]);
 

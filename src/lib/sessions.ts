@@ -34,10 +34,10 @@ export function caseMatchesPool(c: PracticalCase, tradeId: string, pool: CasePoo
   return c.category === pool;
 }
 
-/** Cas encore disponibles au tirage pour une session (sans remise). */
+/** Cas encore disponibles au tirage de certification d'une session (sans remise, hors cas d'entraînement). */
 export function availableCases(cases: PracticalCase[], session: Pick<Session, 'tradeId' | 'casePool' | 'drawnCaseIds'>): PracticalCase[] {
   const drawn = new Set(session.drawnCaseIds ?? []);
-  return cases.filter((c) => caseMatchesPool(c, session.tradeId, session.casePool) && !drawn.has(c.id));
+  return cases.filter((c) => !c.trainingOnly && caseMatchesPool(c, session.tradeId, session.casePool) && !drawn.has(c.id));
 }
 
 export const FORMATION_LABELS: Record<FormationType, string> = {
