@@ -65,7 +65,7 @@ export const cases: PracticalCase[] = [
     scenario:
       'Dans la salle de restaurant d’un hôtel fermé pour travaux, ton équipe pose du papier peint. À la pause casse-croûte, assise sur un seau retourné entre la table à encoller et les rouleaux, Mélissa mange un sandwich en racontant une histoire. D’un coup, elle se lève, les mains autour de la gorge, la bouche ouverte, sans un bruit. Kylian, l’apprenti, lui tend une bouteille d’eau : « Bois, ça va passer ! »',
     victime:
-      'Debout, les mains à la gorge, bouche ouverte : ne peut ni parler, ni tousser, ni respirer. Le morceau sort à la deuxième compression abdominale ; elle tousse, respire de nouveau et dit qu’elle a eu très peur. Les claques et les compressions sont mimées, sans appuyer.',
+      'Debout, les mains à la gorge, bouche ouverte : ne peut ni parler, ni tousser, ni respirer. Les 5 claques dans le dos ne suffisent pas ; le morceau sort à la deuxième compression abdominale ; elle tousse, respire de nouveau et dit qu’elle a eu très peur. Les claques et les compressions sont mimées, sans appuyer.',
     temoin:
       'Kylian, l’apprenti. Veut la faire boire et lui dit de lever les bras. Pose la bouteille si on le lui demande, appelle les secours et suit les consignes.',
     materiel:
@@ -73,9 +73,9 @@ export const cases: PracticalCase[] = [
     actions: [
       act('Repère l’absence de danger persistant et écarte la table et les seaux pour avoir de la place', 'C2a'),
       act('Constate que Mélissa ne peut ni parler, ni tousser, ni émettre un son : obstruction totale', 'C3a'),
-      act('Empêche Kylian de la faire boire', 'C5a'),
+      act('Empêche Kylian de la faire boire et de lui faire lever les bras', 'C5a'),
       act(
-        'Se place sur le côté et un peu en arrière, la penche en avant et donne 1 à 5 claques vigoureuses dans le dos, entre les omoplates, avec le plat de la main',
+        'Se place sur le côté et un peu en arrière, la penche en avant et donne 1 à 5 claques vigoureuses dans le dos, entre les omoplates, avec le plat de la main ouverte',
         'C5a',
         'C5b',
       ),
@@ -106,7 +106,7 @@ export const cases: PracticalCase[] = [
   makeCase({
     id: 'ent-par-03',
     title: 'Coup de chaleur sur la façade',
-    geste: 'Malaise (chaleur)',
+    geste: 'Malaise dû à la chaleur',
     category: 'metier',
     tradeIds: ['peintre'],
     trainingOnly: true,
@@ -121,13 +121,13 @@ export const cases: PracticalCase[] = [
     materiel: 'Seau retourné, chaise ou tapis pour le coin « à l’ombre », bouteille d’eau, linge mouillé, canette vide, casque, téléphone factice.',
     actions: [
       act(
-        'Repère le danger persistant : la chaleur et le soleil, qui touchent aussi le reste de l’équipe, et l’échafaudage où Enzo veut remonter',
+        'Repère le danger persistant : la chaleur et le soleil, qui touchent aussi le reste de l’équipe, et l’échafaudage où Bruno veut le renvoyer',
         'C2a',
         'C2b',
       ),
-      act('Interdit à Enzo de remonter sur l’échafaudage', 'C2d'),
-      act('Fait installer Enzo à l’ombre, dans un endroit frais et aéré (le hall de l’immeuble)', 'C2e', 'C5a'),
+      act('Interdit à Enzo de remonter sur l’échafaudage, malgré Bruno', 'C2d'),
       act('L’observe et le questionne : signes, depuis quand, ce qu’il a bu, maladie, traitement', 'C3a', 'C3b'),
+      act('Fait installer Enzo à l’ombre, dans un endroit frais et aéré (le hall de l’immeuble)', 'C5a', 'C5b'),
       act('Le met au repos, desserre ses vêtements et le rafraîchit avec un linge mouillé', 'C5b'),
       act(
         'Lui fait boire de l’eau fraîche par petites quantités, car il est conscient et capable de boire ; refuse la boisson énergisante',
@@ -158,21 +158,29 @@ export const cases: PracticalCase[] = [
     scenario:
       'Dans la cour d’une maison, sous l’auvent, Noémie décape de vieux volets en bois posés sur des tréteaux, avec un décapeur thermique. Elle pose l’appareil allumé sur le tréteau, à côté des chiffons imbibés de white-spirit : ils s’enflamment et le feu prend à la manche de sa polaire. Elle l’arrache et la jette au sol en criant. Quand tu arrives, les chiffons brûlent encore sur le tréteau, à côté du bidon de white-spirit, et le décapeur souffle toujours.',
     victime:
-      'Debout, se tient l’avant-bras gauche : peau rouge vif, grandes cloques sur presque tout l’avant-bras. La manche de son tee-shirt, roussie, n’adhère pas à la peau. Répond, respire, a très mal.',
+      'Debout, se tient l’avant-bras gauche : peau rouge vif, grandes cloques sur presque tout l’avant-bras. Sous la polaire, elle porte un tee-shirt à manches longues : la manche est roussie mais n’adhère pas à la peau. Répond, respire, a très mal.',
     temoin:
-      'Théo, l’apprenti. Propose de mettre des glaçons et de la crème. Sait où sont l’extincteur de la camionnette et le tuyau d’arrosage ; obéit ensuite.',
+      'Théo, l’apprenti. Propose de mettre des glaçons et de la crème. Sait où sont l’extincteur de la camionnette et le tuyau d’arrosage. Si le SST le lui demande, débranche le décapeur, éteint les chiffons, éloigne le bidon puis appelle les secours.',
     materiel:
       'Tréteaux et planche, décapeur thermique débranché (ou sèche-cheveux), chiffons, bidon vide étiqueté « white-spirit », extincteur vide ou factice, tuyau ou bouteilles d’eau et bassine, couverture, téléphone factice.',
     actions: [
-      act('Fait débrancher le décapeur et éloigner le bidon de white-spirit, sans se mettre en danger', 'C2a', 'C2c'),
-      act('Éteint ou fait éteindre le feu des chiffons avec l’extincteur et éloigne Noémie du tréteau', 'C2c', 'C2e'),
+      act(
+        'Repère le feu des chiffons, le bidon de white-spirit tout près et le décapeur qui souffle ; fait reculer Noémie et Théo loin du tréteau',
+        'C2a',
+        'C2b',
+      ),
+      act(
+        'Fait débrancher le décapeur et éteindre les chiffons avec l’extincteur de la camionnette, sans prendre de risque, puis éloigner le bidon ; si le feu ne peut pas être maîtrisé, fait éloigner tout le monde',
+        'C2c',
+        'C2d',
+      ),
       act('Examine : Noémie répond, respire ; brûlure avec de grandes cloques sur l’avant-bras, donc grave', 'C3a', 'C3b'),
       act(
         'Arrose immédiatement l’avant-bras à l’eau courante tempérée, avec un faible débit, pendant au moins 10 minutes (idéalement 20)',
         'C5a',
         'C5b',
       ),
-      act('En même temps, fait retirer le tee-shirt, qui n’adhère pas à la peau', 'C5b'),
+      act('En même temps, fait retirer (ou découper) la manche du tee-shirt, qui n’adhère pas à la peau', 'C5b'),
       act('Refuse les glaçons et la crème', 'C5b'),
       act(
         'Fait alerter le 15 par Théo : brûlure grave de l’avant-bras par le feu, grandes cloques, arrosage en cours ; applique les conseils du médecin',
@@ -276,7 +284,7 @@ export const cases: PracticalCase[] = [
   }),
   makeCase({
     id: 'ent-par-07',
-    title: 'Le chauffage au gaz dans le garage',
+    title: 'Le canon à chaleur dans le garage',
     geste: 'Ne répond pas, respire (intoxication : PLS)',
     category: 'metier',
     tradeIds: ['peintre'],
@@ -284,26 +292,26 @@ export const cases: PracticalCase[] = [
     reviewed: false,
     source: SRC,
     scenario:
-      'En janvier, Sofiane et Clara, l’apprentie, enduisent les murs du garage d’un pavillon en rénovation. Pour faire sécher plus vite, un chauffage d’appoint au gaz tourne depuis le matin, porte basculante fermée à cause du froid. Clara sort en se tenant la tête : elle a mal à la tête, envie de vomir, et Sofiane ne lui répond plus. Par la porte de service, tu le vois à deux mètres de l’entrée, affalé par terre contre le mur ; le chauffage tourne toujours.',
+      'En janvier, Sofiane et Clara, l’apprentie, enduisent les murs du garage d’un pavillon en rénovation. Pour faire sécher plus vite, un canon à chaleur au gaz tourne depuis le matin, porte basculante fermée à cause du froid. Clara sort en se tenant la tête : elle a mal à la tête, envie de vomir, et Sofiane ne lui répond plus. Par la porte de service, tu le vois à deux mètres de l’entrée, affalé par terre contre le mur ; le canon à chaleur tourne toujours.',
     victime:
       'Affalé au sol contre le mur. Ne répond pas, respire. Origine non traumatique : il s’est plaint de mal de tête, s’est assis par terre pour se reposer, puis s’est affaissé doucement, sans tomber ni se cogner (Clara l’a vu). Se laisse tirer et tourner.',
     temoin:
       'Clara, l’apprentie, elle aussi intoxiquée : mal de tête, nausée. Veut retourner chercher Sofiane. Raconte, si on le lui demande, qu’il s’est assis puis affaissé sans se cogner. Appelle les secours si on le lui demande, en restant dehors.',
-    materiel: 'Tapis, carton étiqueté « chauffage gaz », porte de la salle pour figurer la porte du garage, couverture, téléphone factice.',
+    materiel: 'Tapis, carton étiqueté « canon à chaleur gaz », porte de la salle pour figurer la porte du garage, couverture, téléphone factice.',
     actions: [
       act(
-        'Repère le danger : chauffage au gaz dans un garage fermé et maux de tête de Clara, donc gaz toxique (monoxyde de carbone) probable',
+        'Repère le danger : canon à chaleur au gaz dans un garage fermé et maux de tête de Clara, donc gaz toxique (monoxyde de carbone) probable',
         'C2a',
       ),
-      act('Garde Clara dehors, à l’air frais, et interdit à quiconque d’entrer dans le garage', 'C2b', 'C2d'),
+      act('Garde Clara dehors, à l’air frais, et interdit à quiconque d’entrer dans le garage, même pour couper le canon à chaleur', 'C2b', 'C2d'),
       act('Ouvre en grand la porte basculante depuis l’extérieur pour aérer', 'C2c'),
       act(
-        'Sofiane est visible et tout près de l’entrée : le tire rapidement à l’air libre, sans s’attarder dans le garage (dégagement d’urgence)',
+        'Sofiane est visible, à deux mètres de l’entrée, sans obstacle : le tire rapidement à l’air libre par les poignets ou les chevilles, sans s’attarder dans le garage (dégagement d’urgence)',
         'C2e',
       ),
       act('Examine : Sofiane ne répond pas ; l’allonge sur le dos, libère les voies aériennes ; il respire', 'C3a', 'C3b'),
       act(
-        'Fait alerter le 18 (ou le 15, le 112) par Clara : intoxication probable par un chauffage au gaz dans un garage fermé, deux victimes, l’une ne répond pas mais respire, l’autre a mal à la tête',
+        'Fait alerter le 18 (ou le 15, le 112) par Clara : adresse, intoxication probable par un canon à chaleur au gaz qui tourne toujours dans un garage fermé, deux victimes, l’une ne répond pas mais respire, l’autre a mal à la tête',
         'C4a',
       ),
       act('Met Sofiane en PLS, car son état ne vient pas d’un traumatisme : il s’est affaissé sans tomber ni se cogner', 'C5a', 'C5b'),
@@ -313,12 +321,12 @@ export const cases: PracticalCase[] = [
       ),
     ],
     prevention: {
-      danger: 'Le monoxyde de carbone dégagé par le chauffage au gaz (gaz invisible et sans odeur)',
-      situation: 'Sofiane et Clara travaillent dans un garage fermé où le chauffage tourne depuis le matin',
+      danger: 'Le monoxyde de carbone dégagé par le canon à chaleur au gaz (gaz invisible et sans odeur)',
+      situation: 'Sofiane et Clara travaillent dans un garage fermé où le canon à chaleur tourne depuis le matin',
       evenement: 'Le gaz s’accumule et ils le respirent',
       dommage: 'Intoxication au monoxyde de carbone, perte de connaissance',
       eviter:
-        'Ne jamais utiliser d’appareil à combustion (chauffage au gaz, groupe électrogène) dans un local fermé ; pour le séchage, chauffage électrique ou déshumidificateur ; sinon aération permanente et détecteur de monoxyde de carbone ; ne pas travailler seul ; informer l’équipe des premiers signes (mal de tête, nausée, envie de dormir).',
+        'Pour faire sécher, chauffage électrique ou déshumidificateur plutôt qu’un appareil qui brûle du gaz ; à défaut, jamais de porte fermée : aération permanente et détecteur de monoxyde de carbone ; ne pas travailler seul ; informer l’équipe des premiers signes (mal de tête, nausée, envie de dormir).',
       remonter: 'Chef d’entreprise ou conducteur de travaux.',
     },
   }),
