@@ -90,7 +90,7 @@ export const cases: PracticalCase[] = [
     reviewed: false,
     source: SRC,
     scenario:
-      'En juillet, dans une maison en rénovation, Rayan passe depuis ce matin des câbles dans les combles pour les nouveaux points lumineux. Il redescend par la trappe et s’assoit sur la marche du haut de l’escalier, au pied de l’escabeau, rouge et trempé de sueur. Il dit qu’il a mal à la tête, envie de vomir et que « ça tourne ». Sa gourde est vide et il veut remonter finir.',
+      'En juillet, dans une maison en rénovation, Rayan passe depuis ce matin des câbles dans les combles pour les nouveaux points lumineux, pendant que tu poses les prises à l’étage. Il redescend par la trappe et s’assoit sur la marche du haut de l’escalier, au pied de l’escabeau, rouge et trempé de sueur. Il dit qu’il a mal à la tête, envie de vomir et que « ça tourne ». Sa gourde est vide et il veut remonter finir.',
     victime:
       'Assis sur la marche du haut, visage rouge, transpire beaucoup, se plaint de maux de tête, de nausées et de vertiges. Répond aux questions, un peu lentement. Dit qu’il n’a presque rien bu depuis ce matin, qu’il ne prend pas de traitement et que ça ne lui est jamais arrivé. Va un peu mieux une fois au frais, allongé, après avoir bu.',
     temoin:
@@ -98,13 +98,13 @@ export const cases: PracticalCase[] = [
     materiel: 'Escabeau, chaise ou marche, tapis, bouteille d’eau, serviette mouillée, ventilateur ou carton pour éventer, téléphone factice.',
     actions: [
       act('Repère les dangers : la chaleur des combles et le risque de chute dans l’escalier ou depuis l’escabeau ; interdit à Rayan de remonter', 'C2a', 'C2b'),
-      act('Le fait s’éloigner du haut de l’escalier en le soutenant et fait fermer la trappe des combles', 'C2d', 'C2e'),
+      act('L’éloigne du haut de l’escalier en le soutenant et fait fermer la trappe des combles', 'C2d', 'C2e'),
       act('Examine : il répond, se plaint de maux de tête, de nausées et de vertiges ; peau rouge, sueurs abondantes', 'C3a', 'C3b'),
       act('Pense à un malaise dû à la chaleur : le met au repos, allongé, dans la pièce la plus fraîche et aérée de l’étage (fenêtre ouverte, volets fermés)', 'C5a', 'C5b'),
       act('Le rafraîchit : vêtements desserrés, linge mouillé, ventilateur', 'C5b'),
       act('Lui fait boire de l’eau fraîche par petites quantités, parce qu’il est conscient et capable de boire ; refuse la bière', 'C5b'),
       act('Le questionne : depuis quand, ce qu’il a bu et mangé, traitement, malaise déjà arrivé', 'C3a'),
-      act('Alerte ou fait alerter le 15 pour un avis médical : signes, temps passé dans les combles, actions faites ; suit ses conseils', 'C4a'),
+      act('Alerte ou fait alerter le 15 pour un avis médical : adresse, signes, temps passé dans les combles, actions faites ; suit ses conseils', 'C4a'),
       act('Reste avec lui et surveille ; rappelle le 15 s’il devient confus ou si son état s’aggrave ; ne le laisse pas reprendre le travail', 'C5c'),
     ],
     prevention: {
@@ -127,21 +127,21 @@ export const cases: PracticalCase[] = [
     reviewed: false,
     source: SRC,
     scenario:
-      'Tôt le matin, au dépôt de l’entreprise, Chloé prépare le matériel de la journée. Une batterie de perceuse en charge sur l’établi se met à fumer et à siffler : Chloé l’attrape pour la jeter dehors, se brûle la main et la lâche au pied d’une pile de cartons, où elle continue de fumer en crachant des étincelles. Quand tu arrives, Chloé tient sa main droite en criant et la fumée envahit le local. Un collègue magasinier est là.',
+      'Tôt le matin, au dépôt de l’entreprise, Chloé prépare le matériel de la journée. Une batterie de perceuse en charge sur l’établi se met à fumer et à siffler : Chloé l’attrape pour la jeter dehors, se brûle la main et la lâche au pied d’une pile de cartons, où elle continue de fumer en crachant des étincelles. Quand tu arrives, Chloé tient sa main droite en criant et la fumée envahit le local. Un collègue magasinier est là. Dehors, un robinet est fixé au mur, à côté de la porte.',
     victime:
       'Debout près de l’établi, main droite très douloureuse : paume et doigts rouges, avec des cloques plus grandes que la moitié de sa paume. Porte une bague. Tousse un peu à cause de la fumée mais respire sans difficulté. Répond aux questions.',
     temoin:
       'Le magasinier. Veut ramasser la batterie avec un chiffon pour la sortir, ou lui jeter un seau d’eau dessus. Si le SST le lui demande, il sort, fait sortir les autres salariés, appelle les secours et les attend à l’entrée du dépôt.',
     materiel: 'Batterie (boîte), cartons, établi ou table, bassine et bouteilles d’eau (ou point d’eau), couverture, téléphone factice.',
     actions: [
-      act('Repère le danger : batterie qui brûle, fumées, cartons qui peuvent s’enflammer ; interdit qu’on touche la batterie ou qu’on l’arrose', 'C2a', 'C2b'),
+      act('Repère le danger : batterie qui brûle, fumées, cartons qui peuvent s’enflammer ; interdit qu’on s’approche de la batterie, qu’on la touche ou qu’on l’arrose', 'C2a', 'C2b'),
       act('Fait sortir tout le monde du dépôt, Chloé comprise, et ferme la porte derrière lui', 'C2d', 'C2e'),
       act('Examine dehors : elle répond, se plaint d’une brûlure à la main, respire sans difficulté', 'C3a', 'C3b'),
-      act('Arrose aussitôt la main à l’eau courante tempérée pendant au moins 10 minutes (idéalement 20)', 'C5a', 'C5b'),
-      act('Retire la bague pendant l’arrosage, si elle ne colle pas à la peau', 'C5b'),
-      act('Reconnaît une brûlure grave (cloques plus grandes que la moitié de la paume) et fait alerter le 18 ou le 112 : feu de batterie dans le dépôt, porte fermée, plus personne à l’intérieur, une victime brûlée à la main qui a respiré de la fumée', 'C4a'),
+      act('Arrose aussitôt la main au robinet, à l’eau courante tempérée, pendant au moins 10 minutes (idéalement 20)', 'C5a', 'C5b'),
+      act('Pendant l’arrosage, retire la bague sans forcer, avant que les doigts gonflent, sauf si elle colle à la peau', 'C5b'),
+      act('Reconnaît une brûlure grave (cloques plus grandes que la moitié de sa paume, brûlure de la main) et fait alerter le 18 ou le 112 par le magasinier : adresse du dépôt, feu de batterie, porte fermée, plus personne à l’intérieur, une victime consciente brûlée à la main qui a respiré de la fumée, arrosage en cours', 'C4a'),
       act('Fait accueillir les pompiers à l’entrée pour leur montrer le local', 'C4b'),
-      act('Ne perce pas les cloques et n’applique ni pommade ni glace', 'C5b'),
+      act('N’applique rien sur la brûlure (ni pommade, ni glace) et ne perce pas les cloques', 'C5b'),
       act('Couvre Chloé, la réconforte et surveille sa respiration ; l’installe assise si elle a du mal à respirer', 'C5c'),
     ],
     prevention: {
@@ -164,22 +164,22 @@ export const cases: PracticalCase[] = [
     reviewed: false,
     source: SRC,
     scenario:
-      'Sur un plateau de bureaux en rénovation, Nathan dépose les anciens luminaires du faux plafond, monté sur un escabeau. Le chef d’équipe pensait avoir coupé le bon disjoncteur, mais Nathan prend une décharge, part en arrière et tombe de l’escabeau. Quand tu arrives, il est allongé sur le dos, l’escabeau renversé à côté de lui ; au-dessus, les fils dénudés du luminaire pendent du faux plafond à hauteur de tête.',
+      'Sur un plateau de bureaux en rénovation, Nathan dépose les anciens luminaires du faux plafond, monté sur un escabeau. Le chef d’équipe pensait avoir coupé le bon disjoncteur, mais Nathan prend une décharge, part en arrière et tombe de l’escabeau. Quand tu arrives, il est allongé sur le dos, l’escabeau renversé à côté de lui ; au-dessus, les fils dénudés du luminaire pendent du faux plafond à hauteur de tête. Le chef d’équipe accourt de la pièce voisine.',
     victime:
-      'Allongé sur le dos, conscient. Dit qu’il a pris « une châtaigne », qu’il a mal au cou et des fourmis dans les doigts. Pas de brûlure visible. Ne bouge pas si on le lui demande ; veut se relever si personne ne l’en empêche.',
+      'Allongé sur le dos, conscient, ne touche plus les fils. Dit qu’il a pris « une châtaigne », qu’il a mal au cou et des fourmis dans les doigts. Pas de brûlure visible. Ne bouge pas si on le lui demande ; veut se relever si personne ne l’en empêche.',
     temoin:
-      'Le chef d’équipe, électricien habilité, arrive de la pièce voisine. Dit « c’est rien, relève-toi » et veut l’aider à se lever. Si le SST le lui demande, il coupe l’arrivée générale du tableau de l’étage, puis appelle les secours.',
+      'Le chef d’équipe, électricien habilité. Dit « c’est rien, relève-toi » et veut l’aider à se lever. Si le SST le lui demande, il coupe le disjoncteur général du tableau de l’étage, appelle les secours, apporte une couverture, puis va les attendre à l’entrée de l’immeuble.',
     materiel: 'Escabeau, fils électriques (sans courant) fixés en hauteur, tapis, couverture, téléphone factice.',
     actions: [
       act('Repère le danger électrique : les fils dénudés sont peut-être encore sous tension ; ne les touche pas et interdit qu’on les touche', 'C2a', 'C2b'),
-      act('Non habilité, n’intervient pas sur l’installation : fait couper le courant par le chef d’équipe habilité à l’arrivée générale du tableau, ou coupe lui-même au disjoncteur général s’il peut le faire sans risque', 'C2c'),
-      act('Examine : il répond, se plaint du cou et de fourmillements dans les doigts', 'C3a', 'C3b'),
+      act('N’intervient pas lui-même sur l’installation : fait couper le courant par le chef d’équipe, habilité, au disjoncteur général du tableau de l’étage ; sans personne habilitée sur place, coupe lui-même au disjoncteur général ou à l’arrêt d’urgence s’il peut le faire sans risque', 'C2c'),
+      act('Examine : il répond, se plaint du cou et de fourmillements dans les doigts ; pas de trace de brûlure', 'C3a', 'C3b'),
       act('Lui demande de ne pas bouger la tête et empêche qu’on le relève', 'C5a', 'C5b'),
       act('Maintient la tête à deux mains, dans la position où elle se trouve', 'C5b'),
-      act('Fait alerter le 15 ou le 112 : électrisation suivie d’une chute de l’escabeau, douleur au cou, fourmillements dans les doigts, victime consciente', 'C4a'),
+      act('Fait alerter le 15 ou le 112 : adresse et étage, électrisation suivie d’une chute de l’escabeau, une victime consciente, douleur au cou, fourmillements dans les doigts, courant coupé, tête maintenue', 'C4a'),
       act('Fait guider les secours depuis l’entrée de l’immeuble jusqu’au plateau', 'C4b'),
       act('Fait couvrir la victime, la réconforte et lui parle', 'C5b'),
-      act('Surveille sans relâcher le maintien de la tête ; sait qu’après une électrisation l’état peut s’aggraver et reste prêt à agir', 'C5c'),
+      act('Surveille sans relâcher le maintien de la tête ; sait qu’après une électrisation l’état peut s’aggraver : s’il ne répond plus, vérifie sa respiration et agit en conséquence', 'C5c'),
     ],
     prevention: {
       danger: 'Le courant électrique (230 V) dans les fils du luminaire, et la hauteur',
@@ -187,7 +187,7 @@ export const cases: PracticalCase[] = [
       evenement: 'Il touche les fils encore sous tension, reçoit une décharge et tombe',
       dommage: 'Électrisation et traumatisme du cou',
       eviter:
-        'Travailler hors tension : consignation par une personne habilitée (séparer, condamner, identifier, vérifier l’absence de tension) avant toute dépose ; repérage du tableau tenu à jour ; plateforme individuelle roulante avec garde-corps plutôt qu’un escabeau ; habilitation adaptée à la tâche ; un apprenti non habilité ne touche jamais une installation qui n’a pas été consignée.',
+        'Travailler hors tension : consignation par une personne habilitée (séparer, condamner, identifier, vérifier l’absence de tension) avant toute dépose, avec un repérage du tableau tenu à jour ; plateforme individuelle roulante avec garde-corps plutôt qu’un escabeau ; habilitation électrique adaptée à la tâche pour chacun ; personne ne commence tant que l’absence de tension n’a pas été vérifiée.',
       remonter: 'Chef d’équipe et chef d’entreprise ; signaler aussi l’erreur de repérage du tableau.',
     },
   }),
@@ -201,18 +201,18 @@ export const cases: PracticalCase[] = [
     reviewed: false,
     source: SRC,
     scenario:
-      'Dans un appartement en rénovation, Léa fait une saignée à la rainureuse dans un mur en brique, à hauteur de visage, pour encastrer une gaine. Elle a relevé ses lunettes parce qu’elles étaient pleines de poussière. Un éclat de brique part dans son œil droit : elle lâche la rainureuse, qui reste branchée par terre, et se plie en deux en se tenant l’œil. La propriétaire arrive de la cuisine.',
+      'Dans un appartement en rénovation, pendant que tu poses des boîtiers dans la même pièce, Léa fait une saignée à la rainureuse dans un mur en brique, à hauteur de visage, pour encastrer une gaine. Elle a relevé ses lunettes parce qu’elles étaient pleines de poussière. Un éclat de brique part dans son œil droit : elle lâche la rainureuse, qui reste branchée par terre, et se plie en deux en se tenant l’œil. La propriétaire arrive de la cuisine.',
     victime:
-      'Assise par terre, la main sur l’œil droit, très mal, larmes, n’arrive pas à ouvrir l’œil. Un petit éclat est visible, planté dans l’œil. Répond aux questions. Veut se frotter l’œil.',
+      'Assise par terre, la main sur l’œil droit, très mal, larmes, n’arrive presque pas à ouvrir l’œil. Quand elle enlève sa main, on voit un petit éclat planté dans le blanc de l’œil. Répond aux questions. Veut se frotter l’œil.',
     temoin:
       'La propriétaire. Veut retirer l’éclat avec le coin d’un mouchoir, ou rincer l’œil au robinet. Si le SST le lui demande, elle appelle le 15 et va ouvrir la porte de l’immeuble aux secours.',
     materiel: 'Rainureuse (ou boîte) avec rallonge, lunettes de protection, tapis, coussins ou vestes roulées pour caler la tête, couverture, téléphone factice.',
     actions: [
-      act('Débranche la rainureuse et l’écarte, fait arrêter le travail dans la pièce', 'C2a', 'C2c'),
+      act('Débranche la rainureuse et l’écarte pour que personne ne la remette en marche', 'C2a', 'C2c'),
       act('Examine : elle répond, se plaint de l’œil droit ; repère l’éclat planté', 'C3a', 'C3b'),
       act('Lui demande de ne pas se frotter l’œil ; refuse qu’on retire l’éclat ou qu’on rince l’œil', 'C5b'),
       act('L’allonge sur le dos, les deux yeux fermés, et lui maintient la tête à deux mains (ou la cale)', 'C5a', 'C5b'),
-      act('Fait alerter le 15 : plaie de l’œil avec un éclat de brique planté, victime consciente, adresse et étage', 'C4a'),
+      act('Fait alerter le 15 : adresse et étage, plaie de l’œil avec un éclat de brique planté, une victime consciente, allongée les yeux fermés, tête maintenue', 'C4a'),
       act('Fait ouvrir la porte de l’immeuble et accueillir les secours', 'C4b'),
       act('Lui explique de garder les deux yeux fermés, car l’œil blessé bouge avec l’autre ; la réconforte', 'C5b'),
       act('Couvre et surveille jusqu’à la prise en charge par les secours', 'C5c'),
@@ -237,9 +237,9 @@ export const cases: PracticalCase[] = [
     reviewed: false,
     source: SRC,
     scenario:
-      'Dans une maison en rénovation où le courant est coupé, ton équipe fait tourner un groupe électrogène dans le garage, porte basculante presque fermée à cause de la pluie. Quand tu reviens de la camionnette, le propriétaire sort du garage en se tenant la tête : « Manon s’est allongée par terre, elle avait mal à la tête et envie de vomir. » Par la porte entrouverte, tu vois Manon allongée sur le dos à deux mètres de l’entrée ; au fond, le groupe tourne et ça sent les gaz d’échappement.',
+      'Dans un pavillon neuf pas encore raccordé au réseau électrique, ton équipe fait tourner un groupe électrogène dans le garage, porte basculante presque fermée à cause de la pluie. Quand tu reviens de la camionnette, le propriétaire sort du garage en se tenant la tête : « Manon s’est allongée par terre, elle avait mal à la tête et envie de vomir. » Par la porte entrouverte, tu vois Manon allongée sur le dos à deux mètres de l’entrée, rien ne gêne le passage ; au fond, le groupe tourne et ça sent les gaz d’échappement.',
     victime:
-      'Allongée sur le dos à deux mètres de la porte. Ne répond pas, respire. Origine connue et NON traumatique : le propriétaire l’a vue s’allonger d’elle-même, sans chute ni choc, après s’être plainte de maux de tête et de nausées (intoxication au monoxyde de carbone). Une fois à l’air libre : PLS. Se laisse tirer.',
+      'Allongée sur le dos à deux mètres de la porte. Ne répond pas, respire. Origine connue et NON traumatique : le propriétaire l’a vue s’allonger d’elle-même, sans chute ni choc, après s’être plainte de maux de tête et de nausées (intoxication au monoxyde de carbone). Se laisse tirer dehors, puis mettre en PLS.',
     temoin:
       'Le propriétaire, qui a mal à la tête lui aussi. Veut retourner dans le garage pour arrêter le groupe. Si le SST le lui demande, il reste dehors, assis, appelle les secours et les attend devant la maison.',
     materiel: 'Camarade (ou mannequin pour le dégagement d’urgence), carton ou caisse pour le groupe électrogène, ligne au sol pour la porte, deux tapis (garage / extérieur), couverture, téléphone factice.',
@@ -247,11 +247,11 @@ export const cases: PracticalCase[] = [
       act('Repère l’atmosphère toxique : groupe électrogène en marche dans un garage fermé, monoxyde de carbone probable', 'C2a'),
       act('Empêche le propriétaire de retourner dans le garage et le fait asseoir dehors, au grand air', 'C2b', 'C2d'),
       act('Ouvre en grand la porte basculante depuis l’extérieur pour aérer, sans aller arrêter le groupe au fond du garage', 'C2c'),
-      act('La victime est visible et proche de la porte : la dégage rapidement à l’air libre (dégagement d’urgence) sans s’attarder dans le garage', 'C2e'),
-      act('Examine à l’air libre : ne répond pas ; libère les voies aériennes ; respire', 'C3a', 'C3b'),
+      act('Le gaz reste dangereux même porte ouverte, mais Manon est visible, à deux mètres, sans obstacle : la tire rapidement dehors (dégagement d’urgence), sans s’attarder dans le garage, et l’installe à quelques mètres de la porte, à l’abri de la pluie si possible', 'C2e'),
+      act('Examine à l’air libre : ne répond pas ; l’allonge sur le dos, libère les voies aériennes ; respire', 'C3a', 'C3b'),
       act('Origine connue, non traumatique (malaise sans chute) : la met en PLS', 'C5a', 'C5b'),
-      act('Fait alerter le 18 ou le 112 : intoxication probable au monoxyde de carbone par un groupe électrogène, une victime qui ne répond pas mais respire, en PLS, une deuxième personne avec des maux de tête, groupe toujours en marche', 'C4a'),
-      act('Fait attendre les secours devant la maison et leur signale de ne pas entrer dans le garage', 'C4b'),
+      act('Fait alerter le 18 ou le 112 : adresse, intoxication probable au monoxyde de carbone par un groupe électrogène dans le garage, une victime qui ne répond pas mais respire, en PLS, une deuxième personne avec des maux de tête, groupe toujours en marche', 'C4a'),
+      act('Fait attendre les secours devant la maison pour leur montrer le garage, où le groupe tourne toujours ; interdit à quiconque d’y entrer', 'C4b', 'C2d'),
       act('Couvre la victime et surveille sa respiration en permanence, garde un œil sur le propriétaire ; si elle ne respire plus : réanimation et défibrillateur', 'C5c'),
     ],
     prevention: {
@@ -260,7 +260,7 @@ export const cases: PracticalCase[] = [
       evenement: 'Le gaz s’accumule dans le garage et elle le respire longtemps',
       dommage: 'Intoxication au monoxyde de carbone, perte de connaissance',
       eviter:
-        'Prévoir l’alimentation du chantier avant les travaux (coffret de chantier, circuit maintenu au tableau) ou des outils sur batterie ; un groupe électrogène ne tourne jamais dans un local fermé : toujours dehors, loin des portes et fenêtres ; détecteur de monoxyde de carbone ; connaître les premiers signes (maux de tête, nausées, vertiges) et sortir aussitôt à l’air libre.',
+        'Prévoir l’alimentation du chantier avant les travaux (branchement provisoire avec coffret de chantier) ou des outils sur batterie ; un groupe électrogène ne tourne jamais dans un local fermé : toujours dehors, loin des portes et fenêtres ; détecteur de monoxyde de carbone ; connaître les premiers signes (maux de tête, nausées, vertiges) et sortir aussitôt à l’air libre.',
       remonter: 'Chef d’équipe ou chef d’entreprise ; prévenir aussi le propriétaire.',
     },
   }),
@@ -280,14 +280,14 @@ export const cases: PracticalCase[] = [
       'L’apprenti plaquiste. Propose de mettre Didier sur le côté et d’attendre les secours. Si le SST le lui demande, il remet la barrière, appelle le 15 en descendant, rapporte le défibrillateur et fait attendre les secours à l’entrée du chantier par un compagnon.',
     materiel: 'Mannequin, défibrillateur de formation, ruban ou barrière pour la trémie, couronne de câble, téléphone factice.',
     actions: [
-      act('Repère la trémie sans protection à côté de la victime et fait remettre la barrière avant de s’agenouiller', 'C2a', 'C2b', 'C2d'),
+      act('Repère la trémie sans protection à côté de la victime et remet ou fait remettre la barrière avant de s’agenouiller', 'C2a', 'C2b', 'C2d'),
       act('Examine : ne répond pas ; libère les voies aériennes ; ne respire pas (10 secondes au plus)', 'C3a', 'C3b'),
       act('Refuse la mise sur le côté, puisqu’il ne respire pas', 'C5a'),
-      act('Fait alerter le 15 ou le 112 (arrêt cardiaque, 3e étage, escalier, monte-charge en panne) et fait apporter le défibrillateur', 'C4a'),
+      act('Fait alerter le 15 ou le 112 (adresse du chantier, une personne qui ne répond pas et ne respire pas, réanimation en cours, 3e étage par l’escalier, monte-charge en panne) et fait apporter le défibrillateur', 'C4a'),
       act('Débute aussitôt la réanimation : 30 compressions au milieu de la poitrine, 100 à 120 par minute, puis 2 insufflations (ou compressions seules en continu si les insufflations sont impossibles)', 'C5a', 'C5b'),
       act('Met en œuvre le défibrillateur dès son arrivée et suit ses instructions, sans interrompre les compressions plus que nécessaire', 'C5b'),
       act('Fait accueillir les secours à l’entrée du chantier et guider par l’escalier jusqu’au 3e étage', 'C4b'),
-      act('Se relaie avec un autre SST toutes les 2 minutes si possible, en interrompant le moins possible les compressions', 'C5b'),
+      act('Si un autre SST est là, se relaie avec lui toutes les 2 minutes, en interrompant le moins possible les compressions', 'C5b'),
       act('Poursuit la réanimation jusqu’au relais par les secours', 'C5c'),
     ],
     prevention: {
