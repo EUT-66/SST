@@ -15,7 +15,7 @@ export const cases: PracticalCase[] = [
     reviewed: false,
     source: SRC,
     scenario:
-      'Dans le parking souterrain d’une résidence, ton équipe installe des bornes de recharge pour voitures électriques. Bastien raccourcit un chemin de câbles en fil avec une meuleuse sans fil tenue d’une seule main : le disque se coince, la meuleuse rebondit et lui entaille l’avant-bras gauche. Quand tu arrives, il est assis au milieu de l’allée de circulation, le sang coule entre ses doigts et fait une flaque ; la meuleuse est par terre, batterie en place, et une voiture descend la rampe. Au 2e sous-sol, le téléphone ne capte pas.',
+      'Dans le parking souterrain d’une résidence, ton équipe installe des bornes de recharge pour voitures électriques. Bastien raccourcit un chemin de câbles en fil avec une meuleuse sans fil tenue d’une seule main : le disque se coince, la meuleuse rebondit et lui entaille l’avant-bras gauche. Quand tu arrives, il est assis au milieu de l’allée de circulation, près de la camionnette de l’équipe, le sang coule entre ses doigts et fait une flaque ; la meuleuse est par terre, batterie en place, et une voiture descend la rampe. Au 2e sous-sol, le téléphone ne capte pas.',
     victime:
       'Assis au sol dans l’allée, se tient l’avant-bras gauche, le sang coule abondamment. Conscient, pâle, inquiet, répond aux questions. Accepte de s’allonger. Le saignement s’arrête quand on comprime fort et ne reprend pas sous le pansement compressif.',
     temoin:
@@ -23,23 +23,23 @@ export const cases: PracticalCase[] = [
     materiel:
       'Meuleuse (ou boîte) avec sa batterie, cônes ou ruban de balisage, gants à usage unique, tissu rouge, compresses ou linge propre, bande, tapis, couverture, téléphone factice.',
     actions: [
-      act('Repère la voiture qui arrive et fait baliser l’allée pour arrêter la circulation', 'C2a', 'C2b', 'C2d'),
+      act('Repère la voiture qui descend : fait signe au conducteur de s’arrêter, puis fait baliser l’allée avec les cônes pour bloquer la circulation', 'C2a', 'C2b', 'C2d'),
       act('Retire la batterie de la meuleuse et la met à l’écart', 'C2a', 'C2c'),
-      act('Repère le saignement abondant', 'C3a'),
+      act('Examine : repère tout de suite le saignement abondant ; la victime répond', 'C3a', 'C3b'),
       act('Comprime aussitôt l’endroit qui saigne avec la paume de la main protégée (gant), ou le fait comprimer par la victime', 'C5a', 'C5b'),
       act('Allonge la victime sur place, dans la zone balisée', 'C5b'),
-      act('Refuse le transport en voiture et envoie le témoin alerter le 15 ou le 112 là où le téléphone capte : adresse, 2e sous-sol, saignement abondant de l’avant-bras, compression en cours', 'C4a'),
+      act('Refuse le transport en voiture et envoie le témoin alerter le 15 ou le 112 là où le téléphone capte : adresse, 2e sous-sol, blessure à la meuleuse, une victime consciente, saignement abondant de l’avant-bras, compression en cours', 'C4a'),
       act('S’assure que l’alerte est passée et fait attendre les secours à l’entrée du parking pour les guider', 'C4b'),
       act('Relaie la compression par un pansement compressif ; sait qu’il faut un garrot si la compression est inefficace ou impossible', 'C5b'),
       act('Couvre la victime, la réconforte et surveille le saignement et son état jusqu’à l’arrivée des secours', 'C5c'),
     ],
     prevention: {
       danger: 'Le disque en rotation de la meuleuse',
-      situation: 'Bastien coupe le chemin de câbles en le tenant d’une main, l’avant-bras dans l’axe du disque',
+      situation: 'Bastien coupe le chemin de câbles avec la meuleuse tenue d’une seule main, l’avant-bras dans l’axe du disque',
       evenement: 'Le disque se coince dans le fil et la meuleuse rebondit',
       dommage: 'Plaie profonde de l’avant-bras avec saignement abondant',
       eviter:
-        'Couper le chemin de câbles en fil sans disque, au coupe-boulons ou à la cisaille prévue pour ça ; si la meuleuse est indispensable : pièce bloquée dans un étau ou avec des serre-joints, carter et poignée en place, machine tenue à deux mains, corps hors de l’axe du disque ; gants et manchettes anti-coupure, lunettes ; zone de travail balisée dans le parking.',
+        'Couper le chemin de câbles en fil sans disque, au coupe-boulons ou à la cisaille prévue pour ça ; si la meuleuse est indispensable : pièce bloquée dans un étau ou avec des serre-joints, carter et poignée en place, machine tenue à deux mains, corps hors de l’axe du disque ; zone de travail balisée dans le parking ; en complément : gants, manchettes anti-coupure, lunettes.',
       remonter: 'Chef d’équipe ou chef d’entreprise ; prévenir aussi le gardien ou le syndic pour organiser la circulation pendant les travaux.',
     },
   }),
@@ -62,10 +62,10 @@ export const cases: PracticalCase[] = [
     actions: [
       act('Constate qu’il n’y a pas de danger persistant et écarte la table et les chaises pour avoir de la place', 'C2a'),
       act('Reconnaît une obstruction totale : elle ne parle pas, ne tousse pas, n’émet aucun son', 'C3a', 'C3b'),
-      act('Refuse qu’on la fasse boire et fait alerter le 15 par le témoin, haut-parleur allumé : chantier du gymnase, bungalow de la base vie, une personne qui s’étouffe, gestes en cours', 'C4a'),
-      act('La penche en avant et donne de 1 à 5 claques vigoureuses dans le dos, entre les omoplates, avec le talon de la main', 'C5a', 'C5b'),
-      act('Claques inefficaces : réalise de 1 à 5 compressions abdominales (poing au creux de l’estomac, au-dessus du nombril, tirer vers soi et vers le haut)', 'C5b'),
-      act('Alterne claques et compressions jusqu’à ce que le morceau sorte ; sait que si elle perd connaissance, il faut commencer la réanimation', 'C5b'),
+      act('Refuse qu’on la fasse boire et, sans attendre pour agir, fait alerter le 15 par le témoin, haut-parleur allumé : chantier du gymnase, bungalow de la base vie, une personne qui s’étouffe, gestes en cours', 'C4a'),
+      act('Se place sur le côté et un peu en arrière, la penche en avant et donne de 1 à 5 claques vigoureuses dans le dos, entre les omoplates, avec le talon de la main', 'C5a', 'C5b'),
+      act('Claques inefficaces : se place derrière elle et réalise de 1 à 5 compressions abdominales (poing au creux de l’estomac, au-dessus du nombril, l’autre main par-dessus, tirer vers soi et vers le haut)', 'C5b'),
+      act('S’arrête dès que le morceau sort ; sinon, alterne 1 à 5 claques et 1 à 5 compressions ; sait que si elle perd connaissance, il faut l’allonger et commencer la réanimation', 'C5b'),
       act('Une fois débloquée, l’installe dans la position où elle se sent le mieux et la réconforte', 'C5b'),
       act('Informe le 15 du résultat (morceau sorti, compressions abdominales faites, mal au ventre) et suit ses conseils', 'C5c'),
       act('Couvre, surveille sa respiration et ne la laisse pas reprendre le travail sans avis médical', 'C5c'),
