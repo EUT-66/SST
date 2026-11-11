@@ -2,9 +2,9 @@
 // certification, pour que les apprentis découvrent d'autres situations que celles de l'examen.
 import type { PracticalCase } from '../../lib/types';
 
-const modules = import.meta.glob<{ cases: PracticalCase[] }>('./*.ts', { eager: true });
+// le fichier de test est exclu du motif : sinon il serait embarqué dans l'application avec vitest
+const modules = import.meta.glob<{ cases: PracticalCase[] }>(['./*.ts', '!./index.ts', '!./*.test.ts'], { eager: true });
 
 export const TRAINING_CASES: PracticalCase[] = Object.entries(modules)
-  .filter(([path]) => !path.endsWith('index.ts') && !path.endsWith('.test.ts'))
   .sort(([a], [b]) => a.localeCompare(b))
   .flatMap(([, m]) => m.cases);
