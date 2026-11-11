@@ -199,6 +199,10 @@ function RunCard({ run, session, learners, readOnly }: SessionBundle & { run: Pr
   };
 
   const scores = subs.data.map((s) => ({ s, r: resultFor(run, s.answers ?? {}, 'distance') }));
+  // apprentis présents sans copie : on les voit aussi, pour savoir qui n'a pas terminé ou pas envoyé
+  const sentIds = new Set(subs.data.map((s) => s.learnerId));
+  const missing = learners.filter((l) => !l.absent && !sentIds.has(l.id));
+  const [detail, setDetail] = useState<Submission | null>(null);
   const average = scores.length ? scores.reduce((n, x) => n + x.r.score / x.r.total, 0) / scores.length : 0;
 
   return (
@@ -264,6 +268,7 @@ function RunCard({ run, session, learners, readOnly }: SessionBundle & { run: Pr
           )}
         </div>
       </div>
+      {detail && <AnswersModal run={run} submission={detail} name={nameById[detail.learnerId] ?? detail.label} onClose={() => setDetail(null)} />}
       {projecting && run.code && <JoinScreen title={run.title} code={run.code} url={joinUrl} open={run.open} onClose={() => setProjecting(false)} />}
       {run.code && (
         <div className="p-5">
@@ -272,12 +277,13 @@ function RunCard({ run, session, learners, readOnly }: SessionBundle & { run: Pr
               Les apprentis scannent le QR code avec l’appareil photo de leur téléphone, ou ouvrent <strong>{window.location.host}/apprenti</strong> et saisissent le code <strong>{run.code}</strong>.
             </p>
           )}
-          {subs.data.length === 0 ? (
+          {subs.data.length === 0 && missing.length === 0 ? (
             <p className="text-sm text-ink-muted">En attente des premières copies…</p>
           ) : (
             <>
               <p className="mb-2 text-sm font-semibold">
-                {subs.data.length} copie(s) reçue(s) · moyenne {Math.round(average * 100)} %
+                {subs.data.length} copie(s) reçue(s){subs.data.length > 0 && ` · moyenne ${Math.round(average * 100)} %`}
+                {missing.length > 0 && <span className="font-normal text-ink-muted"> · {missing.length} apprenti(s) sans copie</span>}
               </p>
               <div className="overflow-x-auto">
                 <table className="table-base">
@@ -303,13 +309,29 @@ function RunCard({ run, session, learners, readOnly }: SessionBundle & { run: Pr
                         {run.type === 'evaluation' && (
                           <td>{applied.has(s.learnerId) ? <span className="inline-flex items-center gap-1 text-xs font-semibold text-sst-700"><CheckCircle2 className="h-4 w-4" /> reporté</span> : <span className="text-xs text-ink-muted">en cours…</span>}</td>
                         )}
-                        <td className="text-right">
+                        <td className="whitespace-nowrap text-right">
+                          <button className="btn-ghost btn-sm" onClick={() => setDetail(s)}>
+                            Voir les réponses
+                          </button>
                           {!readOnly && (
                             <button className="btn-ghost btn-sm" onClick={() => allowRetake(s)}>
                               Nouvelle tentative
                             </button>
                           )}
                         </td>
+                      </tr>
+                    ))}
+                    {missing.map((l) => (
+                      <tr key={`manque-${l.id}`} className="text-ink-muted">
+                        <td className="font-semibold">
+                          {l.lastName} {l.firstName}
+                        </td>
+                        <td className="text-xs">—</td>
+                        <td>
+                          <span className="badge-gray">Pas de copie</span>
+                        </td>
+                        {run.type === 'evaluation' && <td />}
+                        <td className="text-right text-xs">{run.open ? 'en cours ou pas encore connecté' : 'QCM fermé'}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -365,5 +387,40 @@ function JoinScreen({ title, code, url, open, onClose }: { title: string; code: 
       </p>
       <p className="font-mono text-5xl font-extrabold tracking-[0.25em] text-sst-700 sm:text-6xl">{code}</p>
     </div>
+  );
+}
+
+/** Copie d'un apprenti, question par question : sa réponse et la bonne réponse. */
+function AnswersModal({ run, submission, name, onClose }: { run: PrivateRun; submission: Submission; name: string; onClose: () => void }) {
+  const r = resultFor(run, submission.answers ?? {}, 'distance');
+  return (
+    <Modal open onClose={onClose} size="lg" title={`${name} – ${r.score}/${r.total}`}>
+      <ol className="space-y-3">
+        {run.questions.map((q, i) => {
+          const given = [...(submission.answers?.[q.id] ?? [])].sort();
+          const ok = given.length === q.correct.length && [...q.correct].sort().every((c, k) => c === given[k]);
+          return (
+            <li key={q.id} className={clsx('rounded-xl border p-3', ok ? 'border-sst-100 bg-sst-50/50' : 'border-red-100 bg-red-50/50')}>
+              <p className="text-sm font-semibold">
+                {ok ? '✓' : '✗'} {i + 1}. {q.text}
+              </p>
+              <ul className="mt-1.5 space-y-0.5 text-sm">
+                {q.choices.map((c, k) => {
+                  const chosen = given.includes(k);
+                  const correct = q.correct.includes(k);
+                  return (
+                    <li key={k} className={clsx(correct && 'font-semibold text-sst-800', chosen && !correct && 'text-red-700 line-through')}>
+                      {chosen ? '●' : '○'} {c}
+                      {correct && ' (bonne réponse)'}
+                    </li>
+                  );
+                })}
+              </ul>
+              {given.length === 0 && <p className="mt-1 text-xs text-ink-muted">Pas de réponse</p>}
+            </li>
+          );
+        })}
+      </ol>
+    </Modal>
   );
 }
