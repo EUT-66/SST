@@ -28,15 +28,15 @@ export const cases: PracticalCase[] = [
       act('Comprime immédiatement l’endroit qui saigne, main protégée (gant, sac plastique)', 'C5a', 'C5b'),
       act('Allonge la victime sans relâcher la compression', 'C5b'),
       act('Refuse le transport en voiture et fait alerter le 15 par la grand-mère : adresse, blessure à la cuisse par tronçonneuse, saignement abondant, compression en cours', 'C4a'),
-      act('Constate que la compression ne suffit pas et pose un garrot à quelques centimètres au-dessus de la plaie, jamais sur une articulation, serré jusqu’à l’arrêt du saignement', 'C5a', 'C5b'),
-      act('Note l’heure de pose, laisse le garrot visible et ne le desserre jamais', 'C5b'),
+      act('Constate que la compression ne suffit pas et pose un garrot sur la cuisse, à quelques centimètres au-dessus de la plaie (côté hanche), serré jusqu’à l’arrêt du saignement', 'C5a', 'C5b'),
+      act('Note l’heure de pose pour les secours, laisse le garrot visible et ne le desserre pas', 'C5b'),
       act('Fait guider les secours du portail jusqu’au fond du jardin', 'C4b'),
-      act('Couvre la victime, la rassure et surveille son état et le saignement jusqu’aux secours', 'C5c'),
+      act('Couvre la victime sans cacher le garrot, la rassure et surveille son état et le saignement jusqu’aux secours', 'C5c'),
     ],
     prevention: {
       danger: 'La chaîne en mouvement de la tronçonneuse',
       situation: 'Mathis coupe seul des branches posées au sol, sans pantalon de protection',
-      evenement: 'La chaîne touche le sol et la tronçonneuse rebondit vers sa jambe',
+      evenement: 'Il perd le contrôle de la tronçonneuse et la chaîne touche sa cuisse',
       dommage: 'Plaie profonde de la cuisse avec saignement abondant',
       eviter:
         'Acheter du bois déjà coupé ou faire appel à un professionnel. Sinon : chevalet pour couper à bonne hauteur, chaîne affûtée et frein de chaîne vérifié, ne jamais couper seul ; pantalon anti-coupure, chaussures de sécurité, gants, casque avec visière et protections auditives ; lire la notice avant de s’en servir.',
@@ -55,7 +55,7 @@ export const cases: PracticalCase[] = [
     scenario:
       'Mercredi soir, soirée crêpes dans la cuisine commune de l’internat. La poêle est sur la plaque allumée et le beurre commence à fumer. Yanis, qui fait le clown, avale d’un coup une crêpe roulée presque entière en riant. Tout à coup, il se lève, les mains sur la gorge, la bouche ouverte, sans un son. Deux internes rient : ils croient qu’il fait semblant.',
     victime:
-      'Debout, mains sur la gorge, bouche ouverte. Tu ne parles pas, tu ne tousses pas, tu fais « oui » de la tête si on te demande si tu t’étouffes. Les claques dans le dos ne suffisent pas. À la deuxième compression abdominale, tu « recraches » le morceau, tu tousses, puis tu reparles.',
+      'Debout, mains sur la gorge, bouche ouverte. Tu ne parles pas, tu ne tousses pas, tu fais « oui » de la tête si on te demande si tu t’étouffes. Les 5 claques dans le dos ne suffisent pas, les 5 compressions abdominales non plus : le SST doit reprendre les claques. À la deuxième claque de cette nouvelle série, tu « recraches » le morceau, tu tousses, puis tu reparles.',
     temoin:
       'Lucie, une interne. Croit d’abord à une blague, puis dit à Yanis de lever les bras et veut lui donner un verre d’eau. Éteint la plaque, retire la poêle et va chercher le surveillant si le SST le lui demande.',
     materiel:
@@ -65,7 +65,8 @@ export const cases: PracticalCase[] = [
       act('Demande « Tu t’étouffes ? » et constate l’obstruction totale : il ne parle pas, ne tousse pas, aucun son ne sort', 'C3a', 'C3b'),
       act('Refuse le verre d’eau et les bras levés', 'C5b'),
       act('Se place sur le côté et un peu en arrière, penche la victime en avant et donne 1 à 5 claques vigoureuses entre les omoplates', 'C5a', 'C5b'),
-      act('Les claques étant inefficaces, enchaîne 1 à 5 compressions abdominales, poing au creux de l’estomac, et alterne si besoin', 'C5b'),
+      act('Les claques étant inefficaces, enchaîne 1 à 5 compressions abdominales (poing au creux de l’estomac, tirer vers soi et vers le haut)', 'C5b'),
+      act('Les compressions étant inefficaces, reprend les claques, puis les compressions, en alternance, jusqu’à ce que le morceau sorte', 'C5b', 'C5c'),
       act('S’arrête dès que la victime tousse, respire et parle, l’installe dans la position où elle se sent le mieux et la réconforte', 'C5c'),
       act('Fait prévenir le surveillant et appelle le 15 pour un avis médical, en signalant les compressions abdominales', 'C4a'),
       act('Surveille la victime et sait que, si elle perd connaissance, on alerte et on commence la réanimation', 'C5c'),
@@ -99,7 +100,7 @@ export const cases: PracticalCase[] = [
       'Serviette de plage ou tapis, parasol ou drap tendu pour faire de l’ombre, bouteille d’eau, linges mouillés ou brumisateur, ballon, téléphone factice.',
     actions: [
       act('Repère la chaleur et le soleil comme danger pour Chloé et pour les autres joueurs, et fait arrêter le match', 'C2a', 'C2b'),
-      act('Met la victime au repos à l’ombre, dans un endroit frais et aéré (parasol, poste de secours)', 'C5a', 'C5b'),
+      act('Met la victime au repos à l’ombre, dans un endroit frais et aéré : installe un parasol ou un drap tendu près d’elle, et la fait asseoir sur une serviette plutôt que sur le sable brûlant', 'C5a', 'C5b'),
       act('Observe les signes et questionne : depuis quand, ce qu’elle a bu, maladie, traitement', 'C3a', 'C3b'),
       act('Refuse la baignade et l’eau glacée avalée d’un coup', 'C5b'),
       act('La rafraîchit (linges mouillés, brumisateur) et lui fait boire de l’eau fraîche par petites quantités, puisqu’elle est consciente et peut boire', 'C5b'),
@@ -139,8 +140,8 @@ export const cases: PracticalCase[] = [
       act('Fait couper le courant au disjoncteur général du tableau électrique avant de toucher quoi que ce soit', 'C2c'),
       act('Examine : la victime répond, se plaint de la main, brûlure au bout des doigts', 'C3a', 'C3b'),
       act('Arrose immédiatement la brûlure à l’eau courante tempérée, au moins 10 minutes, idéalement 20', 'C5a', 'C5b'),
-      act('Retire la bague et la montre pendant l’arrosage et refuse la pommade', 'C5b'),
-      act('Appelle ou fait appeler le 15 malgré l’avis de la victime : une brûlure électrique est toujours grave', 'C4a'),
+      act('Pendant l’arrosage, retire la bague et la montre avant que les doigts gonflent, et refuse la pommade', 'C5b'),
+      act('Fait appeler le 15 par sa mère pendant l’arrosage, malgré l’avis de la victime : une brûlure électrique est toujours grave', 'C4a'),
       act('Applique les consignes du médecin, met la victime au repos et la couvre', 'C5b'),
       act('La surveille en permanence, prêt à réanimer si elle perd connaissance ou ne respire plus', 'C5c'),
     ],
@@ -166,19 +167,19 @@ export const cases: PracticalCase[] = [
     scenario:
       'Juillet, chez les parents d’un ami qui ont une piscine. Lucas, 18 ans, plonge tête la première dans le petit bain. Il ressort en se tenant la nuque, marche jusqu’aux marches et s’assoit sur le rebord, les pieds dans l’eau. Il dit qu’il a très mal au cou et des fourmis dans les mains. Les autres continuent de sauter dans l’eau juste à côté de lui.',
     victime:
-      'Assis sur le rebord, les pieds dans l’eau, les mains sur la nuque. Conscient, tu réponds. Très mal au cou, fourmillements dans les deux mains. Tu n’as pas perdu connaissance. Tu as froid et tu veux aller t’allonger sur un transat.',
+      'Assis sur le rebord, les pieds dans l’eau, les mains sur la nuque, la tête un peu penchée en avant. Conscient, tu réponds. Très mal au cou, fourmillements dans les deux mains. Tu n’as pas perdu connaissance. Tu as froid et tu veux aller t’allonger sur un transat. Tu restes immobile si le SST te l’explique.',
     temoin:
-      'Un copain. Veut lui faire tourner doucement la tête « pour débloquer », puis l’aider à se lever pour l’installer sur un transat. Fait sortir les autres de l’eau, appelle ou ouvre le portail aux secours si le SST le lui demande.',
-    materiel: 'Banc ou chaise pour le rebord, tissu bleu ou serviettes pour figurer l’eau, serviettes de bain, téléphone factice.',
+      'Un copain. Veut lui faire tourner doucement la tête « pour débloquer », puis l’aider à se lever pour l’installer sur un transat. Fait sortir les autres de l’eau, appelle les secours ou ouvre le portail si le SST le lui demande.',
+    materiel: 'Banc ou chaise pour le rebord (le SST se met à genoux derrière, sur un tapis), tissu bleu ou serviettes pour figurer l’eau, serviettes de bain, téléphone factice.',
     actions: [
       act('Fait arrêter les sauts et sortir les autres de l’eau, loin de Lucas', 'C2a', 'C2b', 'C2c'),
-      act('Demande à la victime de ne pas bouger la tête et de rester assise', 'C5a', 'C5b'),
-      act('Se place derrière elle et maintient sa tête à deux mains, dans la position où elle se trouve', 'C5b'),
-      act('Questionne : douleur, fourmillements, perte de connaissance, a-t-il avalé de l’eau', 'C3a', 'C3b'),
-      act('Refuse qu’on lui tourne la tête, qu’on le lève ou qu’on le déplace', 'C5b'),
-      act('Fait alerter le 15 ou le 18 : adresse, plongeon en eau peu profonde, douleur au cou et fourmillements', 'C4a'),
+      act('Examine en lui parlant : il répond, n’a pas perdu connaissance, a très mal au cou et des fourmis dans les deux mains', 'C3a', 'C3b'),
+      act('Lui demande de ne pas bouger la tête et de rester assis comme il est', 'C5a', 'C5b'),
+      act('Se met à genoux derrière lui, sur la plage de la piscine, et maintient sa tête à deux mains dans la position où elle se trouve, sans la redresser', 'C5b'),
+      act('Refuse qu’on lui tourne la tête, qu’on le lève ou qu’on le déplace, même pour lui sortir les pieds de l’eau', 'C5b'),
+      act('Fait alerter le 15 ou le 18 par le copain : adresse, plongeon en eau peu profonde, douleur au cou, fourmillements dans les mains, pas de perte de connaissance', 'C4a'),
       act('Fait ouvrir le portail et guider les secours jusqu’à la piscine', 'C4b'),
-      act('Fait couvrir la victime avec des serviettes, la rassure et garde le maintien de la tête jusqu’au relais des secours', 'C5c'),
+      act('Fait poser des serviettes sur ses épaules sans le bouger, le rassure, surveille son état et garde le maintien de la tête jusqu’au relais des secours', 'C5c'),
     ],
     prevention: {
       danger: 'Le fond du petit bain, trop peu profond pour plonger',
@@ -200,7 +201,7 @@ export const cases: PracticalCase[] = [
     reviewed: false,
     source: SRC,
     scenario:
-      'Pause de 10 h au CFA. Au foyer des apprentis, Bilal et un copain chahutent. Bilal est poussé contre la porte vitrée, qui se brise. Il est assis par terre à côté de la porte, la main sur le ventre : un éclat de verre est planté sur le côté de son abdomen. Des morceaux de verre couvrent le sol et un grand morceau pointu pend encore dans le cadre. Une dizaine d’apprentis s’approchent pour voir.',
+      'Pause de 10 h au CFA. Au foyer des apprentis, Bilal et un copain chahutent. Bilal est poussé contre la porte vitrée, qui se brise. Il est assis par terre à un mètre de la porte, la main sur le ventre : un éclat de verre est planté sur le côté de son abdomen. Des morceaux de verre couvrent le sol et un grand morceau pointu pend encore dans le cadre. Une dizaine d’apprentis s’approchent pour voir.',
     victime:
       'Assis par terre, conscient, pâle. Un éclat de verre est planté sur le côté du ventre ; ça saigne un peu autour, pas beaucoup. Tu as mal, tu veux retirer l’éclat et aller toi-même à l’accueil. Tu te laisses installer si le SST t’explique.',
     temoin:
@@ -209,13 +210,13 @@ export const cases: PracticalCase[] = [
       'Tapis, faux éclat en carton scotché sur le tee-shirt, papier froissé pour le verre au sol, ruban de balisage ou chaises, sac pour caler les jambes, gants, couverture, téléphone factice.',
     actions: [
       act('Fait reculer les apprentis, interdit le passage par la porte et l’accès aux éclats', 'C2a', 'C2b', 'C2d'),
-      act('Écarte du pied les éclats autour de la victime pour pouvoir s’agenouiller, sans toucher au morceau qui pend dans le cadre', 'C2c'),
+      act('Reste à distance du morceau qui pend dans le cadre et, avant de s’agenouiller, écarte les éclats autour de la victime avec le pied ou un carton, jamais à mains nues', 'C2c'),
       act('Examine : la victime répond, saigne peu, plaie de l’abdomen avec un éclat planté', 'C3a', 'C3b'),
       act('Interdit de retirer l’éclat', 'C5b'),
       act('Allonge la victime à plat dos, jambes fléchies, sans appuyer sur l’éclat', 'C5a', 'C5b'),
       act('Fait alerter le 15 et prévenir l’accueil du CFA, selon l’organisation des secours du centre', 'C4a'),
       act('Fait accueillir et guider les secours de l’entrée jusqu’au foyer', 'C4b'),
-      act('Couvre, ne donne rien à boire, rassure et surveille jusqu’aux secours', 'C5c'),
+      act('Couvre, rassure, ne lui donne rien à boire et surveille jusqu’aux secours', 'C5c'),
     ],
     prevention: {
       danger: 'La vitre de la porte du foyer, en verre ordinaire',
@@ -237,30 +238,30 @@ export const cases: PracticalCase[] = [
     reviewed: false,
     source: SRC,
     scenario:
-      'Samedi, 1 h du matin, anniversaire dans le jardin d’un copain. La musique est forte, un brasero brûle encore. Jade, 17 ans, a bu beaucoup de vodka. Tu la trouves allongée sur le dos dans l’herbe, à un mètre du brasero ; quelques braises fument dans l’herbe près de sa tête. Son amie Manon te dit : « Elle s’est assise sur le banc, puis elle s’est couchée là toute seule pour dormir. Elle ne s’est pas cognée. »',
+      'Samedi, 1 h du matin, anniversaire dans le jardin d’un copain. La musique est forte, un brasero brûle encore. Jade, 17 ans, a bu beaucoup de vodka. Tu la trouves allongée sur le dos dans l’herbe, à un mètre du brasero ; quelques braises fument dans l’herbe près de sa tête. Son amie Manon, restée avec elle toute la soirée, te dit : « Elle s’est assise sur le banc, puis elle s’est couchée là toute seule pour dormir. Elle n’est pas tombée, elle ne s’est pas cognée. »',
     victime:
-      'Allongée sur le dos, yeux fermés. Tu ne réponds pas, tu ne serres pas la main, tu respires normalement. Origine non traumatique : pas de chute, pas de choc, aucune blessure. Quelques minutes après avoir été mise en PLS, tu fais un bruit de vomissement.',
+      'Allongée sur le dos, yeux fermés. Tu ne réponds pas, tu ne serres pas la main, tu respires normalement. Origine non traumatique et connue : pas de chute, pas de choc, aucune blessure ni brûlure. Quelques minutes après avoir été mise en PLS, tu fais un bruit de vomissement.',
     temoin:
-      'Manon, son amie. Veut lui passer la tête sous l’eau froide, lui faire boire du café, puis la coucher seule dans une chambre ; supplie de ne pas appeler : « Ses parents vont la tuer. » Confirme qu’elle ne s’est pas cognée. Éteint les braises ou accueille les secours dans la rue si le SST le lui demande.',
+      'Manon, son amie. Veut lui passer la tête sous l’eau froide, lui faire boire du café, puis la coucher seule dans une chambre ; supplie de ne pas appeler : « Elle va avoir de gros problèmes avec ses parents. » Confirme qu’elle ne l’a pas quittée et que Jade ne s’est pas cognée. Éteint les braises ou accueille les secours dans la rue si le SST le lui demande.',
     materiel: 'Tapis, bouteille vide, seau, objet pour figurer le brasero, couverture ou veste, téléphone factice.',
     actions: [
-      act('Fait éteindre les braises dans l’herbe et le brasero avec un seau d’eau, et écarte les bouteilles', 'C2a', 'C2c'),
+      act('Fait éteindre avec un seau d’eau les braises qui fument dans l’herbe près de sa tête, puis le brasero, et fait écarter les autres invités', 'C2a', 'C2c'),
       act('Examine : ne répond pas, ne serre pas la main ; libère les voies aériennes et constate qu’elle respire', 'C3a', 'C3b'),
-      act('Fait confirmer par Manon qu’il n’y a eu ni chute ni choc : l’origine est connue et non traumatique (alcool)', 'C3a'),
-      act('Met la victime en position latérale de sécurité, du côté opposé au brasero', 'C5a', 'C5b'),
+      act('Fait préciser par Manon ce qui s’est passé : elle ne l’a pas quittée, ni chute ni choc ; l’origine est connue et non traumatique (alcool). Au moindre doute, il la laisserait sur le dos', 'C5a'),
+      act('Met la victime en position latérale de sécurité, tournée du côté opposé au brasero', 'C5b'),
       act('Refuse l’eau froide, le café et l’idée de la laisser dormir seule', 'C5b'),
-      act('Appelle ou fait appeler le 15 malgré les supplications : jeune fille de 17 ans, a bu beaucoup d’alcool, ne répond pas, respire, en PLS', 'C4a'),
+      act('Rassure Manon sans juger personne (le 15 est là pour soigner Jade, pas pour la punir) et appelle ou fait appeler le 15 : jeune fille de 17 ans, a bu beaucoup d’alcool fort, ne répond pas, respire, en PLS', 'C4a'),
       act('Fait baisser la musique, allumer l’éclairage et accueillir les secours dans la rue', 'C4b'),
-      act('La couvre et surveille sa respiration en permanence jusqu’aux secours, prêt à réanimer', 'C5c'),
+      act('La couvre et surveille sa respiration en permanence jusqu’aux secours ; si elle vomit, la laisse sur le côté pour que les vomissements s’écoulent ; prêt à réanimer si elle ne respire plus', 'C5c'),
     ],
     prevention: {
       danger: 'L’alcool fort',
-      situation: 'Jade, 17 ans, boit beaucoup de vodka en peu de temps, sans manger',
+      situation: 'Jade, 17 ans, boit beaucoup de vodka en peu de temps',
       evenement: 'L’alcool atteint un taux dangereux dans son sang',
       dommage: 'Perte de connaissance, avec risque d’étouffement par les vomissements et de refroidissement',
       eviter:
-        'Pas d’alcool fort, et pas d’alcool pour les mineurs ; prévoir à manger et des boissons sans alcool ; un ou deux amis qui restent sobres pour veiller sur les autres ; ne jamais laisser seul un ami qui a trop bu ; brasero entouré, surveillé et éteint en fin de soirée.',
-      remonter: 'Le copain qui organise et ses parents, ainsi que les parents de Jade, qui est mineure ; le médecin du 15.',
+        'Pas d’alcool pour les mineurs et pas d’alcool fort à la soirée ; prévoir à manger, de l’eau et des boissons sans alcool ; un ou deux amis qui restent sobres pour veiller sur les autres ; ne jamais laisser seul un ami qui a trop bu ; brasero entouré, surveillé et éteint en fin de soirée. Après coup, en reparler avec Jade sans la juger : si elle le souhaite, elle peut en parler à un adulte de confiance, à l’infirmière de son établissement ou à son médecin.',
+      remonter: 'Le médecin du 15 ; le copain qui organise et ses parents ; les parents de Jade, qui est mineure.',
     },
   }),
   makeCase({
@@ -282,7 +283,7 @@ export const cases: PracticalCase[] = [
     actions: [
       act('Appuie ou fait appuyer sur le bouton d’arrêt d’urgence de l’escalier et fait contourner la zone', 'C2a', 'C2b', 'C2c'),
       act('Examine : ne répond pas, ne respire pas', 'C3a', 'C3b'),
-      act('Fait alerter le 15 ou le 112 par l’agent de sécurité et fait apporter le défibrillateur', 'C4a'),
+      act('Fait alerter le 15 ou le 112 par l’agent de sécurité et fait apporter le défibrillateur de l’accueil par une autre personne', 'C4a'),
       act('Commence aussitôt les compressions thoraciques à 100 à 120 par minute : 30 compressions et 2 insufflations, ou compressions seules si les insufflations sont impossibles', 'C5a', 'C5b'),
       act('Refuse la PLS et l’eau au visage', 'C5b'),
       act('Met en œuvre le défibrillateur dès son arrivée, suit ses instructions et fait écarter tout le monde pendant l’analyse et le choc', 'C5b'),
@@ -309,30 +310,31 @@ export const cases: PracticalCase[] = [
     reviewed: false,
     source: SRC,
     scenario:
-      'Un dimanche de janvier, il fait très froid. Tu rejoins trois amis qui jouent à la console depuis midi dans le petit studio d’Adam. Les fenêtres sont fermées, un chauffage d’appoint au pétrole tourne au milieu de la pièce. En entrant, tu trouves l’air lourd. Adam a très mal à la tête et envie de vomir ; Camille est assise par terre et dit que la tête lui tourne. Inès dit qu’elle a juste un peu mal à la tête.',
+      'Un dimanche de janvier, il fait très froid. Le chauffage du petit studio d’Adam, au rez-de-chaussée sur cour, est en panne : depuis midi, un chauffage d’appoint au pétrole tourne au milieu de la pièce, fenêtres fermées. Tu rejoins Adam, Camille et Inès qui jouent à la console. En entrant, tu trouves l’air lourd. Adam a très mal à la tête et envie de vomir ; Camille est assise par terre et dit que la tête lui tourne. Inès dit qu’elle a juste un peu mal à la tête.',
     victime:
-      'Deux camarades. Adam : assis sur le canapé, très mal à la tête, nausées, répond normalement. Camille : assise par terre, vertiges, très fatiguée, répond lentement ; elle peut marcher si on la soutient. Tous les deux vont un peu mieux à l’air frais.',
+      'Deux camarades. Adam : assis sur le canapé, très mal à la tête, nausées, répond normalement. Camille : assise par terre, vertiges, très fatiguée, répond lentement ; elle peut marcher si on la soutient. Tous les deux vont un peu mieux une fois dehors, dans la cour.',
     temoin:
-      'Inès, qui a un peu mal à la tête. Pense que « c’est la pizza » et veut rester au chaud en entrouvrant juste la fenêtre ; une fois dehors, veut remonter chercher son téléphone. Aide Camille à sortir et appelle les secours si le SST le lui demande.',
-    materiel: 'Carton pour figurer le chauffage, canapé ou chaises, porte et fenêtre figurées, couvertures, téléphone factice.',
+      'Inès, qui a un peu mal à la tête. Pense que « c’est la pizza » et veut rester au chaud en entrouvrant juste la fenêtre ; une fois dehors, veut retourner chercher son téléphone. Aide Camille à sortir et appelle les secours si le SST le lui demande.',
+    materiel: 'Carton pour figurer le chauffage, canapé ou chaises, porte et fenêtre figurées, un coin de la salle pour la cour, couvertures, téléphone factice.',
     actions: [
-      act('Repère le danger : un appareil qui brûle du pétrole dans une pièce fermée et plusieurs personnes avec les mêmes signes', 'C2a', 'C2b'),
-      act('Éteint le chauffage et ouvre en grand fenêtres et porte, sans rester dans la pièce plus que nécessaire', 'C2c'),
-      act('Fait sortir tout le monde à l’air frais, en soutenant Camille, et interdit de remonter', 'C2b', 'C2e'),
-      act('Examine chaque victime dehors : elles répondent, maux de tête, nausées, vertiges', 'C3a', 'C3b'),
-      act('Met les victimes au repos, assises ou allongées, et les couvre', 'C5a', 'C5b'),
-      act('Appelle le 18, le 15 ou le 112 : trois personnes avec des signes d’intoxication au monoxyde de carbone, chauffage d’appoint au pétrole, adresse et étage', 'C4a'),
-      act('Suit les conseils des secours et ne laisse personne prendre le volant ou repartir seul', 'C5b'),
-      act('Fait accueillir les secours en bas de l’immeuble et surveille les victimes, surtout Camille, jusqu’à leur arrivée', 'C4b', 'C5c'),
+      act('Repère le danger dès l’entrée : un appareil qui brûle du pétrole dans une pièce fermée, plusieurs personnes avec les mêmes signes : pense au monoxyde de carbone', 'C2a', 'C2b'),
+      act('Sans s’attarder, ouvre en grand la fenêtre et la porte et éteint le chauffage, qui est à portée de main', 'C2c'),
+      act('Fait sortir aussitôt tout le monde dans la cour, en soutenant Camille, et sort lui aussi : personne ne reste dans le studio', 'C2e'),
+      act('Interdit à tous de retourner dans le studio, même pour un téléphone, tant que les secours ne l’ont pas permis', 'C2d'),
+      act('Examine chaque personne dehors : toutes répondent ; maux de tête, nausées, vertiges ; Camille est la plus atteinte', 'C3a', 'C3b'),
+      act('Met les victimes au repos dehors, assises ou allongées, et les couvre (il fait froid)', 'C5a', 'C5b'),
+      act('Appelle le 112, le 18 ou le 15 : adresse, intoxication probable au monoxyde de carbone par un chauffage d’appoint au pétrole, trois personnes avec des signes, et lui-même exposé quelques instants', 'C4a'),
+      act('Suit les conseils des secours, ne laisse personne prendre le volant ni repartir seul et fait accueillir les secours à l’entrée de la cour', 'C5b', 'C4b'),
+      act('Surveille les victimes, surtout Camille, jusqu’à l’arrivée des secours ; rappelle les secours si l’une d’elles va plus mal ou ne répond plus', 'C5c'),
     ],
     prevention: {
       danger: 'Le monoxyde de carbone dégagé par le chauffage d’appoint, un gaz invisible et sans odeur',
-      situation: 'Trois amis restent des heures dans une petite pièce fermée avec le chauffage allumé',
+      situation: 'Trois amis restent des heures dans une petite pièce fermée avec le chauffage d’appoint allumé',
       evenement: 'Le gaz s’accumule dans la pièce et ils le respirent',
       dommage: 'Intoxication au monoxyde de carbone : maux de tête, nausées, vertiges, risque de perte de connaissance',
       eviter:
-        'Ne pas se chauffer en continu avec un chauffage d’appoint à combustion et faire réparer le chauffage principal ; aérer la pièce chaque jour et ne jamais boucher les aérations ; faire entretenir les appareils ; installer un détecteur de monoxyde de carbone ; connaître les signes.',
-      remonter: 'Le propriétaire du studio (chauffage principal, aérations) et la famille d’Adam.',
+        'Faire réparer vite le chauffage principal ; ne pas se chauffer en continu avec un chauffage d’appoint à combustion ; aérer la pièce chaque jour et ne jamais boucher les aérations ; faire entretenir les appareils ; installer un détecteur de monoxyde de carbone ; connaître les signes et sortir aussitôt à l’air libre.',
+      remonter: 'Le propriétaire du studio (chauffage en panne, aérations) et la famille d’Adam.',
     },
   }),
   makeCase({
@@ -353,11 +355,11 @@ export const cases: PracticalCase[] = [
     materiel:
       'Flacon vide avec une étiquette, gants de ménage, ciseaux à bouts ronds, vieux tee-shirt, douche figurée ou bassine et bouteilles d’eau, serviette, couverture, téléphone factice, montre.',
     actions: [
-      act('Fait refermer le flacon avec des gants, l’écarte, ouvre la fenêtre et ne touche pas au produit resté dans l’évier', 'C2a', 'C2c'),
+      act('Fait refermer le flacon par Théo, avec des gants, l’écarte, ouvre la fenêtre et ne touche pas au produit resté dans l’évier', 'C2a', 'C2c'),
       act('Examine : la victime répond, brûlures de l’avant-bras et du cou, rien dans les yeux', 'C3a', 'C3b'),
       act('Rince immédiatement et longuement à l’eau courante tempérée, sous la douche plutôt que dans l’évier où reste le produit', 'C5a', 'C5b'),
-      act('Oriente le rinçage du cou vers le bas, tête penchée, pour que l’eau ne coule ni vers les yeux ni sur la peau saine', 'C5b'),
-      act('Met des gants et retire le tee-shirt imbibé en le découpant, sans le faire passer sur le visage', 'C5b'),
+      act('Pour le cou, fait couler l’eau juste au-dessus de la brûlure, jamais au-dessus du visage, pour que l’eau de rinçage n’aille pas vers les yeux et touche le moins possible la peau saine', 'C5b'),
+      act('Pendant le rinçage, met des gants et retire le tee-shirt imbibé en le découpant, sans le faire passer sur le visage', 'C5b'),
       act('Refuse le vinaigre, la crème et le frottement', 'C5b'),
       act('Fait alerter le 15 en donnant le nom du produit lu sur l’étiquette, et garde le flacon pour les secours', 'C4a'),
       act('Poursuit le rinçage selon les consignes du médecin, puis couvre, réconforte et surveille', 'C5c'),
@@ -389,9 +391,9 @@ export const cases: PracticalCase[] = [
       'Un ami de grimpe. Veut tirer doucement sur la main « pour remettre le poignet droit », puis l’aider à se lever. Fait descendre le grimpeur, prévient l’accueil et guide les secours si le SST le lui demande.',
     materiel: 'Tapis, deux chaises ou un mur pour figurer le bloc, couverture, téléphone factice.',
     actions: [
-      act('Fait désescalader le grimpeur au-dessus de Sarah et interdit l’accès à la zone de chute de ce mur', 'C2a', 'C2b', 'C2d'),
+      act('Fait désescalader le grimpeur au-dessus de Sarah et interdit l’accès à la zone de chute de ce mur', 'C2a', 'C2c', 'C2d'),
+      act('Examine en la questionnant : elle répond, douleur et déformation du poignet, pas de choc à la tête ni au dos, sensibilité des doigts', 'C3a', 'C3b'),
       act('Demande à la victime de ne pas bouger le bras et respecte la position qu’elle a prise', 'C5a', 'C5b'),
-      act('Questionne : douleur, choc à la tête ou au dos, sensibilité des doigts', 'C3a', 'C3b'),
       act('Refuse qu’on remette le poignet en place et qu’on la fasse se lever', 'C5b'),
       act('Fait alerter le 15 par l’accueil de la salle : chute d’un mur d’escalade, poignet déformé', 'C4a'),
       act('Fait guider les secours de l’entrée jusqu’au mur', 'C4b'),
@@ -417,19 +419,19 @@ export const cases: PracticalCase[] = [
     reviewed: false,
     source: SRC,
     scenario:
-      'Vendredi, 23 h, tu rentres à pied en ville. Devant toi, Noah, 19 ans, sans casque, roule en trottinette électrique le long des voitures garées. Un conducteur ouvre sa portière sans regarder : Noah la percute, il est projeté et sa tête heurte la chaussée. Il est allongé sur le dos au milieu de la voie et ne bouge plus. Des voitures arrivent dans les deux sens ; le conducteur, choqué, est sorti de sa voiture.',
+      'Vendredi, 23 h, tu rentres à pied en ville. Devant toi, Noah, 19 ans, sans casque, roule en trottinette électrique le long des voitures garées. Un conducteur ouvre sa portière sans regarder : Noah la percute, il est projeté et sa tête heurte la chaussée. Il est allongé sur le dos au milieu de la voie et ne bouge plus. Des voitures arrivent dans les deux sens ; le conducteur, choqué, est sorti de sa voiture et une passante s’arrête sur le trottoir.',
     victime:
       'Allongé sur le dos, yeux fermés. Tu ne réponds pas, tu ne serres pas la main, tu respires. Origine traumatique : choc de la tête sur la chaussée, bosse et un peu de sang sur le front (maquillage). Tu ne bouges pas jusqu’aux secours.',
     temoin:
-      'Le conducteur. Veut tirer Noah sur le trottoir, puis le mettre « en position de sécurité comme dans les films ». Allume ses feux de détresse, signale l’accident aux voitures avec la lampe de son téléphone ou appelle les secours si le SST le lui demande.',
-    materiel: 'Tapis, trottinette ou chaise couchée, gilet jaune, lampe ou téléphone, maquillage rouge, couverture, téléphone factice.',
+      'Deux camarades. Le conducteur : veut tirer Noah sur le trottoir, puis le mettre « en position de sécurité comme dans les films » ; si le SST le lui demande, allume ses feux de détresse, met son gilet jaune et signale l’accident d’un côté avec la lampe de son téléphone. La passante : filme avec son téléphone ; si le SST le lui demande, signale l’accident de l’autre côté, appelle les secours et les guide.',
+    materiel: 'Tapis, trottinette ou chaise couchée, gilet jaune, deux lampes ou téléphones, maquillage rouge, couverture, téléphone factice.',
     actions: [
-      act('Regarde la circulation avant de s’engager sur la chaussée et se rend visible (gilet, lampe)', 'C2a'),
-      act('Fait allumer les feux de détresse et fait signaler l’accident de chaque côté, assez loin pour que les voitures ralentissent à temps', 'C2b', 'C2d'),
-      act('Examine : ne répond pas, ne serre pas la main ; libère les voies aériennes avec précaution et constate qu’il respire', 'C3a', 'C3b'),
-      act('Le laisse sur le dos, car l’origine est traumatique (choc à la tête), maintient sa tête à deux mains et garde ses voies aériennes libres', 'C5a', 'C5b'),
-      act('Refuse la PLS et ne le déplace pas : le balisage contrôle le danger, un dégagement d’urgence n’est pas justifié', 'C5b'),
-      act('Fait alerter le 15, le 18 ou le 112 : adresse précise, trottinette contre une portière, choc à la tête, ne répond pas, respire', 'C4a'),
+      act('Regarde la circulation avant de s’engager sur la chaussée et repère que Noah, les témoins et lui-même sont exposés aux voitures', 'C2a', 'C2b'),
+      act('Fait allumer les feux de détresse et fait signaler l’accident de chaque côté par le conducteur et la passante (gilet, lampe du téléphone), assez loin pour que les voitures ralentissent à temps', 'C2d'),
+      act('Examine : ne répond pas, ne serre pas la main ; libère les voies aériennes avec précaution, sans tourner la tête, et constate qu’il respire', 'C3a', 'C3b'),
+      act('Le laisse sur le dos, car l’origine est traumatique (choc à la tête), et maintient la liberté de ses voies aériennes ; maintient sa tête à deux mains', 'C5a', 'C5b'),
+      act('Refuse la PLS et refuse qu’on le tire sur le trottoir : le balisage protège la zone, un dégagement d’urgence n’est pas justifié', 'C5b'),
+      act('Fait alerter le 15, le 18 ou le 112 par la passante : adresse précise, trottinette contre une portière, une victime, choc à la tête, ne répond pas, respire', 'C4a'),
       act('Fait accueillir et guider les secours jusqu’à la victime', 'C4b'),
       act('Le fait couvrir et surveille sa respiration en permanence, prêt à réanimer s’il ne respire plus', 'C5c'),
     ],

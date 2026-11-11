@@ -23,11 +23,11 @@ export const cases: PracticalCase[] = [
     materiel:
       'Morceaux de carton figurant les éclats, maquillage ou tissu rouge, gants jetables, torchon propre, bande ou garrot de formation, tapis, couverture, téléphone factice.',
     actions: [
-      act('Arrête la cliente à la porte : interdit d’entrer en chaussons et de ramasser les éclats', 'C2a', 'C2b', 'C2d'),
-      act('Écarte du pied les gros éclats autour de la victime pour s’agenouiller sans se couper', 'C2c'),
+      act('Arrête la cliente à la porte : lui interdit d’entrer en chaussons et de ramasser les éclats à la main', 'C2a', 'C2b', 'C2d'),
+      act('Avec ses chaussures de sécurité, écarte du pied les gros éclats autour de la victime pour s’agenouiller sans se couper', 'C2c'),
       act('Constate le saignement abondant de l’avant-bras', 'C3a'),
       act('Fait comprimer la plaie par la victime ou comprime lui-même, main protégée (gant, sac plastique)', 'C5a', 'C5b'),
-      act('Allonge la victime sur un endroit dégagé des éclats', 'C5b'),
+      act('Allonge la victime sur un endroit dégagé des éclats, sans relâcher la compression', 'C5b'),
       act('Fait alerter le 15 ou le 112 par la cliente : adresse, étage, plaie qui saigne beaucoup, compression en cours', 'C4a'),
       act('Si la compression est inefficace, pose un garrot au-dessus de la plaie et le laisse visible ; sinon, pansement compressif si besoin', 'C5b'),
       act('Fait ouvrir la porte de l’immeuble et guider les secours jusqu’au 3e étage', 'C4b'),
@@ -53,22 +53,23 @@ export const cases: PracticalCase[] = [
     reviewed: false,
     source: SRC,
     scenario:
-      'Il est 9 h, c’est la pause casse-croûte. Tu manges dans le fourgon de l’entreprise avec Ethan et Lucie, l’apprentie, garés le long d’une rue passante devant le chantier. Ethan dévore un sandwich au saucisson en racontant une histoire. D’un coup, il ouvre sa portière côté rue et sort, les mains à la gorge, la bouche grande ouverte : il ne tousse pas, aucun son ne sort, et les voitures passent tout près de lui.',
+      'Il est 9 h, c’est la pause casse-croûte. Tu manges avec Ethan et Lucie, l’apprentie, dans le fourgon de l’entreprise garé le long d’une rue passante, devant le chantier. Ethan, assis au volant, dévore un sandwich au saucisson en racontant une histoire. D’un coup, il ouvre sa portière côté rue et descend sur la chaussée, les mains à la gorge et la bouche grande ouverte : il ne tousse pas, aucun son ne sort, et les voitures passent tout près de lui.',
     victime:
-      'Debout sur la chaussée, mains à la gorge, bouche ouverte. Ne parle pas, ne tousse pas, fait oui de la tête si on lui demande s’il s’étouffe. Se laisse guider sur le trottoir. Les 5 claques ne suffisent pas ; à la deuxième compression abdominale, il recrache le morceau, tousse et respire à nouveau.',
+      'Debout sur la chaussée, à côté de sa portière, mains à la gorge, bouche ouverte. Ne parle pas, ne tousse pas, ne respire pas ; fait oui de la tête si on lui demande s’il s’étouffe. Se laisse guider sur le trottoir. Les 5 claques ne suffisent pas ; à la deuxième compression abdominale, il recrache le morceau, tousse et respire à nouveau.',
     temoin:
-      'Lucie, l’apprentie. Veut lui faire boire sa bouteille d’eau et lui tape dans le dos alors qu’il est bien droit. Appelle le 15 si le SST le lui demande.',
+      'Lucie, l’apprentie. Veut lui faire boire sa bouteille d’eau et lui tape dans le dos alors qu’il est bien droit. S’arrête si le SST le lui dit et appelle le 15 si on le lui demande.',
     materiel:
       'Ruban au sol pour la chaussée et le trottoir, deux chaises figurant le fourgon, emballage de sandwich, bouteille d’eau, téléphone factice. Claques et compressions mimées : mains bien placées, geste retenu.',
     actions: [
-      act('Sort du fourgon côté trottoir, repère la circulation et ramène aussitôt la victime sur le trottoir, à l’abri des voitures', 'C2a', 'C2b'),
-      act('Demande « Tu t’étouffes ? » et constate l’obstruction totale : ne parle pas, ne tousse pas, ne respire pas', 'C3a', 'C3b'),
-      act('Refuse qu’on lui donne à boire', 'C5b'),
+      act('Descend côté trottoir, regarde la circulation avant de passer côté rue et ramène aussitôt Ethan sur le trottoir, à l’abri des voitures', 'C2a', 'C2b', 'C2e'),
+      act('Demande « Tu t’étouffes ? » et constate l’obstruction totale : il ne parle pas, ne tousse pas, ne respire pas', 'C3a', 'C3b'),
+      act('Fait appeler le 15 par Lucie pendant les claques et les compressions', 'C4a'),
+      act('Refuse qu’on lui donne à boire et qu’on lui tape dans le dos quand il est droit', 'C5b'),
       act('Le penche en avant et donne 1 à 5 claques vigoureuses dans le dos, entre les omoplates', 'C5a', 'C5b'),
       act('Les claques étant inefficaces, enchaîne 1 à 5 compressions abdominales, mains bien placées, en alternance avec les claques si besoin', 'C5b'),
-      act('Fait alerter le 15 par Lucie si le morceau ne sort pas', 'C4a'),
-      act('Une fois le morceau expulsé, l’installe dans la position où il se sent le mieux et fait demander un avis médical au 15', 'C4a', 'C5c'),
-      act('Réconforte et surveille jusqu’à l’avis ou la prise en charge par les secours', 'C5c'),
+      act('Arrête dès que le morceau sort et l’installe dans la position où il se sent le mieux', 'C5b'),
+      act('Fait dire au 15 que des compressions abdominales ont été faites et suit ses conseils', 'C4a'),
+      act('Réconforte, couvre et surveille sa respiration jusqu’à l’avis du médecin ou l’arrivée des secours', 'C5c'),
     ],
     prevention: {
       danger: 'Le morceau de sandwich avalé de travers (et la circulation dans la rue)',
@@ -92,7 +93,7 @@ export const cases: PracticalCase[] = [
     scenario:
       'Dans une maison neuve, ta collègue Léa colle depuis une heure les évacuations en PVC dans le vide sanitaire, un espace bas et mal aéré sous le plancher. Elle ressort par la trappe, s’assoit à côté, toute pâle, et te dit qu’elle a très mal à la tête, que tout tourne et qu’elle a envie de vomir. Le pot de colle est resté ouvert au bord de la trappe et l’odeur de solvant est forte. Le carreleur, qui travaille dans la pièce, sort son briquet pour allumer une cigarette.',
     victime:
-      'Assise au bord de la trappe, pâle, maux de tête, vertiges, nausées. Répond aux questions : a collé une heure dans le vide sanitaire, sans ventilation ni masque ; ça a commencé il y a dix minutes ; pas de maladie connue, pas de traitement, a pris son petit déjeuner. Va un peu mieux au repos, à l’air frais, mais a toujours mal à la tête.',
+      'Assise au bord de la trappe, pâle, maux de tête, vertiges, nausées. Répond aux questions : a collé une heure dans le vide sanitaire, sans ventilation ni masque ; ça a commencé il y a dix minutes ; pas de maladie connue, pas de traitement, a pris son petit déjeuner. Marche si on l’aide. Va un peu mieux au repos, à l’air frais, mais a toujours mal à la tête.',
     temoin:
       'Le carreleur. Veut allumer sa cigarette et dit : « Elle a juste besoin d’une pause, elle finira après. » Range son briquet, ouvre les fenêtres et appelle les secours si le SST le lui demande.',
     materiel:
@@ -101,7 +102,7 @@ export const cases: PracticalCase[] = [
       act('Repère les vapeurs de solvant, nocives et inflammables, et interdit au carreleur d’allumer sa cigarette', 'C2a', 'C2b'),
       act('Fait fermer le pot de colle et ouvrir portes et fenêtres', 'C2c'),
       act('Interdit à quiconque de redescendre dans le vide sanitaire', 'C2d'),
-      act('Installe la victime au repos, à l’écart de la trappe, dans la position où elle se sent le mieux', 'C5a', 'C5b'),
+      act('Installe la victime au repos à l’air frais, loin de la trappe, dans la position où elle se sent le mieux', 'C5a', 'C5b'),
       act('Observe les signes : pâleur, maux de tête, vertiges, nausées', 'C3a'),
       act('Questionne : depuis quand, temps passé dans le vide sanitaire, produit utilisé, maladie ou traitement', 'C3b'),
       act('Appelle ou fait appeler le 15 et transmet les signes et le nom du produit lu sur le pot', 'C4a'),
@@ -114,7 +115,7 @@ export const cases: PracticalCase[] = [
       evenement: 'Les vapeurs s’accumulent et elle les respire',
       dommage: 'Malaise par intoxication (maux de tête, vertiges, nausées)',
       eviter:
-        'Préparer et coller les assemblages hors du vide sanitaire quand c’est possible ; ventiler le vide sanitaire (ventilateur ou extracteur) ; refermer le pot entre deux collages ; aucune flamme ni cigarette à proximité ; ne pas travailler seul dans un espace confiné ; protection respiratoire adaptée selon la fiche de données de sécurité.',
+        'Choisir des raccords à joint, sans colle, ou préparer et coller les assemblages hors du vide sanitaire ; sinon, ventiler le vide sanitaire (ventilateur ou extracteur), refermer le pot entre deux collages, aucune flamme ni cigarette à proximité, ne pas travailler seul dans un espace confiné ; protection respiratoire adaptée selon la fiche de données de sécurité.',
       remonter: 'Chef d’équipe ou chef d’entreprise.',
     },
   }),
@@ -128,7 +129,7 @@ export const cases: PracticalCase[] = [
     reviewed: false,
     source: SRC,
     scenario:
-      'Tu remplaces un vieux chauffe-eau électrique dans le garage d’une maison avec Inès, l’autre apprentie. Elle a coupé au tableau un disjoncteur sans étiquette, en pensant que c’était le bon. Quand elle desserre les fils avec son tournevis, il y a un flash et un claquement : elle crie et recule en se tenant la main. Le capot du chauffe-eau est ouvert, les fils sont toujours branchés, et le client arrive en demandant ce qui se passe.',
+      'Tu remplaces un vieux chauffe-eau électrique dans le cellier d’une maison avec Inès, l’autre apprentie. Elle a coupé au tableau un disjoncteur sans étiquette, en pensant que c’était le bon. Quand elle desserre les fils avec son tournevis, il y a un flash et un claquement : elle crie et recule en se tenant la main. Le capot du chauffe-eau est ouvert, les fils sont toujours branchés, et le client arrive en demandant ce qui se passe.',
     victime:
       'Debout, consciente, respire normalement. Se tient la main droite : paume et bout des doigts brûlés, avec des traces noires. Dit que son bras fourmille et que « ce n’est rien, je finis le branchement ».',
     temoin:
@@ -174,7 +175,7 @@ export const cases: PracticalCase[] = [
       'Perceuse ou carton figurant la carotteuse, rallonge, serpillière figurant l’eau au sol, chaise ou mur, couverture, téléphone factice.',
     actions: [
       act('Repère la machine branchée dans l’eau et ne marche pas dans la flaque tant qu’elle est branchée', 'C2a', 'C2b'),
-      act('Débranche la rallonge à la prise, hors de l’eau, et ferme l’arrivée d’eau de la carotteuse', 'C2c'),
+      act('Débranche ou fait débrancher la rallonge à la prise, hors de l’eau, puis ferme l’arrivée d’eau de la carotteuse', 'C2c'),
       act('Examine : répond, respire, se plaint du poignet, ne peut plus bouger la main', 'C3a', 'C3b'),
       act('Lui demande de ne pas bouger le bras et respecte la position qu’il a prise', 'C5a', 'C5b'),
       act('Refuse qu’on tire sur le poignet pour le remettre en place', 'C5b'),
@@ -188,7 +189,7 @@ export const cases: PracticalCase[] = [
       evenement: 'La couronne se bloque dans une armature, la machine tourne d’un coup',
       dommage: 'Traumatisme du poignet (entorse ou fracture)',
       eviter:
-        'Carotteuse fixée sur un support au mur ; repérer les armatures avant de percer ; machine avec embrayage de sécurité et poignée latérale bien tenue ; alimentation protégée par un différentiel et récupération de l’eau ; formation à l’utilisation de la machine.',
+        'Prévoir les réservations (fourreaux) avant le coulage du béton pour ne pas avoir à carotter ; sinon, carotteuse fixée sur un support au mur, armatures repérées avant de percer, machine avec embrayage de sécurité et poignée latérale bien tenue, alimentation protégée par un différentiel et récupération de l’eau ; formation à l’utilisation de la machine.',
       remonter: 'Chef de chantier ou chef d’entreprise.',
     },
   }),
@@ -210,7 +211,7 @@ export const cases: PracticalCase[] = [
     materiel:
       'Tapis, maquillage, cutter sans lame ou crayon, ruban pour la zone de circulation du chariot, couverture, téléphone factice.',
     actions: [
-      act('Fait arrêter le chariot élévateur et couper son moteur', 'C2a', 'C2b', 'C2c'),
+      act('Crie au cariste de s’arrêter et lui fait couper le moteur du chariot élévateur', 'C2a', 'C2b', 'C2c'),
       act('Rentre la lame du cutter et le met de côté', 'C2c'),
       act('Examine : répond, respire, plaie du ventre qui ne saigne pas abondamment', 'C3a', 'C3b'),
       act('Identifie une plaie grave par sa localisation (abdomen)', 'C5a'),
@@ -244,18 +245,18 @@ export const cases: PracticalCase[] = [
     victime:
       'Allongée sur le dos au pied de l’échelle. Origine TRAUMATIQUE (chute avec choc à la tête) : on la laisse sur le dos. Ne répond pas, ne réagit pas quand on lui parle ou qu’on lui demande de serrer la main, respire normalement. Ne bouge pas jusqu’à l’arrivée des secours.',
     temoin:
-      'La cliente. Veut descendre vite par l’échelle, propose de « la remonter dans la cuisine » ou de lui glisser un coussin sous la tête. Éloigne les enfants, appelle les secours et va ouvrir aux secours si le SST le lui demande.',
+      'La cliente. Veut descendre vite par l’échelle, propose de « la remonter dans la cuisine » ou de lui glisser un coussin sous la tête. Met les enfants dans une autre pièce, appelle les secours et va ouvrir la porte aux secours si le SST le lui demande.',
     materiel:
       'Tapis figurant le sol de la cave, ruban autour de la trappe, chaise ou escabeau figurant l’échelle, tube PVC, coussin, couverture, téléphone factice.',
     actions: [
-      act('Fait éloigner les enfants et demande à la cliente de garder la trappe pour que personne ne s’en approche', 'C2a', 'C2b', 'C2d'),
-      act('Allume la lumière de la cave et descend prudemment par l’échelle, sans se précipiter', 'C2a'),
+      act('Fait mettre les enfants dans une autre pièce, porte fermée, et entoure la trappe (chaises, ruban) pour que personne ne tombe à son tour', 'C2a', 'C2b', 'C2d'),
+      act('Allume la lumière de la cave et descend prudemment par l’échelle, sans se précipiter ; demande à la cliente de rester en haut', 'C2a'),
       act('Examine : ne répond pas ; libère les voies aériennes (bascule prudente de la tête, menton élevé) et vérifie qu’elle respire', 'C3a', 'C3b'),
+      act('Fait alerter le 15 ou le 112 par la cliente : chute de deux mètres dans une cave, choc à la tête, victime qui ne répond pas mais respire', 'C4a'),
       act('Laisse la victime sur le dos (origine traumatique : pas de PLS) et lui maintient la tête à deux mains en gardant les voies aériennes libres', 'C5a', 'C5b'),
       act('Refuse qu’on la remonte ou qu’on lui mette un coussin sous la tête', 'C5b'),
-      act('Fait alerter le 15 ou le 112 par la cliente : chute de deux mètres dans une cave, victime qui ne répond pas mais respire', 'C4a'),
       act('Fait ouvrir la porte de la maison et guider les secours jusqu’à la trappe', 'C4b'),
-      act('Couvre et surveille en permanence la respiration jusqu’à la prise en charge par les secours', 'C5c'),
+      act('Couvre et surveille en permanence la respiration jusqu’à la prise en charge par les secours ; si elle s’arrête, commence la réanimation', 'C5c'),
     ],
     prevention: {
       danger: 'La trappe ouverte et l’échelle raide (chute de hauteur)',
@@ -269,7 +270,7 @@ export const cases: PracticalCase[] = [
   }),
   makeCase({
     id: 'ent-mis-08',
-    title: 'Le chalumeau resté allumé',
+    title: 'Brasage dans les toilettes de l’école',
     geste: 'Ne répond pas, ne respire pas (arrêt cardiaque)',
     category: 'metier',
     tradeIds: ['mis'],
@@ -277,10 +278,10 @@ export const cases: PracticalCase[] = [
     reviewed: false,
     source: SRC,
     scenario:
-      'Pendant les vacances, tu refais les sanitaires d’une école avec Didier, ton tuteur, 56 ans. Il brase un raccord en cuivre au chalumeau pendant que tu vas chercher des tubes au camion. À ton retour, Didier est allongé sur le dos au milieu des toilettes, immobile. Le chalumeau, toujours allumé, est par terre, la flamme contre les cartons des lavabos neufs. Le gardien de l’école arrive derrière toi ; un défibrillateur est accroché à l’entrée de l’école.',
+      'Pendant les vacances, tu refais les sanitaires d’une école avec Didier, ton tuteur, 59 ans. Il brase un raccord en cuivre au chalumeau pendant que tu vas chercher des tubes au camion. À ton retour, Didier est allongé sur le dos au milieu des toilettes, immobile. Le chalumeau, toujours allumé, est par terre, la flamme contre les cartons des lavabos neufs, qui commencent à noircir. Le gardien de l’école arrive derrière toi ; un défibrillateur est accroché à l’entrée de l’école.',
     victime: 'Mannequin sur le dos, à côté du chalumeau. Ne répond pas, ne respire pas, jusqu’à l’arrivée des secours.',
     temoin:
-      'Le gardien de l’école. Veut d’abord secouer Didier et lui jeter de l’eau au visage. Sait où est le défibrillateur ; appelle les secours avec son portable et va chercher le défibrillateur si le SST le lui demande.',
+      'Le gardien de l’école. Veut d’abord secouer Didier et lui jeter de l’eau au visage. Sait où est le défibrillateur ; appelle les secours avec son portable, va chercher le défibrillateur puis ouvre le portail aux secours si le SST le lui demande.',
     materiel:
       'Mannequin, défibrillateur de formation, bouteille de gaz et chalumeau factices (ou carton), cartons d’emballage, téléphone factice.',
     actions: [
@@ -300,7 +301,7 @@ export const cases: PracticalCase[] = [
       evenement: 'Didier s’effondre et le chalumeau allumé tombe contre les cartons',
       dommage: 'Risque d’incendie et de brûlures pour la victime et le sauveteur (l’arrêt cardiaque, lui, n’est pas causé par le travail : point à discuter)',
       eviter:
-        'Sortir les cartons et matériaux combustibles avant de braser ; écran ou couverture anti-feu ; chalumeau qui s’éteint dès qu’on relâche la gâchette ; extincteur à portée de main ; permis de feu établi avec l’école ; ne jamais laisser une flamme sans surveillance. Repérer le défibrillateur en arrivant sur un chantier.',
+        'Sertir les raccords au lieu de les braser quand c’est possible (plus de flamme) ; sinon, sortir les cartons et matériaux combustibles avant de braser, écran ou couverture anti-feu, chalumeau qui s’éteint dès qu’on relâche la gâchette, extincteur à portée de main, permis de feu établi avec l’école, ne jamais laisser une flamme sans surveillance. Repérer le défibrillateur en arrivant sur un chantier.',
       remonter: 'Chef d’entreprise, et le responsable de l’école (permis de feu).',
     },
   }),
