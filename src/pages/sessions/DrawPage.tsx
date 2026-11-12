@@ -8,8 +8,10 @@ import { errorMessage, Modal, PageLoader, useFeedback } from '../../components/u
 import Wheel, { type WheelItem } from '../../components/Wheel';
 import { useData } from '../../hooks/useData';
 import { assignCase, pickRandomCase, recordLearnerDraw, resetDraw } from '../../lib/drawOps';
-import { availableCases } from '../../lib/sessions';
-import type { Learner } from '../../lib/types';
+import { examCases, reserveCases } from '../../lib/sessions';
+import { useDocument } from '../../hooks/useFirestore';
+import { trainingPath } from '../../lib/trainingOps';
+import type { Learner, TrainingDraw } from '../../lib/types';
 import { useSessionBundle } from './SessionDetail';
 
 export default function DrawPage() {
@@ -26,7 +28,10 @@ export default function DrawPage() {
   const remaining = useMemo(() => learners.filter((l) => !l.absent && !l.drawOrder), [learners]);
   const drawnList = useMemo(() => learners.filter((l) => l.drawOrder).sort((a, b) => (a.drawOrder ?? 0) - (b.drawOrder ?? 0)), [learners]);
   const items: WheelItem[] = remaining.map((l) => ({ id: l.id, label: `${l.firstName} ${l.lastName.charAt(0)}.` }));
-  const casesLeft = session ? availableCases(cases, session).length : 0;
+  const training = useDocument<TrainingDraw>(sid ? trainingPath(sid) : null);
+  const played = useMemo(() => [...new Set([...(training.data?.usedCaseIds ?? []), ...(training.data?.passages ?? []).map((p) => p.caseId ?? '')])], [training.data]);
+  const examLeft = session ? examCases(cases, session).length : 0;
+  const reserveLeft = session ? reserveCases(cases, session).length : 0;
 
   const onResult = useCallback(
     async (item: WheelItem) => {
@@ -37,7 +42,7 @@ export default function DrawPage() {
         await recordLearnerDraw(session, learner);
         setWinner(learner);
         if (autoCase && !learner.caseId) {
-          const c = pickRandomCase(cases, session);
+          const c = pickRandomCase(cases, session, [], played);
           if (c) await assignCase(session, learner, c.id, false);
           else toast('Plus aucun cas disponible : attribuez-en un manuellement.', 'info');
         }
@@ -45,7 +50,7 @@ export default function DrawPage() {
         toast(errorMessage(err), 'error');
       }
     },
-    [session, learners, autoCase, cases, toast],
+    [session, learners, autoCase, cases, toast, played],
   );
 
   if (loading) return <PageLoader />;
@@ -98,7 +103,8 @@ export default function DrawPage() {
             </div>
           )}
           <p className="mt-4 text-sm text-ink-muted">
-            {remaining.length} apprenti(s) restant(s) · {casesLeft} cas pratique(s) encore disponible(s)
+            {remaining.length} apprenti(s) restant(s) · {examLeft} cas d’examen
+            {reserveLeft > 0 && <> + {reserveLeft} cas d’entraînement en réserve</>} · jamais deux fois le même cas
           </p>
         </section>
 

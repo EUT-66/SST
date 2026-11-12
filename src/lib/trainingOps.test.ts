@@ -65,9 +65,13 @@ describe('cas réservés à l’entraînement et ordre tiré d’un coup', () =>
 });
 
 describe('certification', () => {
-  it('ne tire jamais un cas réservé à l’entraînement', async () => {
-    const { availableCases } = await import('./sessions');
-    const pool = availableCases([kase('a'), { ...kase('e'), trainingOnly: true }], { tradeId: 'mit', casePool: 'both', drawnCaseIds: [] });
-    expect(pool.map((c) => c.id)).toEqual(['a']);
+  it('tire d’abord les cas d’examen, puis les cas d’entraînement en réserve, jamais deux fois le même', async () => {
+    const { availableCases, examCases, reserveCases } = await import('./sessions');
+    const all = [kase('a'), { ...kase('e'), trainingOnly: true }];
+    const s = { tradeId: 'mit', casePool: 'both' as const, drawnCaseIds: [] as string[] };
+    expect(examCases(all, s).map((c) => c.id)).toEqual(['a']);
+    expect(reserveCases(all, s).map((c) => c.id)).toEqual(['e']);
+    expect(availableCases(all, s).map((c) => c.id)).toEqual(['a', 'e']);
+    expect(availableCases(all, { ...s, drawnCaseIds: ['a', 'e'] })).toEqual([]);
   });
 });

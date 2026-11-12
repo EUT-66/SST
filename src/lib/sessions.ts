@@ -34,10 +34,23 @@ export function caseMatchesPool(c: PracticalCase, tradeId: string, pool: CasePoo
   return c.category === pool;
 }
 
-/** Cas encore disponibles au tirage de certification d'une session (sans remise, hors cas d'entraînement). */
-export function availableCases(cases: PracticalCase[], session: Pick<Session, 'tradeId' | 'casePool' | 'drawnCaseIds'>): PracticalCase[] {
+type DrawSession = Pick<Session, 'tradeId' | 'casePool' | 'drawnCaseIds'>;
+
+/** Cas d'examen encore disponibles au tirage de certification (sans remise). */
+export function examCases(cases: PracticalCase[], session: DrawSession): PracticalCase[] {
   const drawn = new Set(session.drawnCaseIds ?? []);
   return cases.filter((c) => !c.trainingOnly && caseMatchesPool(c, session.tradeId, session.casePool) && !drawn.has(c.id));
+}
+
+/** Cas d'entraînement gardés en réserve : utilisés quand il n'y a plus de cas d'examen. */
+export function reserveCases(cases: PracticalCase[], session: DrawSession): PracticalCase[] {
+  const drawn = new Set(session.drawnCaseIds ?? []);
+  return cases.filter((c) => !!c.trainingOnly && caseMatchesPool(c, session.tradeId, session.casePool) && !drawn.has(c.id));
+}
+
+/** Tous les cas encore disponibles au tirage de certification : d'abord ceux d'examen, puis la réserve. */
+export function availableCases(cases: PracticalCase[], session: DrawSession): PracticalCase[] {
+  return [...examCases(cases, session), ...reserveCases(cases, session)];
 }
 
 export const FORMATION_LABELS: Record<FormationType, string> = {

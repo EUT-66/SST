@@ -18,7 +18,7 @@ export default function CasePicker({ session, learner, onClose }: { session: Ses
   const list = useMemo(() => {
     const q = query.trim().toLowerCase();
     return cases
-      .filter((c) => !c.trainingOnly && caseMatchesPool(c, session.tradeId, 'both'))
+      .filter((c) => caseMatchesPool(c, session.tradeId, 'both'))
       .filter((c) => !q || `${c.title} ${c.geste}`.toLowerCase().includes(q));
   }, [cases, session.tradeId, query]);
 
@@ -82,6 +82,7 @@ export default function CasePicker({ session, learner, onClose }: { session: Ses
                   {used && <span className="badge-amber">Déjà tiré</span>}
                   {!inPool && <span className="badge-gray">Hors tirage</span>}
                   {c.category === 'vie_quotidienne' && <span className="badge-blue">Vie quotidienne</span>}
+                  {c.trainingOnly && <span className="badge-gray">Entraînement</span>}
                 </span>
               </button>
             </li>

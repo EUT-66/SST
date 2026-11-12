@@ -2,7 +2,7 @@
 import { doc, writeBatch } from 'firebase/firestore';
 import { db } from './firebase';
 import { randomInt } from './format';
-import { availableCases } from './sessions';
+import { examCases, reserveCases } from './sessions';
 import type { Learner, PracticalCase, Session } from './types';
 
 export async function recordLearnerDraw(session: Session, learner: Learner) {
@@ -14,9 +14,17 @@ export async function recordLearnerDraw(session: Session, learner: Learner) {
   return order;
 }
 
-/** Tire un cas au hasard parmi ceux encore disponibles dans la session. */
-export function pickRandomCase(cases: PracticalCase[], session: Session, exclude: string[] = []): PracticalCase | null {
-  const pool = availableCases(cases, session).filter((c) => !exclude.includes(c.id));
+/**
+ * Tire un cas au hasard : un cas d'examen tant qu'il en reste, sinon un cas d'entraînement en réserve,
+ * de préférence un que le groupe n'a pas joué à l'entraînement. Jamais deux fois le même cas dans la session.
+ */
+export function pickRandomCase(cases: PracticalCase[], session: Session, exclude: string[] = [], playedInTraining: string[] = []): PracticalCase | null {
+  const keep = (c: PracticalCase) => !exclude.includes(c.id);
+  const exam = examCases(cases, session).filter(keep);
+  if (exam.length) return exam[randomInt(exam.length)];
+  const reserve = reserveCases(cases, session).filter(keep);
+  const fresh = reserve.filter((c) => !playedInTraining.includes(c.id));
+  const pool = fresh.length ? fresh : reserve;
   return pool.length ? pool[randomInt(pool.length)] : null;
 }
 
