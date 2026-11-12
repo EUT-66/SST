@@ -40,6 +40,26 @@ export function availableCases(cases: PracticalCase[], session: Pick<Session, 't
   return cases.filter((c) => !c.trainingOnly && caseMatchesPool(c, session.tradeId, session.casePool) && !drawn.has(c.id));
 }
 
+/** Cas d'entraînement pas encore tirés dans la session : renfort quand les cas de certification sont épuisés. */
+export function availableTrainingCases(cases: PracticalCase[], session: Pick<Session, 'tradeId' | 'casePool' | 'drawnCaseIds'>): PracticalCase[] {
+  const drawn = new Set(session.drawnCaseIds ?? []);
+  return cases.filter((c) => c.trainingOnly && caseMatchesPool(c, session.tradeId, session.casePool) && !drawn.has(c.id));
+}
+
+/**
+ * Cas tirables pour la certification : d'abord les cas de certification, puis, une fois ceux-ci
+ * épuisés, les cas d'entraînement, pour que deux apprentis n'aient jamais le même scénario.
+ */
+export function drawableCases(
+  cases: PracticalCase[],
+  session: Pick<Session, 'tradeId' | 'casePool' | 'drawnCaseIds'>,
+  exclude: string[] = [],
+): PracticalCase[] {
+  const certification = availableCases(cases, session).filter((c) => !exclude.includes(c.id));
+  if (certification.length) return certification;
+  return availableTrainingCases(cases, session).filter((c) => !exclude.includes(c.id));
+}
+
 export const FORMATION_LABELS: Record<FormationType, string> = {
   initiale: 'Formation initiale',
   mac: 'Maintien et actualisation des compétences',

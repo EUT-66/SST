@@ -70,4 +70,13 @@ describe('certification', () => {
     const pool = availableCases([kase('a'), { ...kase('e'), trainingOnly: true }], { tradeId: 'mit', casePool: 'both', drawnCaseIds: [] });
     expect(pool.map((c) => c.id)).toEqual(['a']);
   });
+  it('complète avec les cas d’entraînement une fois les cas de certification épuisés', async () => {
+    const { drawableCases } = await import('./sessions');
+    const all = [kase('a'), { ...kase('e1'), trainingOnly: true }, { ...kase('e2'), trainingOnly: true }];
+    const s = { tradeId: 'mit', casePool: 'both' as const, drawnCaseIds: [] as string[] };
+    expect(drawableCases(all, s).map((c) => c.id)).toEqual(['a']);
+    expect(drawableCases(all, { ...s, drawnCaseIds: ['a'] }).map((c) => c.id)).toEqual(['e1', 'e2']);
+    expect(drawableCases(all, { ...s, drawnCaseIds: ['a', 'e1'] }).map((c) => c.id)).toEqual(['e2']);
+    expect(drawableCases(all, { ...s, drawnCaseIds: ['a', 'e1', 'e2'] })).toEqual([]);
+  });
 });

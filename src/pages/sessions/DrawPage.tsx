@@ -8,7 +8,7 @@ import { errorMessage, Modal, PageLoader, useFeedback } from '../../components/u
 import Wheel, { type WheelItem } from '../../components/Wheel';
 import { useData } from '../../hooks/useData';
 import { assignCase, pickRandomCase, recordLearnerDraw, resetDraw } from '../../lib/drawOps';
-import { availableCases } from '../../lib/sessions';
+import { availableCases, availableTrainingCases } from '../../lib/sessions';
 import type { Learner } from '../../lib/types';
 import { useSessionBundle } from './SessionDetail';
 
@@ -26,7 +26,9 @@ export default function DrawPage() {
   const remaining = useMemo(() => learners.filter((l) => !l.absent && !l.drawOrder), [learners]);
   const drawnList = useMemo(() => learners.filter((l) => l.drawOrder).sort((a, b) => (a.drawOrder ?? 0) - (b.drawOrder ?? 0)), [learners]);
   const items: WheelItem[] = remaining.map((l) => ({ id: l.id, label: `${l.firstName} ${l.lastName.charAt(0)}.` }));
-  const casesLeft = session ? availableCases(cases, session).length : 0;
+  const certifLeft = session ? availableCases(cases, session).length : 0;
+  const trainingLeft = session ? availableTrainingCases(cases, session).length : 0;
+  const casesLeft = certifLeft + trainingLeft;
 
   const onResult = useCallback(
     async (item: WheelItem) => {
@@ -99,7 +101,13 @@ export default function DrawPage() {
           )}
           <p className="mt-4 text-sm text-ink-muted">
             {remaining.length} apprenti(s) restant(s) · {casesLeft} cas pratique(s) encore disponible(s)
+            {trainingLeft > 0 && ` (dont ${trainingLeft} issu(s) des entraînements, tirés une fois les cas de certification épuisés)`}
           </p>
+          {remaining.length > casesLeft && (
+            <p className="mt-1 text-sm font-semibold text-amber-700">
+              Pas assez de cas différents pour tous les apprentis : élargissez le type de cas de la session ou ajoutez des cas.
+            </p>
+          )}
         </section>
 
         <aside className="card h-fit p-5">

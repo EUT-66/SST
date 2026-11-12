@@ -18,7 +18,9 @@ export default function CasePicker({ session, learner, onClose }: { session: Ses
   const list = useMemo(() => {
     const q = query.trim().toLowerCase();
     return cases
-      .filter((c) => !c.trainingOnly && caseMatchesPool(c, session.tradeId, 'both'))
+      .filter((c) => caseMatchesPool(c, session.tradeId, 'both'))
+      // cas de certification d'abord, cas d'entraînement ensuite
+      .sort((a, b) => Number(!!a.trainingOnly) - Number(!!b.trainingOnly))
       .filter((c) => !q || `${c.title} ${c.geste}`.toLowerCase().includes(q));
   }, [cases, session.tradeId, query]);
 
@@ -52,7 +54,7 @@ export default function CasePicker({ session, learner, onClose }: { session: Ses
         </div>
       </div>
       <p className="mb-3 text-xs text-ink-muted">
-        Les cas déjà tirés dans cette session sont signalés : ils ne retombent pas au hasard, mais vous pouvez les choisir volontairement. Le cas précédent est remis en jeu.
+        Les cas déjà tirés dans cette session sont signalés : ils ne retombent pas au hasard, mais vous pouvez les choisir volontairement. Le cas précédent est remis en jeu. Les cas d’entraînement servent de renfort une fois les cas de certification épuisés.
       </p>
       <ul className="max-h-[50vh] space-y-2 overflow-y-auto pr-1">
         {list.map((c) => {
@@ -81,6 +83,7 @@ export default function CasePicker({ session, learner, onClose }: { session: Ses
                   {current && <span className="badge-green">Attribué</span>}
                   {used && <span className="badge-amber">Déjà tiré</span>}
                   {!inPool && <span className="badge-gray">Hors tirage</span>}
+                  {c.trainingOnly && <span className="badge-gray">Entraînement</span>}
                   {c.category === 'vie_quotidienne' && <span className="badge-blue">Vie quotidienne</span>}
                 </span>
               </button>
